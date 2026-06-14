@@ -1,4 +1,4 @@
-name: brainlat-exposome
+name: demo-exposome
 channels:
   - conda-forge
 dependencies:

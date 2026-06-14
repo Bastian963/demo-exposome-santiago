@@ -21,3 +21,15 @@ output/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+
+# LaTeX build artifacts (keep .tex, .bib, .pdf, figures/)
+*.aux
+*.bcf
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz

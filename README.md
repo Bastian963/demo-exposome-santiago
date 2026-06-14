@@ -36,6 +36,16 @@ Se regenera con:
 python scripts/build_master_exposome.py
 ```
 
+## Documento De Demostración
+
+`demo_document/exposome_demo.pdf` (fuente LaTeX en `demo_document/exposome_demo.tex`) es el documento de 4 páginas para adjuntar a la postulación: una figura de 5 paneles con las cinco capas, mini-secciones que explican qué representa cada barra de color y cómo se calcula, las fuentes de datos, y una sección sobre cómo perfeccionar el demo con datos satelitales de dominio temporal (NDVI Sentinel-2, Sentinel-5P, LST). Se compila con `latexmk -pdf exposome_demo.tex`.
+
+## Vista Rápida
+
+![Cinco capas comunales del exposoma urbano de Santiago](demo_document/figures/exposome_5panel_santiago.png)
+
+![Ejemplo de detección de vegetación con visión computacional](demo_document/figures/greenspace_cv_santiago.png)
+
 ## Outputs Relevantes
 
 | Archivo | Contenido |
@@ -55,8 +65,8 @@ Crear entorno con conda/mamba:
 
 ```bash
 conda env create -f environment.yml
-conda activate brainlat-exposome
-python -m ipykernel install --user --name brainlat-exposome --display-name "BrainLat Exposome"
+conda activate demo-exposome
+python -m ipykernel install --user --name demo-exposome --display-name "Demo Exposome"
 ```
 
 Orden sugerido de ejecución:
@@ -67,7 +77,8 @@ Orden sugerido de ejecución:
 3. santiago_green_spaces.ipynb
 4. santiago_socioeconomic.ipynb
 5. santiago_climate_heat_exposure.ipynb
-6. python scripts/build_master_exposome.py
+6. santiago_greenspace_cv.ipynb  # optional computer-vision example
+7. python scripts/build_master_exposome.py
 ```
 
 Los notebooks usan caché local cuando existe, pero el directorio `cache/` queda fuera de Git para no publicar respuestas crudas de APIs ni archivos temporales.
@@ -78,7 +89,7 @@ Los notebooks usan caché local cuando existe, pero el directorio `cache/` queda
 - CRS métrico para áreas/distancias: `EPSG:32719`.
 - CRS de exportación GIS: WGS84 (`EPSG:4326`).
 - Acceso a salud: distancias calculadas sobre grilla intra-comunal de 1 km.
-- Calor urbano: punto representativo comunal como proxy residencial principal; grilla regular como diagnóstico/fallback.
+- Calor urbano: proxy residencial = media de la **banda baja (valle poblado, ≤300 m sobre el punto más bajo)** de cada comuna, excluyendo píxeles de alta cordillera que sesgarían a las comunas precordilleranas grandes (San José de Maipo, Lo Barnechea); punto representativo como fallback para comunas pequeñas sin grilla interior.
 - Tabla maestra: merge `one_to_one` por nombre de comuna y validación estricta de 52 filas sin missing.
 
 ## Limitaciones
