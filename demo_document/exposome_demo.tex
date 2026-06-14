@@ -83,7 +83,7 @@
 
 The \emph{exposome} is the totality of environmental and social exposures that accumulate over a person's life and shape brain health and the risk of cognitive decline and dementia \citep{Livingston2020}. A central task for BrainLat is to derive such exposures from where participants live. This document demonstrates that capability end to end: starting only from a residential geographic unit (the \textbf{52 communes of the Metropolitan Region of Santiago}) and \textbf{open data}, I build five harmonised exposome layers, integrate them into a single analysis-ready table, and produce maps that can be linked to clinical, cognitive or epidemiological cohorts.
 
-Each layer is a standalone, reproducible Jupyter notebook; a master script joins all of them on a common key (the commune name) into one table of $52\times43$ variables with no missing values. The pipeline uses no API keys and is fully reproducible from a single \texttt{environment.yml}. Figure~\ref{fig:fivepanel} shows the five headline indicators.
+Each layer is a standalone, reproducible Jupyter notebook; a master script joins all of them on a common key (the commune name) into one table of $52\times43$ variables with no missing values. The pipeline uses no API keys and is fully reproducible from a single \texttt{environment.yml}. Beyond mapping current open-data indicators, the demo also treats those indicators as auditable baselines: the green-space layer is later contrasted with computer-vision vegetation detection to show where open maps miss private gardens, street trees and unmapped greenery. Figure~\ref{fig:fivepanel} shows the five headline indicators.
 
 \begin{figure}[h]
   \centering
@@ -109,7 +109,7 @@ The CAMS atmospheric reanalysis is sampled on a $\sim$11\,km grid over the regio
 
 \item[\textcolor{softpink}{Green space}]
 \colorbarval{share of the commune covered by accessible green space (\%).}
-Parks, gardens, squares and recreation grounds are extracted from OpenStreetMap, dissolved into a single geometry (to avoid double counting), intersected with each commune, and divided by the commune area. \emph{Source:} OpenStreetMap \citep{OSM2024}.
+Parks, gardens, squares and recreation grounds are extracted from OpenStreetMap, dissolved into a single geometry (to avoid double counting), intersected with each commune, and divided by the commune area. Because this layer measures accessible, mapped green areas rather than total vegetation, Section~4 uses aerial-imagery computer vision to quantify the residual greenery that OpenStreetMap leaves out. \emph{Source:} OpenStreetMap \citep{OSM2024}.
 
 \item[\textcolor{softpink}{Socioeconomic level}]
 \colorbarval{composite socioeconomic index (standardised, regional mean $=0$).}
