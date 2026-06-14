@@ -1,6 +1,6 @@
-# Santiago Urban Exposome — BrainLat Data Scientist Application
+# Santiago Urban Exposome Demo
 
-Proyecto demostrativo para la postulación a **Data Scientist in Brain Health and Exposome Data Analysis** en BrainLat/UAI.
+Proyecto demostrativo para una postulación a **Data Scientist in Brain Health and Exposome Data Analysis**.
 
 El objetivo es mostrar un flujo reproducible para construir indicadores comunales del **exposoma urbano** en la Región Metropolitana de Santiago, usando fuentes abiertas, geoprocesamiento en Python y salidas listas para integrarse con datos clínicos, cognitivos o epidemiológicos.
 
@@ -88,6 +88,6 @@ Los notebooks usan caché local cuando existe, pero el directorio `cache/` queda
 - Las capas climáticas y de aire provienen de reanálisis/grillas, no de micro-sensores intraurbanos.
 - El apéndice Google Earth Engine en clima/verde es opcional y requiere autenticación externa.
 
-## Por Qué Es Relevante Para BrainLat
+## Relevancia Para Investigación En Exposoma
 
-Este proyecto traduce la oferta a un prototipo funcional: toma fuentes abiertas, genera indicadores ambientales/sociales/infraestructurales, los harmoniza en una unidad común y produce una base lista para cruzarse con cohortes, datos cognitivos, biomarcadores o neuroimagen.
+Este proyecto traduce una necesidad de investigación en exposoma urbano a un prototipo funcional: toma fuentes abiertas, genera indicadores ambientales/sociales/infraestructurales, los harmoniza en una unidad común y produce una base lista para cruzarse con cohortes, datos cognitivos, biomarcadores o neuroimagen.
