@@ -1,0 +1,82 @@
+{
+  "created_utc": "2026-06-14T03:52:45.592467+00:00",
+  "n_communes": 52,
+  "n_variables_including_name_area": 43,
+  "layers": [
+    {
+      "name": "socioeconomic",
+      "csv": "socioeconomic_exposome_rm_santiago.csv",
+      "columns": [
+        "poblacion",
+        "pobreza_pct",
+        "ingreso",
+        "escolaridad",
+        "nse_index"
+      ]
+    },
+    {
+      "name": "air_quality",
+      "csv": "air_quality_exposome_rm_santiago.csv",
+      "columns": [
+        "pm25_mean",
+        "no2_mean",
+        "n_grid",
+        "pm25_who_ratio",
+        "no2_who_ratio"
+      ]
+    },
+    {
+      "name": "green",
+      "csv": "green_exposome_rm_santiago.csv",
+      "columns": [
+        "green_km2",
+        "green_pct",
+        "n_green"
+      ]
+    },
+    {
+      "name": "healthcare",
+      "csv": "healthcare_exposome_rm_santiago.csv",
+      "columns": [
+        "n_total",
+        "n_hospital",
+        "n_pharmacy",
+        "density_per_km2",
+        "n_access_grid",
+        "mean_nearest_health_m",
+        "median_nearest_health_m",
+        "p90_nearest_health_m",
+        "mean_nearest_hospital_m",
+        "median_nearest_hospital_m",
+        "p90_nearest_hospital_m"
+      ]
+    },
+    {
+      "name": "climate_heat",
+      "csv": "climate_heat_exposome_rm_santiago.csv",
+      "columns": [
+        "tmean_annual_c",
+        "tmax_mean_annual_c",
+        "summer_tmax_mean_c",
+        "tmax_p95_c",
+        "tmax_abs_c",
+        "apparent_tmax_mean_c",
+        "hot_days_30c",
+        "hot_days_35c",
+        "apparent_hot_days_35c",
+        "tropical_nights_20c",
+        "precip_annual_mm",
+        "heat_exposure_index",
+        "urban_heat_anomaly_c",
+        "n_area_grid_points",
+        "nearest_climate_m",
+        "used_nearest_fallback",
+        "n_days"
+      ]
+    }
+  ],
+  "outputs": [
+    "santiago_exposome_master.csv",
+    "santiago_exposome_master.geojson"
+  ]
+}

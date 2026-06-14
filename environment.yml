@@ -1,0 +1,23 @@
+name: brainlat-exposome
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pandas
+  - numpy
+  - geopandas
+  - shapely
+  - pyproj
+  - osmnx
+  - folium
+  - matplotlib
+  - requests
+  - scipy
+  - openpyxl
+  - jupyterlab
+  - ipykernel
+  - nbformat
+  - nbconvert
+  - pip
+  - pip:
+      - earthengine-api

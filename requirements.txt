@@ -1,0 +1,16 @@
+pandas
+numpy
+geopandas
+shapely
+pyproj
+osmnx
+folium
+matplotlib
+requests
+scipy
+openpyxl
+jupyterlab
+ipykernel
+nbformat
+nbconvert
+earthengine-api
