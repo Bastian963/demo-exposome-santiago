@@ -16,11 +16,11 @@ El objetivo es mostrar un flujo reproducible para construir indicadores comunale
 
 | Notebook | Factor | Indicadores principales | Fuente |
 |---|---|---|---|
-| `santiago_air_quality.ipynb` | Calidad del aire | PM2.5, NO2, razón OMS | Open-Meteo/CAMS, SINCA |
-| `santiago_green_spaces.ipynb` | Áreas verdes | % área verde, km2, número de polígonos | OpenStreetMap |
-| `santiago_healthcare_access.ipynb` | Acceso a salud | conteos, densidad, distancia media/mediana/P90 a salud y hospital | OpenStreetMap |
-| `santiago_socioeconomic.ipynb` | Nivel socioeconómico | pobreza, ingreso, escolaridad, índice NSE | CASEN/SAE vía datos abiertos |
-| `santiago_climate_heat_exposure.ipynb` | Clima/calor urbano | Tmax verano, días >=30/35 C, noches cálidas, índice de calor | Open-Meteo Historical |
+| `notebooks/santiago_air_quality.ipynb` | Calidad del aire | PM2.5, NO2, razón OMS | Open-Meteo/CAMS, SINCA |
+| `notebooks/santiago_green_spaces.ipynb` | Áreas verdes | % área verde, km2, número de polígonos | OpenStreetMap |
+| `notebooks/santiago_healthcare_access.ipynb` | Acceso a salud | conteos, densidad, distancia media/mediana/P90 a salud y hospital | OpenStreetMap |
+| `notebooks/santiago_socioeconomic.ipynb` | Nivel socioeconómico | pobreza, ingreso, escolaridad, índice NSE | CASEN/SAE vía datos abiertos |
+| `notebooks/santiago_climate_heat_exposure.ipynb` | Clima/calor urbano | Tmax verano, días >=30/35 C, noches cálidas, índice de calor | Open-Meteo Historical |
 
 ## Salida Principal
 
@@ -29,6 +29,8 @@ La salida integrada está en:
 - `santiago_exposome_master.csv`: 52 comunas x 43 columnas, sin valores faltantes.
 - `santiago_exposome_master.geojson`: la misma tabla con geometría comunal.
 - `santiago_exposome_master_metadata.json`: fuentes, capas y columnas usadas.
+
+Todos estos archivos están en `data/processed/`.
 
 Se regenera con:
 
@@ -46,18 +48,30 @@ python scripts/build_master_exposome.py
 
 ![Ejemplo de detección de vegetación con visión computacional](demo_document/figures/greenspace_cv_santiago.png)
 
+## Estructura Del Repositorio
+
+```text
+notebooks/       notebooks reproducibles, uno por capa del exposoma
+data/processed/  tablas CSV, capas GeoJSON y metadata final
+figures/         mapas estáticos, rankings y figuras de integración
+maps/            mapas interactivos HTML
+demo_document/   PDF adjunto, fuente LaTeX, bibliografía y figuras del documento
+docs/            documentos auxiliares de postulación
+scripts/         utilidades reproducibles, incluida la integración maestra
+```
+
 ## Outputs Relevantes
 
 | Archivo | Contenido |
 |---|---|
-| `air_quality_exposome_rm_santiago.csv` | indicadores de PM2.5/NO2 por comuna |
-| `green_exposome_rm_santiago.csv` | indicadores de áreas verdes por comuna |
-| `healthcare_exposome_rm_santiago.csv` | acceso a salud con conteos, densidad y distancias |
-| `socioeconomic_exposome_rm_santiago.csv` | pobreza, ingreso, escolaridad e índice NSE |
-| `climate_heat_exposome_rm_santiago.csv` | exposición a calor y clima |
-| `*_exposome_rm_santiago.geojson` | capas GIS equivalentes |
-| `*_santiago_pub.png` | mapas estáticos para presentación/publicación |
-| `*_santiago.html` | mapas interactivos |
+| `data/processed/air_quality_exposome_rm_santiago.csv` | indicadores de PM2.5/NO2 por comuna |
+| `data/processed/green_exposome_rm_santiago.csv` | indicadores de áreas verdes por comuna |
+| `data/processed/healthcare_exposome_rm_santiago.csv` | acceso a salud con conteos, densidad y distancias |
+| `data/processed/socioeconomic_exposome_rm_santiago.csv` | pobreza, ingreso, escolaridad e índice NSE |
+| `data/processed/climate_heat_exposome_rm_santiago.csv` | exposición a calor y clima |
+| `data/processed/*_exposome_rm_santiago.geojson` | capas GIS equivalentes |
+| `figures/*_santiago_pub.png` | mapas estáticos para presentación/publicación |
+| `maps/*_santiago.html` | mapas interactivos |
 
 ## Reproducibilidad
 
@@ -72,16 +86,16 @@ python -m ipykernel install --user --name demo-exposome --display-name "Demo Exp
 Orden sugerido de ejecución:
 
 ```text
-1. santiago_healthcare_access.ipynb
-2. santiago_air_quality.ipynb
-3. santiago_green_spaces.ipynb
-4. santiago_socioeconomic.ipynb
-5. santiago_climate_heat_exposure.ipynb
-6. santiago_greenspace_cv.ipynb  # optional computer-vision example
+1. notebooks/santiago_healthcare_access.ipynb
+2. notebooks/santiago_air_quality.ipynb
+3. notebooks/santiago_green_spaces.ipynb
+4. notebooks/santiago_socioeconomic.ipynb
+5. notebooks/santiago_climate_heat_exposure.ipynb
+6. notebooks/santiago_greenspace_cv.ipynb  # optional computer-vision example
 7. python scripts/build_master_exposome.py
 ```
 
-Los notebooks usan caché local cuando existe, pero el directorio `cache/` queda fuera de Git para no publicar respuestas crudas de APIs ni archivos temporales.
+Ejecutar desde la raíz del repositorio para que las rutas relativas apunten a `data/processed/`, `figures/`, `maps/` y `cache/`. Los notebooks usan caché local cuando existe, pero el directorio `cache/` queda fuera de Git para no publicar respuestas crudas de APIs ni archivos temporales.
 
 ## Decisiones Metodológicas
 

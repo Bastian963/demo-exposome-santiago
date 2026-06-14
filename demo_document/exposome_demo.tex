@@ -168,10 +168,10 @@ The accompanying repository contains one notebook per factor, the master integra
 \smallskip
 \noindent\textbf{\textcolor{softpink}{Repository layout.}}
 \begin{description}[leftmargin=0pt,labelsep=0.5em,itemsep=1.5pt,font=\ttfamily\small]
-  \item[santiago\_\{healthcare\_access, air\_quality, green\_spaces,] \texttt{socioeconomic, climate\_heat\_exposure\}.ipynb} --- the five factor notebooks (one per exposome layer).
-  \item[*\_exposome\_rm\_santiago.\{csv,geojson\}] per-factor commune indicators as a table and a GIS layer.
-  \item[*\_santiago\_pub.png \textnormal{,} *\_santiago.html] publication-quality static map and interactive web map per factor.
-  \item[scripts/build\_master\_exposome.py] joins all layers into \texttt{santiago\_exposome\_master.\{csv,geojson\}} ($52\times43$) with a metadata sidecar.
+  \item[notebooks/santiago\_*.ipynb] the factor notebooks and the optional computer-vision example.
+  \item[data/processed/*\_exposome\_rm\_santiago.\{csv,geojson\}] per-factor commune indicators as a table and a GIS layer.
+  \item[figures/*\_santiago\_pub.png \textnormal{,} maps/*\_santiago.html] publication-quality static map and interactive web map per factor.
+  \item[scripts/build\_master\_exposome.py] joins all layers and writes the master CSV, GeoJSON and metadata in the processed-data folder ($52\times43$).
   \item[environment.yml \textnormal{,} README.md] reproducible conda environment and project documentation.
 \end{description}
 

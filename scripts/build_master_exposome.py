@@ -9,6 +9,7 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT / "data" / "processed"
 
 
 LAYER_SPECS = [
@@ -86,7 +87,7 @@ LAYER_SPECS = [
 
 
 def load_layer(spec: dict) -> pd.DataFrame:
-    path = ROOT / spec["csv"]
+    path = DATA_DIR / spec["csv"]
     if not path.exists():
         raise FileNotFoundError(f"Missing layer CSV: {path.name}")
 
@@ -102,9 +103,9 @@ def load_layer(spec: dict) -> pd.DataFrame:
 
 
 def build_master() -> tuple[pd.DataFrame, gpd.GeoDataFrame]:
-    base_geojson = ROOT / "socioeconomic_exposome_rm_santiago.geojson"
+    base_geojson = DATA_DIR / "socioeconomic_exposome_rm_santiago.geojson"
     if not base_geojson.exists():
-        base_geojson = ROOT / "climate_heat_exposome_rm_santiago.geojson"
+        base_geojson = DATA_DIR / "climate_heat_exposome_rm_santiago.geojson"
     if not base_geojson.exists():
         raise FileNotFoundError("Need a local GeoJSON layer to provide commune geometries")
 
@@ -137,9 +138,10 @@ def build_master() -> tuple[pd.DataFrame, gpd.GeoDataFrame]:
 def main() -> None:
     master, gdf_master = build_master()
 
-    csv_out = ROOT / "santiago_exposome_master.csv"
-    geojson_out = ROOT / "santiago_exposome_master.geojson"
-    metadata_out = ROOT / "santiago_exposome_master_metadata.json"
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    csv_out = DATA_DIR / "santiago_exposome_master.csv"
+    geojson_out = DATA_DIR / "santiago_exposome_master.geojson"
+    metadata_out = DATA_DIR / "santiago_exposome_master_metadata.json"
 
     master.to_csv(csv_out, index=False)
     gdf_master.to_file(geojson_out, driver="GeoJSON")
