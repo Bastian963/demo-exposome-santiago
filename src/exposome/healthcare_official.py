@@ -83,6 +83,46 @@ def fetch_deis_csv(
     return cache_path
 
 
+def _classify_sector(row: pd.Series, col_cfg: dict[str, str]) -> tuple[bool, bool]:
+    """Classify a DEIS facility as public or private.
+
+    Uses ``TipoSistemaSaludGlosa`` as the primary flag, falls back to
+    ``DependenciaAdministrativa``, and finally to ``TipoPertenenciaEstabGlosa``.
+    FFAA / Carabineros / Gendarmería are treated as public.
+    """
+    system = str(row.get(col_cfg.get("system_type", ""), "")).strip().lower()
+    dependency = str(row.get(col_cfg.get("dependency", ""), "")).strip().lower()
+    affiliation = str(row.get(col_cfg.get("affiliation", ""), "")).strip().lower()
+
+    public_dependencies = {
+        "municipal", "servicio de salud", "seremi de salud", "delegado",
+        "otra institución", "ejército de chile", "armada de chile",
+        "fuerza aérea de chile", "fuerzas armadas y de orden (ffaa)",
+        "carabineros", "carabineros de", "pdi", "gendamería",
+    }
+
+    if system == "público":
+        return True, False
+    if system == "privado":
+        return False, True
+
+    # Ambiguous / FFAA / No Aplica cases: rely on dependency.
+    dep_norm = dependency
+    if any(dep_norm.startswith(pd) for pd in public_dependencies):
+        return True, False
+    if dep_norm == "privado":
+        return False, True
+
+    # Final fallback: SNSS affiliation.
+    if "perteneciente al sistema nacional" in affiliation:
+        return True, False
+    if "no perteneciente" in affiliation:
+        return False, True
+
+    # Default to public if still unresolved (conservative for public health).
+    return True, False
+
+
 def load_deis_facilities(
     csv_path: Path,
     cfg: dict[str, Any],
@@ -96,6 +136,7 @@ def load_deis_facilities(
     - ``commune`` : commune name
     - ``official_type`` : original DEIS facility type
     - ``is_hospital``, ``is_clinic``, ``is_primary_care`` : boolean categories
+    - ``is_public``, ``is_private`` : administrative sector flags
     - ``is_all_health`` : True if the facility matched any configured category
     - ``source`` : ``"deis"``
     - ``geometry`` : representative Point in the configured geographic CRS
@@ -162,6 +203,11 @@ def load_deis_facilities(
     for cat_name, mask in category_masks.items():
         gdf[f"is_{cat_name}"] = mask
 
+    # Sector classification (public / private).
+    sector = gdf.apply(lambda row: _classify_sector(row, col_cfg), axis=1)
+    gdf["is_public"] = [s[0] for s in sector]
+    gdf["is_private"] = [s[1] for s in sector]
+
     # Every DEIS establishment that passes the region/status/coordinate filters
     # is a health facility, so ``is_all_health`` is True for the whole set.
     # Named categories (hospital, clinic, primary_care) are subsets.
@@ -174,7 +220,7 @@ def load_deis_facilities(
 
     out_cols = ["name", "commune", "official_type", "source"]
     out_cols += [f"is_{cat}" for cat in type_mapping.keys()]
-    out_cols += ["is_all_health", "geometry"]
+    out_cols += ["is_public", "is_private", "is_all_health", "geometry"]
 
     return gdf[out_cols].copy().reset_index(drop=True)
 

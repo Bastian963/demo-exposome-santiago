@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import geopandas as gpd
+import numpy as np
 import pandas as pd
 
 
@@ -43,13 +44,27 @@ LAYER_SPECS = [
         "csv": "santiago_healthcare_access.csv",
         "columns": [
             "n_total",
+            "n_public_total",
+            "n_private_total",
             "n_hospital",
+            "n_hospital_public",
+            "n_hospital_private",
             "n_clinic",
+            "n_clinic_public",
+            "n_clinic_private",
             "n_primary_care",
+            "n_primary_care_public",
+            "n_primary_care_private",
             "n_pharmacy",
             "n_laboratory",
+            "n_laboratory_public",
+            "n_laboratory_private",
             "n_dental",
+            "n_dental_public",
+            "n_dental_private",
             "n_mental_health",
+            "n_mental_health_public",
+            "n_mental_health_private",
             "density_per_km2",
             "n_access_grid",
             "mean_nearest_health_m",
@@ -75,15 +90,56 @@ LAYER_SPECS = [
         ],
         "rename": {
             "n_total": "health_n_total",
+            "n_public_total": "health_n_public_total",
+            "n_private_total": "health_n_private_total",
             "n_hospital": "health_n_hospital",
+            "n_hospital_public": "health_n_hospital_public",
+            "n_hospital_private": "health_n_hospital_private",
             "n_clinic": "health_n_clinic",
+            "n_clinic_public": "health_n_clinic_public",
+            "n_clinic_private": "health_n_clinic_private",
             "n_primary_care": "health_n_primary_care",
+            "n_primary_care_public": "health_n_primary_care_public",
+            "n_primary_care_private": "health_n_primary_care_private",
             "n_pharmacy": "health_n_pharmacy",
             "n_laboratory": "health_n_laboratory",
+            "n_laboratory_public": "health_n_laboratory_public",
+            "n_laboratory_private": "health_n_laboratory_private",
             "n_dental": "health_n_dental",
+            "n_dental_public": "health_n_dental_public",
+            "n_dental_private": "health_n_dental_private",
             "n_mental_health": "health_n_mental_health",
+            "n_mental_health_public": "health_n_mental_health_public",
+            "n_mental_health_private": "health_n_mental_health_private",
             "density_per_km2": "health_density_per_km2",
             "n_access_grid": "health_n_access_grid",
+        },
+    },
+    {
+        "name": "demography",
+        "csv": "santiago_demography.csv",
+        "columns": [
+            "comuna_code",
+            "pop_total",
+            "pop_male",
+            "pop_female",
+            "pop_0_14",
+            "pop_15_64",
+            "pop_65_plus",
+            "pct_pop_0_14",
+            "pct_pop_15_64",
+            "pct_pop_65_plus",
+        ],
+        "rename": {
+            "pop_total": "demo_pop_total",
+            "pop_male": "demo_pop_male",
+            "pop_female": "demo_pop_female",
+            "pop_0_14": "demo_pop_0_14",
+            "pop_15_64": "demo_pop_15_64",
+            "pop_65_plus": "demo_pop_65_plus",
+            "pct_pop_0_14": "demo_pct_pop_0_14",
+            "pct_pop_15_64": "demo_pct_pop_15_64",
+            "pct_pop_65_plus": "demo_pct_pop_65_plus",
         },
     },
     {
@@ -212,12 +268,35 @@ def build_master() -> tuple[pd.DataFrame, gpd.GeoDataFrame]:
         layer = load_layer(spec)
         master = master.merge(layer, on="name", how="left", validate="one_to_one")
 
+    # Derived health-accessibility ratios using demography.
+    if "demo_pop_total" in master.columns:
+        pop = master["demo_pop_total"]
+        ratio_pairs = [
+            ("demo_pop_total", "health_n_hospital", "health_inhabitants_per_hospital"),
+            ("demo_pop_total", "health_n_primary_care", "health_inhabitants_per_primary_care"),
+            ("demo_pop_total", "health_n_clinic", "health_inhabitants_per_clinic"),
+            ("demo_pop_total", "health_n_public_total", "health_inhabitants_per_public_facility"),
+            ("demo_pop_total", "health_n_private_total", "health_inhabitants_per_private_facility"),
+            ("demo_pop_total", "health_n_total", "health_inhabitants_per_facility"),
+        ]
+        for _, facility_col, out_col in ratio_pairs:
+            if facility_col in master.columns:
+                master[out_col] = np.where(
+                    master[facility_col] > 0,
+                    (pop / master[facility_col]).round(1),
+                    np.nan,
+                )
+
     if len(master) != 52:
         raise ValueError(f"Expected 52 communes, got {len(master)}")
     if master["name"].duplicated().any():
         dupes = master.loc[master["name"].duplicated(), "name"].tolist()
         raise ValueError(f"Duplicate commune names: {dupes}")
-    if master.isna().any().any():
+    # Ratios such as inhabitants_per_hospital are undefined when a commune
+    # has zero facilities of that type. Those NaNs are meaningful, so we
+    # exclude ratio columns from the strict non-null check.
+    non_ratio_cols = [c for c in master.columns if "_per_" not in c]
+    if master[non_ratio_cols].isna().any().any():
         missing = master.columns[master.isna().any()].tolist()
         raise ValueError(f"Master table has missing values in: {missing}")
 

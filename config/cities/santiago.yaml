@@ -118,6 +118,41 @@ climate:
       - lat
       - lon
 
+greenspace:
+  # Satellite-based greenness (Sentinel-2)
+  satellite:
+    collection: "COPERNICUS/S2_SR_HARMONIZED"
+    years: [2024]
+    # Southern Hemisphere spring-summer: Oct-Mar, peak greenness, fewer clouds
+    season_months: [10, 11, 12, 1, 2, 3]
+    cloud_max_pct: 20
+    ndvi_threshold: 0.20
+    evi_threshold: 0.15
+    scale_meters: 10
+
+  # Accessibility metrics based on OpenStreetMap green areas
+  access:
+    osm_tags:
+      leisure: ["park", "garden", "recreation_ground", "dog_park"]
+      landuse: ["village_green", "recreation_ground"]
+    buffers_m: [300, 500, 1000]
+    # Street-network distances are more realistic but slower; default Euclidean
+    use_network: false
+    network_type: "walk"
+
+  # High-resolution computer-vision validation (Esri World Imagery)
+  cv:
+    source: "esri_world_imagery"
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+    zoom: 17
+    tile_size: 256
+    # "exg" = fast CPU (Excess Green + Otsu); "sam" = slow GPU (Segment Anything)
+    method: "exg"
+    samples_per_commune: 5
+    min_blob_px: 10
+    exg_min_threshold: 0.05
+    sam_model: "vit_h"
+
 healthcare:
   # OpenStreetMap tags used to fetch healthcare facilities.
   # osmnx combines keys with OR and values within a key with OR.
@@ -195,6 +230,9 @@ healthcare:
       lat: "Latitud"
       lon: "Longitud"
       status: "EstadoFuncionamiento"
+      system_type: "TipoSistemaSaludGlosa"
+      dependency: "DependenciaAdministrativa"
+      affiliation: "TipoPertenenciaEstabGlosa"
     # Region and status filters.
     region_filter: "Metropolitana de Santiago"
     # The status field contains values like "Vigente en Operación Habitual".

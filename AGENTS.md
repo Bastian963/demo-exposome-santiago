@@ -131,12 +131,32 @@ Categories currently emitted:
 - `n_mental_health` — community mental health centres (COSAM)
 - `n_total` — all health facilities matched by the OSM tags or present in DEIS
 
+Each DEIS-derived category is also split by administrative sector:
+- `n_<category>_public` — public / SNSS / municipal / Servicio de Salud / FFAA
+- `n_<category>_private` — private providers
+
 Compare the official and OSM inventories:
 ```bash
 python scripts/compare_healthcare_sources.py
 ```
 This writes `data/processed/healthcare_source_comparison_by_commune.csv` and
 `data/processed/healthcare_unmatched_facilities.csv`.
+
+### Demography (Censo 2017)
+
+Population counts by commune are extracted from the INE Censo 2017 manzana
+microdata and added as a separate layer:
+
+```bash
+python scripts/run_demography.py
+```
+
+Outputs `data/processed/<city>_demography.csv` with columns such as
+`pop_total`, `pop_male`, `pop_female`, `pop_0_14`, `pop_15_64`, `pop_65_plus`
+and the corresponding percentages.
+
+`scripts/build_master_exposome.py` merges demography and computes derived
+ratios like `health_inhabitants_per_primary_care`.
 
 ## Demo Document
 

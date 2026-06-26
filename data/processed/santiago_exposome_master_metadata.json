@@ -1,7 +1,7 @@
 {
-  "created_utc": "2026-06-26T18:48:07.006450+00:00",
+  "created_utc": "2026-06-26T19:34:58.544144+00:00",
   "n_communes": 52,
-  "n_variables_including_name_area": 88,
+  "n_variables_including_name_area": 118,
   "layers": [
     {
       "name": "socioeconomic",
@@ -49,13 +49,27 @@
       "csv": "santiago_healthcare_access.csv",
       "columns": [
         "n_total",
+        "n_public_total",
+        "n_private_total",
         "n_hospital",
+        "n_hospital_public",
+        "n_hospital_private",
         "n_clinic",
+        "n_clinic_public",
+        "n_clinic_private",
         "n_primary_care",
+        "n_primary_care_public",
+        "n_primary_care_private",
         "n_pharmacy",
         "n_laboratory",
+        "n_laboratory_public",
+        "n_laboratory_private",
         "n_dental",
+        "n_dental_public",
+        "n_dental_private",
         "n_mental_health",
+        "n_mental_health_public",
+        "n_mental_health_private",
         "density_per_km2",
         "n_access_grid",
         "mean_nearest_health_m",
@@ -67,6 +81,22 @@
         "mean_nearest_primary_care_m",
         "median_nearest_primary_care_m",
         "p90_nearest_primary_care_m"
+      ]
+    },
+    {
+      "name": "demography",
+      "csv": "santiago_demography.csv",
+      "columns": [
+        "comuna_code",
+        "pop_total",
+        "pop_male",
+        "pop_female",
+        "pop_0_14",
+        "pop_15_64",
+        "pop_65_plus",
+        "pct_pop_0_14",
+        "pct_pop_15_64",
+        "pct_pop_65_plus"
       ]
     },
     {

@@ -146,6 +146,11 @@ def classify_facilities(
             all_health_mask |= gdf[tag_key].isin(values)
     gdf["is_all_health"] = all_health_mask
 
+    # OSM facilities are neutral with respect to the public/private sector
+    # split, which only comes from the official DEIS registry.
+    gdf["is_public"] = False
+    gdf["is_private"] = False
+
     return gdf
 
 
@@ -244,12 +249,25 @@ def conflate_sources(
         if col not in osm_metric.columns:
             osm_metric[col] = False
 
+    # Add sector-split category columns (DEIS only; OSM points remain neutral).
+    for cat in all_cats:
+        pub_col = f"is_{cat}_public"
+        pri_col = f"is_{cat}_private"
+        official_metric[pub_col] = official_metric[f"is_{cat}"] & official_metric["is_public"]
+        official_metric[pri_col] = official_metric[f"is_{cat}"] & official_metric["is_private"]
+        osm_metric[pub_col] = False
+        osm_metric[pri_col] = False
+
     common_cols = [
         "name",
         "commune",
         "official_type",
         "source",
+        "is_public",
+        "is_private",
         *[f"is_{c}" for c in all_cats],
+        *[f"is_{c}_public" for c in all_cats],
+        *[f"is_{c}_private" for c in all_cats],
         "geometry",
     ]
     official_metric = official_metric[common_cols].copy()
@@ -278,21 +296,39 @@ def compute_counts(
 
     joined = gpd.sjoin(pts_metric, communes_metric, how="inner", predicate="within")
 
-    counts = joined.groupby("commune_name").agg(
-        n_total=("geometry", "size"),
-        n_hospital=("is_hospital", "sum"),
-        n_clinic=("is_clinic", "sum"),
-        n_primary_care=("is_primary_care", "sum"),
-        n_pharmacy=("is_pharmacy", "sum"),
-        n_laboratory=("is_laboratory", "sum"),
-        n_dental=("is_dental", "sum"),
-        n_mental_health=("is_mental_health", "sum"),
-    ).reset_index().rename(columns={"commune_name": "name"})
+    # Aggregate base category counts and split each DEIS-derived category
+    # into public / private sectors. Pharmacies are OSM-only and therefore
+    # stay without a sector split.
+    base_counts = {"n_total": ("geometry", "size")}
 
-    int_cols = [
-        "n_total", "n_hospital", "n_clinic", "n_primary_care", "n_pharmacy",
-        "n_laboratory", "n_dental", "n_mental_health",
+    categories = [
+        "hospital",
+        "clinic",
+        "primary_care",
+        "laboratory",
+        "dental",
+        "mental_health",
     ]
+    for cat in categories:
+        base_counts[f"n_{cat}"] = (f"is_{cat}", "sum")
+        base_counts[f"n_{cat}_public"] = (
+            f"is_{cat}_public",
+            "sum",
+        )
+        base_counts[f"n_{cat}_private"] = (
+            f"is_{cat}_private",
+            "sum",
+        )
+
+    base_counts["n_pharmacy"] = ("is_pharmacy", "sum")
+    base_counts["n_public_total"] = ("is_public", "sum")
+    base_counts["n_private_total"] = ("is_private", "sum")
+
+    counts = joined.groupby("commune_name").agg(**base_counts).reset_index().rename(
+        columns={"commune_name": "name"}
+    )
+
+    int_cols = [c for c in counts.columns if c != "name"]
     counts[int_cols] = counts[int_cols].fillna(0).astype(int)
     return counts
 
@@ -474,6 +510,11 @@ def build_healthcare_layer(
         gdf_health = gdf_health_osm.copy()
         gdf_health["source"] = "osm"
         gdf_health["official_type"] = ""
+        gdf_health["is_public"] = False
+        gdf_health["is_private"] = False
+        for cat in cfg["healthcare"]["categories"].keys():
+            gdf_health[f"is_{cat}_public"] = False
+            gdf_health[f"is_{cat}_private"] = False
 
     # 4. Counts and density
     counts = compute_counts(gdf_health, gdf_communes, cfg)
@@ -483,6 +524,13 @@ def build_healthcare_layer(
     int_cols = [
         "n_total", "n_hospital", "n_clinic", "n_primary_care", "n_pharmacy",
         "n_laboratory", "n_dental", "n_mental_health",
+        "n_hospital_public", "n_hospital_private",
+        "n_clinic_public", "n_clinic_private",
+        "n_primary_care_public", "n_primary_care_private",
+        "n_laboratory_public", "n_laboratory_private",
+        "n_dental_public", "n_dental_private",
+        "n_mental_health_public", "n_mental_health_private",
+        "n_public_total", "n_private_total",
     ]
     gdf_result[int_cols] = gdf_result[int_cols].fillna(0).astype(int)
     gdf_result["density_per_km2"] = gdf_result["n_total"] / gdf_result["area_km2"]
@@ -625,13 +673,27 @@ def build_healthcare_layer(
         "name",
         "area_km2",
         "n_total",
+        "n_public_total",
+        "n_private_total",
         "n_hospital",
+        "n_hospital_public",
+        "n_hospital_private",
         "n_clinic",
+        "n_clinic_public",
+        "n_clinic_private",
         "n_primary_care",
+        "n_primary_care_public",
+        "n_primary_care_private",
         "n_pharmacy",
         "n_laboratory",
+        "n_laboratory_public",
+        "n_laboratory_private",
         "n_dental",
+        "n_dental_public",
+        "n_dental_private",
         "n_mental_health",
+        "n_mental_health_public",
+        "n_mental_health_private",
         "density_per_km2",
         "n_access_grid",
         "mean_nearest_health_m",
@@ -690,13 +752,27 @@ def build_healthcare_layer(
         "categories": cfg["healthcare"]["categories"],
         "official_type_mapping": official_cfg.get("type_mapping", {}) if use_official else {},
         "n_facilities_total": int(gdf_health["is_all_health"].sum()),
+        "n_facilities_public_total": int(gdf_health["is_public"].sum()),
+        "n_facilities_private_total": int(gdf_health["is_private"].sum()),
         "n_facilities_hospital": int(gdf_health["is_hospital"].sum()),
+        "n_facilities_hospital_public": int(gdf_health["is_hospital_public"].sum()),
+        "n_facilities_hospital_private": int(gdf_health["is_hospital_private"].sum()),
         "n_facilities_clinic": int(gdf_health["is_clinic"].sum()),
+        "n_facilities_clinic_public": int(gdf_health["is_clinic_public"].sum()),
+        "n_facilities_clinic_private": int(gdf_health["is_clinic_private"].sum()),
         "n_facilities_primary_care": int(gdf_health["is_primary_care"].sum()),
+        "n_facilities_primary_care_public": int(gdf_health["is_primary_care_public"].sum()),
+        "n_facilities_primary_care_private": int(gdf_health["is_primary_care_private"].sum()),
         "n_facilities_pharmacy": int(gdf_health["is_pharmacy"].sum()),
         "n_facilities_laboratory": int(gdf_health["is_laboratory"].sum()),
+        "n_facilities_laboratory_public": int(gdf_health["is_laboratory_public"].sum()),
+        "n_facilities_laboratory_private": int(gdf_health["is_laboratory_private"].sum()),
         "n_facilities_dental": int(gdf_health["is_dental"].sum()),
+        "n_facilities_dental_public": int(gdf_health["is_dental_public"].sum()),
+        "n_facilities_dental_private": int(gdf_health["is_dental_private"].sum()),
         "n_facilities_mental_health": int(gdf_health["is_mental_health"].sum()),
+        "n_facilities_mental_health_public": int(gdf_health["is_mental_health_public"].sum()),
+        "n_facilities_mental_health_private": int(gdf_health["is_mental_health_private"].sum()),
         "n_facilities_osm": int((gdf_health["source"] == "osm").sum()),
         "n_facilities_official": int((gdf_health["source"].isin(["deis", "both"])).sum()),
         "n_grid_points": int(len(access_grid)),
