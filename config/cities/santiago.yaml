@@ -1,0 +1,148 @@
+# Santiago, Chile — config for exposome pipeline
+name: santiago
+country: Chile
+region_query: "Región Metropolitana de Santiago, Chile"
+admin_level: 8
+expected_communes: 52
+
+crs:
+  metric: "EPSG:32719"
+  geographic: "EPSG:4326"
+
+bbox:
+  # Rough bounding box for Región Metropolitana (WGS84)
+  lat_min: -34.5
+  lat_max: -32.9
+  lon_min: -71.8
+  lon_max: -69.8
+
+outputs:
+  base_dir: "data/processed"
+  figures_dir: "figures"
+  maps_dir: "maps"
+  cache_dir: "cache"
+
+air_quality:
+  # Date range for satellite extraction (media anual)
+  year: 2024
+  start_date: "2024-01-01"
+  end_date: "2024-12-31"
+
+  # GEE collections
+  collections:
+    no2:
+      id: "COPERNICUS/S5P/OFFL/L3_NO2"
+      band: "tropospheric_NO2_column_number_density"
+      scale_meters: 1113  # ~3.5 km at this latitude
+      multiplier: 1.0e15  # convert to molecules/cm^2 (optional)
+    aod:
+      id: "MODIS/061/MCD19A2_GRANULES"
+      band: "Optical_Depth_047"
+      scale_meters: 3000  # ~3 km
+      qa_band: "AOD_QA"
+      # QA bits 0-1: 0=best, 1=good, 2=marginal, 3=bad
+      # Keep best + good (<=1) to reduce gaps over Chile
+      qa_mask_max: 1
+      # MODIS AOD is stored scaled by 0.001
+      scale_factor: 0.001
+
+  # WHO guidelines 2021 (µg/m^3) — for ratios
+  who_guidelines:
+    pm25: 5.0
+    no2: 10.0
+
+climate:
+  # Historical period for time-series analysis
+  years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+  # Seasons (Southern Hemisphere)
+  seasons:
+    summer: [12, 1, 2]
+    autumn: [3, 4, 5]
+    winter: [6, 7, 8]
+    spring: [9, 10, 11]
+
+  # GEE collections
+  collections:
+    era5land_daily:
+      id: "ECMWF/ERA5_LAND/DAILY_AGGR"
+      bands: ["temperature_2m", "temperature_2m_min", "temperature_2m_max",
+              "dewpoint_temperature_2m", "total_precipitation_sum"]
+      scale_meters: 9000  # ~9 km native
+    modis_lst_day:
+      id: "MODIS/061/MOD11A1"
+      band: "LST_Day_1km"
+      qa_band: "QC_Day"
+      scale_meters: 1000
+    modis_lst_night:
+      id: "MODIS/061/MYD11A1"
+      band: "LST_Night_1km"
+      qa_band: "QC_Night"
+      scale_meters: 1000
+    landsat_lst:
+      id: "LANDSAT/LC08/C02/T1_L2"
+      band: "ST_B10"
+      qa_band: "QA_PIXEL"
+      scale_meters: 30
+    chirps:
+      id: "UCSB-CHG/CHIRPS/DAILY"
+      band: "precipitation"
+      scale_meters: 5566  # ~0.05 deg
+
+  # Derived metrics thresholds
+  thresholds:
+    hot_day_c: 30
+    very_hot_day_c: 35
+    tropical_night_c: 20
+    frost_day_c: 0
+    heat_wave_percentile: 0.90
+    cold_spell_percentile: 0.10
+    heat_wave_min_days: 2
+    cold_spell_min_days: 2
+    cdd_base_c: 18
+    hdd_base_c: 10
+
+  # Downscaling
+  downscaling:
+    grid_resolution_m: 1000
+    model_type: "lightgbm"
+    target_variables: ["tmax", "tmin"]
+    covariates:
+      - elevation
+      - built_up_fraction
+      - tree_cover_fraction
+      - ndvi_mean
+      - distance_to_city_center
+      - lat
+      - lon
+
+healthcare:
+  # OpenStreetMap tags used to fetch healthcare facilities.
+  # osmnx combines keys with OR and values within a key with OR.
+  osm_tags:
+    amenity: ["hospital", "clinic", "pharmacy", "doctors", "health_post", "dentist"]
+    healthcare: ["hospital", "clinic", "centre", "doctor", "pharmacy", "dentist", "laboratory"]
+
+  # Normalized categories used for counts and distance summaries.
+  # A facility belongs to a category if ANY of its rules match.
+  categories:
+    hospital:
+      - tag: "amenity"
+        values: ["hospital", "clinic"]
+      - tag: "healthcare"
+        values: ["hospital", "clinic"]
+    pharmacy:
+      - tag: "amenity"
+        values: ["pharmacy"]
+      - tag: "healthcare"
+        values: ["pharmacy"]
+    all_health:
+      - tag: "amenity"
+        values: ["hospital", "clinic", "pharmacy", "doctors", "health_post", "dentist"]
+      - tag: "healthcare"
+        values: ["hospital", "clinic", "centre", "doctor", "pharmacy", "dentist", "laboratory"]
+
+  grid_spacing_m: 1000
+  output_base: "santiago_healthcare_access"

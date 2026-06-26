@@ -1,0 +1,105 @@
+{
+  "created_utc": "2026-06-26T16:46:24.912403+00:00",
+  "city": "santiago",
+  "source": "OpenStreetMap via osmnx",
+  "method": "Euclidean nearest-facility distance on intra-communal grid",
+  "grid_spacing_m": 1000,
+  "metric_crs": "EPSG:32719",
+  "osm_tags": {
+    "amenity": [
+      "hospital",
+      "clinic",
+      "pharmacy",
+      "doctors",
+      "health_post",
+      "dentist"
+    ],
+    "healthcare": [
+      "hospital",
+      "clinic",
+      "centre",
+      "doctor",
+      "pharmacy",
+      "dentist",
+      "laboratory"
+    ]
+  },
+  "categories": {
+    "hospital": [
+      {
+        "tag": "amenity",
+        "values": [
+          "hospital",
+          "clinic"
+        ]
+      },
+      {
+        "tag": "healthcare",
+        "values": [
+          "hospital",
+          "clinic"
+        ]
+      }
+    ],
+    "pharmacy": [
+      {
+        "tag": "amenity",
+        "values": [
+          "pharmacy"
+        ]
+      },
+      {
+        "tag": "healthcare",
+        "values": [
+          "pharmacy"
+        ]
+      }
+    ],
+    "all_health": [
+      {
+        "tag": "amenity",
+        "values": [
+          "hospital",
+          "clinic",
+          "pharmacy",
+          "doctors",
+          "health_post",
+          "dentist"
+        ]
+      },
+      {
+        "tag": "healthcare",
+        "values": [
+          "hospital",
+          "clinic",
+          "centre",
+          "doctor",
+          "pharmacy",
+          "dentist",
+          "laboratory"
+        ]
+      }
+    ]
+  },
+  "n_facilities_total": 2504,
+  "n_facilities_hospital": 628,
+  "n_facilities_pharmacy": 1269,
+  "n_grid_points": 15333,
+  "distance_metric": "euclidean_straight_line",
+  "columns": [
+    "name",
+    "area_km2",
+    "n_total",
+    "n_hospital",
+    "n_pharmacy",
+    "density_per_km2",
+    "n_access_grid",
+    "mean_nearest_health_m",
+    "median_nearest_health_m",
+    "p90_nearest_health_m",
+    "mean_nearest_hospital_m",
+    "median_nearest_hospital_m",
+    "p90_nearest_hospital_m"
+  ],
+  "n_rows": 52
+}
