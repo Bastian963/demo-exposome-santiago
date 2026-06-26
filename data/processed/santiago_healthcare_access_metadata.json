@@ -1,10 +1,11 @@
 {
-  "created_utc": "2026-06-26T16:46:24.912403+00:00",
+  "created_utc": "2026-06-26T17:40:55.394748+00:00",
   "city": "santiago",
-  "source": "OpenStreetMap via osmnx",
+  "source": "OpenStreetMap via osmnx + MINSAL/DEIS official registry",
   "method": "Euclidean nearest-facility distance on intra-communal grid",
   "grid_spacing_m": 1000,
   "metric_crs": "EPSG:32719",
+  "use_official_source": true,
   "osm_tags": {
     "amenity": [
       "hospital",
@@ -29,15 +30,43 @@
       {
         "tag": "amenity",
         "values": [
-          "hospital",
+          "hospital"
+        ]
+      },
+      {
+        "tag": "healthcare",
+        "values": [
+          "hospital"
+        ]
+      }
+    ],
+    "clinic": [
+      {
+        "tag": "amenity",
+        "values": [
           "clinic"
         ]
       },
       {
         "tag": "healthcare",
         "values": [
-          "hospital",
           "clinic"
+        ]
+      }
+    ],
+    "primary_care": [
+      {
+        "tag": "amenity",
+        "values": [
+          "doctors",
+          "health_post"
+        ]
+      },
+      {
+        "tag": "healthcare",
+        "values": [
+          "centre",
+          "doctor"
         ]
       }
     ],
@@ -81,9 +110,31 @@
       }
     ]
   },
-  "n_facilities_total": 2504,
-  "n_facilities_hospital": 628,
-  "n_facilities_pharmacy": 1269,
+  "official_type_mapping": {
+    "hospital": [
+      "Hospital"
+    ],
+    "clinic": [
+      "Clínica"
+    ],
+    "primary_care": [
+      "Centro de Salud Familiar (CESFAM)",
+      "Servicio de Atención Primaria de Urgencia (SAPU)",
+      "Servicio de Atención Primaria de Urgencia de Alta Resolutividad (SAR)",
+      "Consultorio General Urbano (CGU)",
+      "Consultorio General Rural (CGR)",
+      "Posta de Salud Rural (PSR)",
+      "Centro Comunitario de Salud Familiar (CECOSF)",
+      "Servicio de Urgencia Rural (SUR)"
+    ]
+  },
+  "n_facilities_total": 2258,
+  "n_facilities_hospital": 53,
+  "n_facilities_clinic": 211,
+  "n_facilities_primary_care": 508,
+  "n_facilities_pharmacy": 786,
+  "n_facilities_osm": 1194,
+  "n_facilities_official": 1064,
   "n_grid_points": 15333,
   "distance_metric": "euclidean_straight_line",
   "columns": [
@@ -91,6 +142,8 @@
     "area_km2",
     "n_total",
     "n_hospital",
+    "n_clinic",
+    "n_primary_care",
     "n_pharmacy",
     "density_per_km2",
     "n_access_grid",
@@ -99,7 +152,10 @@
     "p90_nearest_health_m",
     "mean_nearest_hospital_m",
     "median_nearest_hospital_m",
-    "p90_nearest_hospital_m"
+    "p90_nearest_hospital_m",
+    "mean_nearest_primary_care_m",
+    "median_nearest_primary_care_m",
+    "p90_nearest_primary_care_m"
   ],
   "n_rows": 52
 }

@@ -1,7 +1,7 @@
 {
-  "created_utc": "2026-06-14T15:57:08.514201+00:00",
+  "created_utc": "2026-06-26T17:41:12.106073+00:00",
   "n_communes": 52,
-  "n_variables_including_name_area": 43,
+  "n_variables_including_name_area": 76,
   "layers": [
     {
       "name": "socioeconomic",
@@ -26,6 +26,16 @@
       ]
     },
     {
+      "name": "air_quality_satellite",
+      "csv": "santiago_air_quality_satellite_2024.csv",
+      "columns": [
+        "no2_mean",
+        "blh_mean",
+        "aod_mean",
+        "no2_surface_ug_m3"
+      ]
+    },
+    {
       "name": "green",
       "csv": "green_exposome_rm_santiago.csv",
       "columns": [
@@ -36,10 +46,12 @@
     },
     {
       "name": "healthcare",
-      "csv": "healthcare_exposome_rm_santiago.csv",
+      "csv": "santiago_healthcare_access.csv",
       "columns": [
         "n_total",
         "n_hospital",
+        "n_clinic",
+        "n_primary_care",
         "n_pharmacy",
         "density_per_km2",
         "n_access_grid",
@@ -48,7 +60,10 @@
         "p90_nearest_health_m",
         "mean_nearest_hospital_m",
         "median_nearest_hospital_m",
-        "p90_nearest_hospital_m"
+        "p90_nearest_hospital_m",
+        "mean_nearest_primary_care_m",
+        "median_nearest_primary_care_m",
+        "p90_nearest_primary_care_m"
       ]
     },
     {
@@ -72,6 +87,36 @@
         "nearest_climate_m",
         "used_nearest_fallback",
         "n_days"
+      ]
+    },
+    {
+      "name": "climate_openmeteo",
+      "csv": "santiago_climate_metrics_annual.csv",
+      "columns": [
+        "tmean_annual",
+        "tmax_mean_annual",
+        "tmin_mean_annual",
+        "tmean_summer",
+        "tmax_mean_summer",
+        "tmin_mean_summer",
+        "tmean_winter",
+        "tmax_mean_winter",
+        "tmin_mean_winter",
+        "hot_days_30c",
+        "hot_days_35c",
+        "tropical_nights_20c",
+        "frost_days",
+        "heat_wave_days",
+        "cold_spell_days",
+        "dtr_mean",
+        "dtr_p95",
+        "temp_monthly_sd",
+        "seasonal_amplitude",
+        "cdd_18",
+        "hdd_10",
+        "ehdd",
+        "tmax_p95",
+        "tmin_p05"
       ]
     }
   ],

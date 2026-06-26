@@ -130,9 +130,19 @@ healthcare:
   categories:
     hospital:
       - tag: "amenity"
-        values: ["hospital", "clinic"]
+        values: ["hospital"]
       - tag: "healthcare"
-        values: ["hospital", "clinic"]
+        values: ["hospital"]
+    clinic:
+      - tag: "amenity"
+        values: ["clinic"]
+      - tag: "healthcare"
+        values: ["clinic"]
+    primary_care:
+      - tag: "amenity"
+        values: ["doctors", "health_post"]
+      - tag: "healthcare"
+        values: ["centre", "doctor"]
     pharmacy:
       - tag: "amenity"
         values: ["pharmacy"]
@@ -146,3 +156,48 @@ healthcare:
 
   grid_spacing_m: 1000
   output_base: "santiago_healthcare_access"
+
+  # Official MINSAL/DEIS facility inventory.
+  # OpenStreetMap is still used as a complement for pharmacies and for any
+  # facilities not present in the official registry.
+  official_source:
+    enabled: true
+    # CKAN API endpoint used to discover the latest CSV resource.
+    ckan_package_url: "https://datos.gob.cl/api/3/action/package_show?id=establecimientos-de-salud-vigentes"
+    # Fallback direct URL if CKAN discovery fails.
+    csv_url: "https://datos.gob.cl/dataset/3bf4cf7c-f638-4735-9a01-f65faae4beca/resource/2c44d782-3365-44e3-aefb-2c8b8363a1bc/download/establecimientos_20260623.csv"
+    # Raw CSV delimiter.
+    csv_sep: ";"
+    # Column mapping from the DEIS CSV to the pipeline schema.
+    columns:
+      name: "EstablecimientoGlosa"
+      type: "TipoEstablecimientoGlosa"
+      region: "RegionGlosa"
+      commune: "ComunaGlosa"
+      lat: "Latitud"
+      lon: "Longitud"
+      status: "EstadoFuncionamiento"
+    # Region and status filters.
+    region_filter: "Metropolitana de Santiago"
+    # The status field contains values like "Vigente en Operación Habitual".
+    # Filtering is done case-insensitively with substring matching.
+    status_contains: "Vigente"
+    # Mapping of DEIS facility types to the pipeline categories.
+    type_mapping:
+      hospital:
+        - "Hospital"
+      clinic:
+        - "Clínica"
+      primary_care:
+        - "Centro de Salud Familiar (CESFAM)"
+        - "Servicio de Atención Primaria de Urgencia (SAPU)"
+        - "Servicio de Atención Primaria de Urgencia de Alta Resolutividad (SAR)"
+        - "Consultorio General Urbano (CGU)"
+        - "Consultorio General Rural (CGR)"
+        - "Posta de Salud Rural (PSR)"
+        - "Centro Comunitario de Salud Familiar (CECOSF)"
+        - "Servicio de Urgencia Rural (SUR)"
+    # Spatial conflation with OSM: points within buffer_m are considered the
+    # same facility; the official record is kept.
+    conflation:
+      buffer_m: 150

@@ -24,6 +24,7 @@ import pandas as pd
 from shapely.geometry import Point
 
 from . import boundaries, config
+from . import healthcare_official as official
 
 
 def _download_osm_tag(
@@ -134,7 +135,99 @@ def classify_facilities(
                 mask |= gdf[tag].isin(values)
         gdf[f"is_{cat_name}"] = mask
 
+    # ``is_all_health`` captures every facility matched by the configured OSM
+    # tags, even if it does not belong to one of the named categories (e.g.
+    # dentists, laboratories). This keeps ``n_total`` comparable to the broad
+    # OSM query.
+    all_health_mask = pd.Series(False, index=gdf.index)
+    for tag_key, values in cfg["healthcare"]["osm_tags"].items():
+        if tag_key in gdf.columns:
+            all_health_mask |= gdf[tag_key].isin(values)
+    gdf["is_all_health"] = all_health_mask
+
     return gdf
+
+
+def conflate_sources(
+    gdf_official: gpd.GeoDataFrame,
+    gdf_osm: gpd.GeoDataFrame,
+    cfg: dict[str, Any],
+) -> gpd.GeoDataFrame:
+    """Merge official and OSM facility points, removing OSM duplicates.
+
+    Any OSM point within ``buffer_m`` of an official point is considered the
+    same facility and is discarded; the official record is kept. OSM points
+    outside the buffer are retained as complementary coverage (e.g. pharmacies
+    and informal/private facilities absent from the official registry).
+    """
+    metric_crs = cfg["crs"]["metric"]
+    buffer_m = cfg["healthcare"]["official_source"]["conflation"]["buffer_m"]
+
+    if gdf_official.empty:
+        gdf_osm["source"] = "osm"
+        gdf_osm["official_type"] = ""
+        return gdf_osm.copy()
+
+    if gdf_osm.empty:
+        gdf_official["source"] = "deis"
+        gdf_official["official_type"] = gdf_official.get("official_type", "")
+        return gdf_official.copy()
+
+    official_metric = gdf_official.to_crs(metric_crs).copy()
+    osm_metric = gdf_osm.to_crs(metric_crs).copy()
+
+    from scipy.spatial import cKDTree
+
+    official_coords = np.vstack([official_metric.geometry.x, official_metric.geometry.y]).T
+    tree = cKDTree(official_coords)
+    osm_coords = np.vstack([osm_metric.geometry.x, osm_metric.geometry.y]).T
+    dists, _ = tree.query(osm_coords, k=1)
+
+    osm_keep_mask = dists > buffer_m
+    osm_metric = osm_metric[osm_keep_mask].copy()
+
+    # Mark official points that have a matching OSM point nearby.
+    has_osm_match = np.zeros(len(official_metric), dtype=bool)
+    if len(osm_coords) > 0:
+        matched_osm = dists <= buffer_m
+        if matched_osm.any():
+            _, idx_official = tree.query(osm_coords[matched_osm], k=1)
+            has_osm_match[idx_official] = True
+    official_metric["source"] = np.where(has_osm_match, "both", "deis")
+
+    # Normalise OSM columns to the same schema.
+    osm_metric["official_type"] = ""
+    osm_metric["source"] = "osm"
+    osm_metric["commune"] = ""
+
+    # Ensure all boolean category columns exist on both sides.
+    all_cats = ["hospital", "clinic", "primary_care", "pharmacy", "all_health"]
+    for col in [f"is_{c}" for c in all_cats]:
+        if col not in official_metric.columns:
+            official_metric[col] = False
+        if col not in osm_metric.columns:
+            osm_metric[col] = False
+
+    common_cols = [
+        "name",
+        "commune",
+        "official_type",
+        "source",
+        "is_hospital",
+        "is_clinic",
+        "is_primary_care",
+        "is_pharmacy",
+        "is_all_health",
+        "geometry",
+    ]
+    official_metric = official_metric[common_cols].copy()
+    osm_metric = osm_metric[common_cols].copy()
+
+    combined = gpd.GeoDataFrame(
+        pd.concat([official_metric, osm_metric], ignore_index=True),
+        crs=metric_crs,
+    )
+    return combined.to_crs(cfg["crs"]["geographic"]).reset_index(drop=True)
 
 
 def compute_counts(
@@ -156,12 +249,13 @@ def compute_counts(
     counts = joined.groupby("commune_name").agg(
         n_total=("geometry", "size"),
         n_hospital=("is_hospital", "sum"),
+        n_clinic=("is_clinic", "sum"),
+        n_primary_care=("is_primary_care", "sum"),
         n_pharmacy=("is_pharmacy", "sum"),
     ).reset_index().rename(columns={"commune_name": "name"})
 
-    counts[["n_total", "n_hospital", "n_pharmacy"]] = (
-        counts[["n_total", "n_hospital", "n_pharmacy"]].fillna(0).astype(int)
-    )
+    int_cols = ["n_total", "n_hospital", "n_clinic", "n_primary_care", "n_pharmacy"]
+    counts[int_cols] = counts[int_cols].fillna(0).astype(int)
     return counts
 
 
@@ -293,6 +387,8 @@ def build_healthcare_layer(
     cache_dir: Path = Path("cache"),
     out_dir: Path = Path("data/processed"),
     *,
+    use_official: bool = True,
+    refresh_official: bool = False,
     use_ckdtree: bool = False,
 ) -> tuple[pd.DataFrame, gpd.GeoDataFrame]:
     """Run the full healthcare access pipeline.
@@ -314,33 +410,47 @@ def build_healthcare_layer(
     geo_crs = cfg["crs"]["geographic"]
     grid_spacing = int(cfg["healthcare"]["grid_spacing_m"])
     output_base = cfg["healthcare"]["output_base"]
+    official_cfg = cfg["healthcare"].get("official_source", {})
+    use_official = use_official and official_cfg.get("enabled", False)
 
     # 1. Boundaries
     communes_cache = cache_dir / f"{city}_communes.geojson"
     gdf_communes = boundaries.get_communes(cfg, cache_path=communes_cache)
 
-    # 2. Fetch + classify facilities
+    # 2. Fetch + classify OSM facilities
     osm_cache = cache_dir / f"{city}_healthcare_osm.geojson"
     gdf_health_raw = fetch_healthcare_osm(cfg, cache_path=osm_cache)
-    gdf_health = classify_facilities(gdf_health_raw, cfg)
+    gdf_health_osm = classify_facilities(gdf_health_raw, cfg)
 
-    # 3. Counts and density
+    # 3. Optionally load official (DEIS) facilities and conflate with OSM.
+    if use_official:
+        print("Loading official DEIS facilities...")
+        gdf_health_official = official.prepare_official_facilities(
+            cfg, cache_dir, refresh=refresh_official
+        )
+        gdf_health = conflate_sources(gdf_health_official, gdf_health_osm, cfg)
+    else:
+        gdf_health = gdf_health_osm.copy()
+        gdf_health["source"] = "osm"
+        gdf_health["official_type"] = ""
+
+    # 4. Counts and density
     counts = compute_counts(gdf_health, gdf_communes, cfg)
     gdf_result = gdf_communes[["name", "area_km2", "geometry"]].merge(
         counts, on="name", how="left"
     )
-    gdf_result[["n_total", "n_hospital", "n_pharmacy"]] = (
-        gdf_result[["n_total", "n_hospital", "n_pharmacy"]].fillna(0).astype(int)
-    )
+    int_cols = ["n_total", "n_hospital", "n_clinic", "n_primary_care", "n_pharmacy"]
+    gdf_result[int_cols] = gdf_result[int_cols].fillna(0).astype(int)
     gdf_result["density_per_km2"] = gdf_result["n_total"] / gdf_result["area_km2"]
 
-    # 4. Intra-communal access grid
+    # 5. Intra-communal access grid
     access_grid = build_access_grid(gdf_communes, grid_spacing, metric_crs)
 
-    # 5. Nearest distances (metric CRS)
+    # 6. Nearest distances (metric CRS)
     facilities_metric = gdf_health.to_crs(metric_crs)
     all_facilities = facilities_metric[facilities_metric["is_all_health"]].copy()
     hospital_facilities = facilities_metric[facilities_metric["is_hospital"]].copy()
+    primary_care_facilities = facilities_metric[facilities_metric["is_primary_care"]].copy()
 
     dist_health = nearest_distance_summary(
         access_grid,
@@ -358,11 +468,20 @@ def build_healthcare_layer(
         include_count=False,
         use_ckdtree=use_ckdtree,
     )
+    dist_primary_care = nearest_distance_summary(
+        access_grid,
+        primary_care_facilities,
+        distance_col="nearest_primary_care_m",
+        prefix="nearest_primary_care",
+        include_count=False,
+        use_ckdtree=use_ckdtree,
+    )
 
     gdf_result = gdf_result.merge(dist_health, on="name", how="left")
     gdf_result = gdf_result.merge(dist_hospital, on="name", how="left")
+    gdf_result = gdf_result.merge(dist_primary_care, on="name", how="left")
 
-    # 6. Formatting
+    # 7. Formatting
     gdf_result["density_per_km2"] = gdf_result["density_per_km2"].round(4)
     gdf_result["area_km2"] = gdf_result["area_km2"].round(2)
     gdf_result["n_access_grid"] = gdf_result["n_access_grid"].fillna(0).astype(int)
@@ -374,6 +493,9 @@ def build_healthcare_layer(
         "mean_nearest_hospital_m",
         "median_nearest_hospital_m",
         "p90_nearest_hospital_m",
+        "mean_nearest_primary_care_m",
+        "median_nearest_primary_care_m",
+        "p90_nearest_primary_care_m",
     ]
     for col in distance_cols:
         gdf_result[col] = gdf_result[col].round(0).astype("Int64")
@@ -384,6 +506,8 @@ def build_healthcare_layer(
         "area_km2",
         "n_total",
         "n_hospital",
+        "n_clinic",
+        "n_primary_care",
         "n_pharmacy",
         "density_per_km2",
         "n_access_grid",
@@ -393,10 +517,13 @@ def build_healthcare_layer(
         "mean_nearest_hospital_m",
         "median_nearest_hospital_m",
         "p90_nearest_hospital_m",
+        "mean_nearest_primary_care_m",
+        "median_nearest_primary_care_m",
+        "p90_nearest_primary_care_m",
     ]
     gdf_result = gdf_result[output_cols + ["geometry"]]
 
-    # 7. Validation
+    # 8. Validation
     n_expected = cfg["expected_communes"]
     if len(gdf_result) != n_expected:
         raise ValueError(
@@ -411,7 +538,7 @@ def build_healthcare_layer(
         missing = gdf_result[required].columns[gdf_result[required].isna().any()].tolist()
         raise ValueError(f"Missing values in required columns: {missing}")
 
-    # 8. Separate tabular and geographic outputs
+    # 9. Separate tabular and geographic outputs
     df = gdf_result[output_cols].copy()
     gdf_out = gpd.GeoDataFrame(
         gdf_result[output_cols + ["geometry"]],
@@ -419,7 +546,7 @@ def build_healthcare_layer(
         crs=geo_crs,
     )
 
-    # 9. Write outputs
+    # 10. Write outputs
     csv_path = out_dir / f"{output_base}.csv"
     geojson_path = out_dir / f"{output_base}.geojson"
     metadata_path = out_dir / f"{output_base}_metadata.json"
@@ -430,15 +557,21 @@ def build_healthcare_layer(
     metadata = {
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "city": city,
-        "source": "OpenStreetMap via osmnx",
+        "source": "OpenStreetMap via osmnx + MINSAL/DEIS official registry" if use_official else "OpenStreetMap via osmnx",
         "method": "Euclidean nearest-facility distance on intra-communal grid",
         "grid_spacing_m": grid_spacing,
         "metric_crs": metric_crs,
+        "use_official_source": use_official,
         "osm_tags": cfg["healthcare"]["osm_tags"],
         "categories": cfg["healthcare"]["categories"],
+        "official_type_mapping": official_cfg.get("type_mapping", {}) if use_official else {},
         "n_facilities_total": int(gdf_health["is_all_health"].sum()),
         "n_facilities_hospital": int(gdf_health["is_hospital"].sum()),
+        "n_facilities_clinic": int(gdf_health["is_clinic"].sum()),
+        "n_facilities_primary_care": int(gdf_health["is_primary_care"].sum()),
         "n_facilities_pharmacy": int(gdf_health["is_pharmacy"].sum()),
+        "n_facilities_osm": int((gdf_health["source"] == "osm").sum()),
+        "n_facilities_official": int((gdf_health["source"].isin(["deis", "both"])).sum()),
         "n_grid_points": int(len(access_grid)),
         "distance_metric": "euclidean_straight_line",
         "columns": output_cols,

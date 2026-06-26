@@ -83,13 +83,40 @@ config/cities/<city>.yaml
     → data/processed/<city>_air_quality_satellite_YYYY.{csv,geojson}
 ```
 
-Healthcare access follows the same pattern:
+Healthcare access follows the same pattern, but combines OpenStreetMap with the
+official MINSAL/DEIS facility registry when available:
+
 ```
 config/cities/<city>.yaml
-    → src/exposome/healthcare.py  (OpenStreetMap amenities)
+    → src/exposome/healthcare.py
+        → src/exposome/healthcare_official.py  (MINSAL/DEIS)
+        → OpenStreetMap amenities via osmnx
+        → conflation (official wins within 150 m buffer)
     → scripts/run_healthcare.py
     → data/processed/<city>_healthcare_access.{csv,geojson,json}
 ```
+
+Run with official data (default):
+```bash
+python scripts/run_healthcare.py
+```
+
+Run with OSM only:
+```bash
+python scripts/run_healthcare.py --no-official
+```
+
+Force re-download of the official DEIS CSV:
+```bash
+python scripts/run_healthcare.py --refresh-official
+```
+
+Categories currently emitted:
+- `n_hospital` — hospitals
+- `n_clinic` — clinics / private clinics
+- `n_primary_care` — CESFAM, SAPU, SAR, CGU, CGR, PSR, CECOSF, SUR
+- `n_pharmacy` — pharmacies (OSM only; DEIS does not publish pharmacies)
+- `n_total` — all health facilities matched by the OSM tags or present in DEIS
 
 ## Demo Document
 

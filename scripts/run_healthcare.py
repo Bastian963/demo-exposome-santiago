@@ -20,12 +20,29 @@ def run(
     city: str = typer.Option("santiago", help="City config name (matches config/cities/<city>.yaml)"),
     cache_dir: Path = typer.Option(Path("cache"), help="Cache directory"),
     out_dir: Path = typer.Option(Path("data/processed"), help="Output directory"),
+    use_official: bool = typer.Option(
+        True,
+        "--use-official/--no-official",
+        help="Combine MINSAL/DEIS official registry with OSM (default: True)",
+    ),
+    refresh_official: bool = typer.Option(
+        False,
+        "--refresh-official",
+        help="Force re-download of the official DEIS CSV",
+    ),
     use_ckdtree: bool = typer.Option(
         False, help="Use scipy.spatial.cKDTree for nearest-distance queries (faster for large grids)"
     ),
 ) -> None:
-    """Fetch OSM healthcare facilities and export commune-level access metrics."""
-    build_healthcare_layer(city=city, cache_dir=cache_dir, out_dir=out_dir, use_ckdtree=use_ckdtree)
+    """Fetch healthcare facilities and export commune-level access metrics."""
+    build_healthcare_layer(
+        city=city,
+        cache_dir=cache_dir,
+        out_dir=out_dir,
+        use_official=use_official,
+        refresh_official=refresh_official,
+        use_ckdtree=use_ckdtree,
+    )
 
 
 if __name__ == "__main__":
