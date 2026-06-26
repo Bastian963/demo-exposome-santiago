@@ -148,6 +148,17 @@ healthcare:
         values: ["pharmacy"]
       - tag: "healthcare"
         values: ["pharmacy"]
+    laboratory:
+      - tag: "healthcare"
+        values: ["laboratory"]
+    dental:
+      - tag: "amenity"
+        values: ["dentist"]
+      - tag: "healthcare"
+        values: ["dentist"]
+    mental_health:
+      - tag: "healthcare"
+        values: ["psychotherapist"]
     all_health:
       - tag: "amenity"
         values: ["hospital", "clinic", "pharmacy", "doctors", "health_post", "dentist"]
@@ -197,6 +208,12 @@ healthcare:
         - "Posta de Salud Rural (PSR)"
         - "Centro Comunitario de Salud Familiar (CECOSF)"
         - "Servicio de Urgencia Rural (SUR)"
+      laboratory:
+        - "Laboratorio Clínico"
+      dental:
+        - "Clínica Dental"
+      mental_health:
+        - "Centro Comunitario de Salud Mental (COSAM)"
     # Spatial conflation with OSM: points within buffer_m are considered the
     # same facility; the official record is kept.
     conflation:

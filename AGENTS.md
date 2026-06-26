@@ -116,7 +116,17 @@ Categories currently emitted:
 - `n_clinic` — clinics / private clinics
 - `n_primary_care` — CESFAM, SAPU, SAR, CGU, CGR, PSR, CECOSF, SUR
 - `n_pharmacy` — pharmacies (OSM only; DEIS does not publish pharmacies)
+- `n_laboratory` — clinical laboratories
+- `n_dental` — dental clinics
+- `n_mental_health` — community mental health centres (COSAM)
 - `n_total` — all health facilities matched by the OSM tags or present in DEIS
+
+Compare the official and OSM inventories:
+```bash
+python scripts/compare_healthcare_sources.py
+```
+This writes `data/processed/healthcare_source_comparison_by_commune.csv` and
+`data/processed/healthcare_unmatched_facilities.csv`.
 
 ## Demo Document
 

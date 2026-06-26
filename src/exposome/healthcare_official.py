@@ -143,13 +143,20 @@ def load_deis_facilities(
     geometry = [Point(lon, lat) for lon, lat in zip(df[lon_col], df[lat_col])]
     gdf = gpd.GeoDataFrame(df, geometry=geometry, crs=geo_crs)
 
-    # Classify.
+    # Classify. Normalise whitespace in the raw type so config values do not
+    # need to match stray spaces (e.g. "  (COSAM)" in the DEIS CSV).
     type_mapping = official_cfg["type_mapping"]
-    gdf["official_type"] = gdf[type_col].astype(str)
+    gdf["official_type"] = (
+        gdf[type_col]
+        .astype(str)
+        .str.replace(r"\s+", " ", regex=True)
+        .str.strip()
+    )
 
     category_masks: dict[str, pd.Series] = {}
     for cat_name, values in type_mapping.items():
-        values_norm = [str(v) for v in values]
+        import re
+        values_norm = [re.sub(r"\s+", " ", str(v)).strip() for v in values]
         category_masks[cat_name] = gdf["official_type"].isin(values_norm)
 
     for cat_name, mask in category_masks.items():

@@ -1,7 +1,7 @@
 {
-  "created_utc": "2026-06-26T17:41:12.106073+00:00",
+  "created_utc": "2026-06-26T17:51:50.660293+00:00",
   "n_communes": 52,
-  "n_variables_including_name_area": 76,
+  "n_variables_including_name_area": 79,
   "layers": [
     {
       "name": "socioeconomic",
@@ -53,6 +53,9 @@
         "n_clinic",
         "n_primary_care",
         "n_pharmacy",
+        "n_laboratory",
+        "n_dental",
+        "n_mental_health",
         "density_per_km2",
         "n_access_grid",
         "mean_nearest_health_m",

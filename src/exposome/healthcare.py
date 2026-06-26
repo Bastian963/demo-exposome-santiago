@@ -201,7 +201,7 @@ def conflate_sources(
     osm_metric["commune"] = ""
 
     # Ensure all boolean category columns exist on both sides.
-    all_cats = ["hospital", "clinic", "primary_care", "pharmacy", "all_health"]
+    all_cats = list(cfg["healthcare"]["categories"].keys())
     for col in [f"is_{c}" for c in all_cats]:
         if col not in official_metric.columns:
             official_metric[col] = False
@@ -213,11 +213,7 @@ def conflate_sources(
         "commune",
         "official_type",
         "source",
-        "is_hospital",
-        "is_clinic",
-        "is_primary_care",
-        "is_pharmacy",
-        "is_all_health",
+        *[f"is_{c}" for c in all_cats],
         "geometry",
     ]
     official_metric = official_metric[common_cols].copy()
@@ -252,9 +248,15 @@ def compute_counts(
         n_clinic=("is_clinic", "sum"),
         n_primary_care=("is_primary_care", "sum"),
         n_pharmacy=("is_pharmacy", "sum"),
+        n_laboratory=("is_laboratory", "sum"),
+        n_dental=("is_dental", "sum"),
+        n_mental_health=("is_mental_health", "sum"),
     ).reset_index().rename(columns={"commune_name": "name"})
 
-    int_cols = ["n_total", "n_hospital", "n_clinic", "n_primary_care", "n_pharmacy"]
+    int_cols = [
+        "n_total", "n_hospital", "n_clinic", "n_primary_care", "n_pharmacy",
+        "n_laboratory", "n_dental", "n_mental_health",
+    ]
     counts[int_cols] = counts[int_cols].fillna(0).astype(int)
     return counts
 
@@ -439,7 +441,10 @@ def build_healthcare_layer(
     gdf_result = gdf_communes[["name", "area_km2", "geometry"]].merge(
         counts, on="name", how="left"
     )
-    int_cols = ["n_total", "n_hospital", "n_clinic", "n_primary_care", "n_pharmacy"]
+    int_cols = [
+        "n_total", "n_hospital", "n_clinic", "n_primary_care", "n_pharmacy",
+        "n_laboratory", "n_dental", "n_mental_health",
+    ]
     gdf_result[int_cols] = gdf_result[int_cols].fillna(0).astype(int)
     gdf_result["density_per_km2"] = gdf_result["n_total"] / gdf_result["area_km2"]
 
@@ -509,6 +514,9 @@ def build_healthcare_layer(
         "n_clinic",
         "n_primary_care",
         "n_pharmacy",
+        "n_laboratory",
+        "n_dental",
+        "n_mental_health",
         "density_per_km2",
         "n_access_grid",
         "mean_nearest_health_m",
@@ -570,6 +578,9 @@ def build_healthcare_layer(
         "n_facilities_clinic": int(gdf_health["is_clinic"].sum()),
         "n_facilities_primary_care": int(gdf_health["is_primary_care"].sum()),
         "n_facilities_pharmacy": int(gdf_health["is_pharmacy"].sum()),
+        "n_facilities_laboratory": int(gdf_health["is_laboratory"].sum()),
+        "n_facilities_dental": int(gdf_health["is_dental"].sum()),
+        "n_facilities_mental_health": int(gdf_health["is_mental_health"].sum()),
         "n_facilities_osm": int((gdf_health["source"] == "osm").sum()),
         "n_facilities_official": int((gdf_health["source"].isin(["deis", "both"])).sum()),
         "n_grid_points": int(len(access_grid)),
