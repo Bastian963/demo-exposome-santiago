@@ -1,5 +1,5 @@
 {
-  "created_utc": "2026-06-26T17:51:37.678181+00:00",
+  "created_utc": "2026-06-26T18:46:47.913191+00:00",
   "city": "santiago",
   "source": "OpenStreetMap via osmnx + MINSAL/DEIS official registry",
   "method": "Euclidean nearest-facility distance on intra-communal grid",
@@ -167,18 +167,20 @@
       "Centro Comunitario de Salud Mental (COSAM)"
     ]
   },
-  "n_facilities_total": 2258,
-  "n_facilities_hospital": 53,
-  "n_facilities_clinic": 211,
-  "n_facilities_primary_care": 508,
-  "n_facilities_pharmacy": 786,
-  "n_facilities_laboratory": 63,
-  "n_facilities_dental": 241,
+  "n_facilities_total": 2754,
+  "n_facilities_hospital": 68,
+  "n_facilities_clinic": 257,
+  "n_facilities_primary_care": 541,
+  "n_facilities_pharmacy": 1124,
+  "n_facilities_laboratory": 66,
+  "n_facilities_dental": 305,
   "n_facilities_mental_health": 46,
-  "n_facilities_osm": 1194,
+  "n_facilities_osm": 1690,
   "n_facilities_official": 1064,
   "n_grid_points": 15333,
-  "distance_metric": "euclidean_straight_line",
+  "distance_metric": "street_network_shortest_path",
+  "use_network": true,
+  "network_type": "walk",
   "columns": [
     "name",
     "area_km2",
@@ -200,7 +202,16 @@
     "p90_nearest_hospital_m",
     "mean_nearest_primary_care_m",
     "median_nearest_primary_care_m",
-    "p90_nearest_primary_care_m"
+    "p90_nearest_primary_care_m",
+    "mean_nearest_health_network_m",
+    "median_nearest_health_network_m",
+    "p90_nearest_health_network_m",
+    "mean_nearest_hospital_network_m",
+    "median_nearest_hospital_network_m",
+    "p90_nearest_hospital_network_m",
+    "mean_nearest_primary_care_network_m",
+    "median_nearest_primary_care_network_m",
+    "p90_nearest_primary_care_network_m"
   ],
   "n_rows": 52
 }

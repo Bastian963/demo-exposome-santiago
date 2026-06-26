@@ -168,6 +168,13 @@ healthcare:
   grid_spacing_m: 1000
   output_base: "santiago_healthcare_access"
 
+  # Street-network accessibility (optional; slower but more realistic).
+  network:
+    enabled: false
+    network_type: "walk"  # walk / drive / all
+    graph_cache: "cache/santiago_walk_graph.graphml"
+    max_snap_distance_m: 500  # ignore grid points whose nearest road node is farther
+
   # Official MINSAL/DEIS facility inventory.
   # OpenStreetMap is still used as a complement for pharmacies and for any
   # facilities not present in the official registry.
@@ -214,7 +221,12 @@ healthcare:
         - "Clínica Dental"
       mental_health:
         - "Centro Comunitario de Salud Mental (COSAM)"
-    # Spatial conflation with OSM: points within buffer_m are considered the
-    # same facility; the official record is kept.
+    # Spatial conflation with OSM.
     conflation:
       buffer_m: 150
+      # If the straight-line distance is below strict_buffer_m, the points are
+      # considered the same facility regardless of name.
+      strict_buffer_m: 50
+      # Otherwise, a name fuzzy-match ratio (0-1) above this threshold is also
+      # required. Uses difflib.SequenceMatcher.
+      name_match_threshold: 0.5

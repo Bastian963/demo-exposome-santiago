@@ -111,6 +111,16 @@ Force re-download of the official DEIS CSV:
 python scripts/run_healthcare.py --refresh-official
 ```
 
+Compute street-network distances (slower, more realistic):
+```bash
+python scripts/run_healthcare.py --use-network
+```
+
+Generate choropleth maps:
+```bash
+python scripts/plot_healthcare_maps.py
+```
+
 Categories currently emitted:
 - `n_hospital` — hospitals
 - `n_clinic` — clinics / private clinics

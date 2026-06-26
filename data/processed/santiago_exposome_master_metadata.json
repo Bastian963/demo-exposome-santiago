@@ -1,7 +1,7 @@
 {
-  "created_utc": "2026-06-26T17:51:50.660293+00:00",
+  "created_utc": "2026-06-26T18:48:07.006450+00:00",
   "n_communes": 52,
-  "n_variables_including_name_area": 79,
+  "n_variables_including_name_area": 88,
   "layers": [
     {
       "name": "socioeconomic",

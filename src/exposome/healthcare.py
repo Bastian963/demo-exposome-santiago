@@ -24,6 +24,7 @@ import pandas as pd
 from shapely.geometry import Point
 
 from . import boundaries, config
+from . import healthcare_network as network
 from . import healthcare_official as official
 
 
@@ -148,6 +149,20 @@ def classify_facilities(
     return gdf
 
 
+def _normalise_name(name: Any) -> str:
+    """Lowercase and strip a name for fuzzy comparison."""
+    if name is None:
+        return ""
+    return str(name).lower().strip()
+
+
+def _name_similarity(a: str, b: str) -> float:
+    """Return a 0-1 fuzzy similarity score between two names."""
+    from difflib import SequenceMatcher
+
+    return SequenceMatcher(None, a, b).ratio()
+
+
 def conflate_sources(
     gdf_official: gpd.GeoDataFrame,
     gdf_osm: gpd.GeoDataFrame,
@@ -155,13 +170,21 @@ def conflate_sources(
 ) -> gpd.GeoDataFrame:
     """Merge official and OSM facility points, removing OSM duplicates.
 
-    Any OSM point within ``buffer_m`` of an official point is considered the
-    same facility and is discarded; the official record is kept. OSM points
-    outside the buffer are retained as complementary coverage (e.g. pharmacies
+    An OSM point is considered a duplicate of an official point when:
+
+    - it is within ``strict_buffer_m`` of the official point, OR
+    - it is within ``buffer_m`` AND the normalised names match with a ratio
+      >= ``name_match_threshold``.
+
+    The official record is kept in both cases. OSM points that do not match
+    any official point are retained as complementary coverage (e.g. pharmacies
     and informal/private facilities absent from the official registry).
     """
     metric_crs = cfg["crs"]["metric"]
-    buffer_m = cfg["healthcare"]["official_source"]["conflation"]["buffer_m"]
+    conflation_cfg = cfg["healthcare"]["official_source"]["conflation"]
+    buffer_m = conflation_cfg["buffer_m"]
+    strict_buffer_m = conflation_cfg.get("strict_buffer_m", buffer_m / 3)
+    name_threshold = conflation_cfg.get("name_match_threshold", 0.5)
 
     if gdf_official.empty:
         gdf_osm["source"] = "osm"
@@ -173,26 +196,39 @@ def conflate_sources(
         gdf_official["official_type"] = gdf_official.get("official_type", "")
         return gdf_official.copy()
 
-    official_metric = gdf_official.to_crs(metric_crs).copy()
-    osm_metric = gdf_osm.to_crs(metric_crs).copy()
+    official_metric = gdf_official.to_crs(metric_crs).copy().reset_index(drop=True)
+    osm_metric = gdf_osm.to_crs(metric_crs).copy().reset_index(drop=True)
 
     from scipy.spatial import cKDTree
 
     official_coords = np.vstack([official_metric.geometry.x, official_metric.geometry.y]).T
     tree = cKDTree(official_coords)
     osm_coords = np.vstack([osm_metric.geometry.x, osm_metric.geometry.y]).T
-    dists, _ = tree.query(osm_coords, k=1)
+    dists, idx_official = tree.query(osm_coords, k=1)
 
-    osm_keep_mask = dists > buffer_m
-    osm_metric = osm_metric[osm_keep_mask].copy()
+    # Pre-compute normalised names.
+    official_names = official_metric["name"].apply(_normalise_name).values
+    osm_names = osm_metric["name"].apply(_normalise_name).values
 
-    # Mark official points that have a matching OSM point nearby.
+    # Determine matches.
+    within_buffer = dists <= buffer_m
+    within_strict = dists <= strict_buffer_m
+    name_match = np.array([
+        _name_similarity(osm_names[i], official_names[idx_official[i]]) >= name_threshold
+        for i in range(len(osm_metric))
+    ])
+
+    # A match requires either very close proximity or proximity + name similarity.
+    is_match = within_strict | (within_buffer & name_match)
+
+    # OSM points that did not match any official point are kept.
+    osm_metric = osm_metric[~is_match].copy()
+
+    # Mark official points that have at least one matching OSM point nearby.
+    matched_official_idx = idx_official[is_match]
     has_osm_match = np.zeros(len(official_metric), dtype=bool)
-    if len(osm_coords) > 0:
-        matched_osm = dists <= buffer_m
-        if matched_osm.any():
-            _, idx_official = tree.query(osm_coords[matched_osm], k=1)
-            has_osm_match[idx_official] = True
+    if len(matched_official_idx) > 0:
+        has_osm_match[matched_official_idx] = True
     official_metric["source"] = np.where(has_osm_match, "both", "deis")
 
     # Normalise OSM columns to the same schema.
@@ -391,6 +427,7 @@ def build_healthcare_layer(
     *,
     use_official: bool = True,
     refresh_official: bool = False,
+    use_network: bool = False,
     use_ckdtree: bool = False,
 ) -> tuple[pd.DataFrame, gpd.GeoDataFrame]:
     """Run the full healthcare access pipeline.
@@ -413,7 +450,9 @@ def build_healthcare_layer(
     grid_spacing = int(cfg["healthcare"]["grid_spacing_m"])
     output_base = cfg["healthcare"]["output_base"]
     official_cfg = cfg["healthcare"].get("official_source", {})
+    network_cfg = cfg["healthcare"].get("network", {})
     use_official = use_official and official_cfg.get("enabled", False)
+    use_network = use_network or network_cfg.get("enabled", False)
 
     # 1. Boundaries
     communes_cache = cache_dir / f"{city}_communes.geojson"
@@ -486,6 +525,81 @@ def build_healthcare_layer(
     gdf_result = gdf_result.merge(dist_hospital, on="name", how="left")
     gdf_result = gdf_result.merge(dist_primary_care, on="name", how="left")
 
+    # 6b. Optional street-network distances (more realistic, slower).
+    network_distance_cols: list[str] = []
+    if use_network:
+        print("Computing street-network distances...")
+        graph_cache = Path(network_cfg.get("graph_cache", f"cache/{city}_walk_graph.graphml"))
+        graph = network.fetch_street_graph(
+            cfg["region_query"],
+            graph_cache,
+            network_type=network_cfg.get("network_type", "walk"),
+            to_crs=metric_crs,
+        )
+
+        max_snap = network_cfg.get("max_snap_distance_m", 500.0)
+        dist_health_network = network.network_distance_summary(
+            access_grid,
+            all_facilities,
+            graph,
+            cfg,
+            prefix="nearest_health_network",
+            max_snap_distance_m=max_snap,
+        )
+        dist_hospital_network = network.network_distance_summary(
+            access_grid,
+            hospital_facilities,
+            graph,
+            cfg,
+            prefix="nearest_hospital_network",
+            max_snap_distance_m=max_snap,
+        )
+        dist_primary_care_network = network.network_distance_summary(
+            access_grid,
+            primary_care_facilities,
+            graph,
+            cfg,
+            prefix="nearest_primary_care_network",
+            max_snap_distance_m=max_snap,
+        )
+
+        gdf_result = gdf_result.merge(dist_health_network, on="name", how="left")
+        gdf_result = gdf_result.merge(dist_hospital_network, on="name", how="left")
+        gdf_result = gdf_result.merge(dist_primary_care_network, on="name", how="left")
+
+        # Fallback to Euclidean distance where the street network does not
+        # provide a reliable value (e.g. rural communes with sparse roads or
+        # a whole commune snapping to the same road node).
+        fallback_pairs = [
+            ("mean_nearest_health_network_m", "mean_nearest_health_m"),
+            ("median_nearest_health_network_m", "median_nearest_health_m"),
+            ("p90_nearest_health_network_m", "p90_nearest_health_m"),
+            ("mean_nearest_hospital_network_m", "mean_nearest_hospital_m"),
+            ("median_nearest_hospital_network_m", "median_nearest_hospital_m"),
+            ("p90_nearest_hospital_network_m", "p90_nearest_hospital_m"),
+            ("mean_nearest_primary_care_network_m", "mean_nearest_primary_care_m"),
+            ("median_nearest_primary_care_network_m", "median_nearest_primary_care_m"),
+            ("p90_nearest_primary_care_network_m", "p90_nearest_primary_care_m"),
+        ]
+        for net_col, euc_col in fallback_pairs:
+            gdf_result[net_col] = gdf_result[net_col].fillna(gdf_result[euc_col])
+            # Replace an implausible zero summary for a whole commune with the
+            # Euclidean equivalent (likely a snapping artefact).
+            zero_mask = gdf_result[net_col] == 0
+            gdf_result.loc[zero_mask, net_col] = gdf_result.loc[zero_mask, euc_col]
+
+        network_distance_cols = [
+            "mean_nearest_health_network_m",
+            "median_nearest_health_network_m",
+            "p90_nearest_health_network_m",
+            "mean_nearest_hospital_network_m",
+            "median_nearest_hospital_network_m",
+            "p90_nearest_hospital_network_m",
+            "mean_nearest_primary_care_network_m",
+            "median_nearest_primary_care_network_m",
+            "p90_nearest_primary_care_network_m",
+        ]
+
     # 7. Formatting
     gdf_result["density_per_km2"] = gdf_result["density_per_km2"].round(4)
     gdf_result["area_km2"] = gdf_result["area_km2"].round(2)
@@ -501,6 +615,7 @@ def build_healthcare_layer(
         "mean_nearest_primary_care_m",
         "median_nearest_primary_care_m",
         "p90_nearest_primary_care_m",
+        *network_distance_cols,
     ]
     for col in distance_cols:
         gdf_result[col] = gdf_result[col].round(0).astype("Int64")
@@ -528,6 +643,7 @@ def build_healthcare_layer(
         "mean_nearest_primary_care_m",
         "median_nearest_primary_care_m",
         "p90_nearest_primary_care_m",
+        *network_distance_cols,
     ]
     gdf_result = gdf_result[output_cols + ["geometry"]]
 
@@ -584,7 +700,13 @@ def build_healthcare_layer(
         "n_facilities_osm": int((gdf_health["source"] == "osm").sum()),
         "n_facilities_official": int((gdf_health["source"].isin(["deis", "both"])).sum()),
         "n_grid_points": int(len(access_grid)),
-        "distance_metric": "euclidean_straight_line",
+        "distance_metric": (
+            "street_network_shortest_path"
+            if use_network
+            else "euclidean_straight_line"
+        ),
+        "use_network": use_network,
+        "network_type": network_cfg.get("network_type", "walk") if use_network else None,
         "columns": output_cols,
         "n_rows": int(len(df)),
     }

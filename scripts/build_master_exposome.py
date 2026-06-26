@@ -62,6 +62,17 @@ LAYER_SPECS = [
             "median_nearest_primary_care_m",
             "p90_nearest_primary_care_m",
         ],
+        "optional_columns": [
+            "mean_nearest_health_network_m",
+            "median_nearest_health_network_m",
+            "p90_nearest_health_network_m",
+            "mean_nearest_hospital_network_m",
+            "median_nearest_hospital_network_m",
+            "p90_nearest_hospital_network_m",
+            "mean_nearest_primary_care_network_m",
+            "median_nearest_primary_care_network_m",
+            "p90_nearest_primary_care_network_m",
+        ],
         "rename": {
             "n_total": "health_n_total",
             "n_hospital": "health_n_hospital",
@@ -175,7 +186,9 @@ def load_layer(spec: dict) -> pd.DataFrame:
     if missing:
         raise ValueError(f"{path.name} is missing columns: {missing}")
 
-    out = df[required].copy()
+    # Optional columns are included when present (e.g. network distances).
+    optional = [col for col in spec.get("optional_columns", []) if col in df.columns]
+    out = df[required + optional].copy()
     out = out.rename(columns=spec.get("rename", {}))
     return out
 

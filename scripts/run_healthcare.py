@@ -30,6 +30,11 @@ def run(
         "--refresh-official",
         help="Force re-download of the official DEIS CSV",
     ),
+    use_network: bool = typer.Option(
+        False,
+        "--use-network",
+        help="Compute street-network distances (slower, more realistic)",
+    ),
     use_ckdtree: bool = typer.Option(
         False, help="Use scipy.spatial.cKDTree for nearest-distance queries (faster for large grids)"
     ),
@@ -41,6 +46,7 @@ def run(
         out_dir=out_dir,
         use_official=use_official,
         refresh_official=refresh_official,
+        use_network=use_network,
         use_ckdtree=use_ckdtree,
     )
 
