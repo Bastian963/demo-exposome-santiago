@@ -40,7 +40,9 @@ mamba run -p .conda/envs/exposome python -m ipykernel install --user --name expo
 4. notebooks/santiago_socioeconomic.ipynb
 5. notebooks/santiago_climate_heat_exposure.ipynb
 6. notebooks/santiago_greenspace_cv.ipynb   # optional
-7. python scripts/build_master_exposome.py
+7. python scripts/run_alan.py   # ALAN (VIIRS night-time lights), GEE required
+8. python scripts/run_precipitation.py   # CHIRPS daily rainfall, GEE required
+9. python scripts/build_master_exposome.py
 ```
 
 ## Hardcoded Santiago Assumptions
@@ -59,7 +61,7 @@ mamba run -p .conda/envs/exposome python -m ipykernel install --user --name expo
 - Project ID: `exposome-api`
 - Initialized with: `ee.Initialize(project='exposome-api')`
 - `earthengine-api` and `geemap` are installed via pip inside the `exposome` env.
-- GEE is **required** for `scripts/run_air_quality.py` (Plan A+ satellite pipeline with ERA5 BLH conversion).
+- GEE is **required** for `scripts/run_air_quality.py` (Plan A+ satellite pipeline with ERA5 BLH conversion), `scripts/run_alan.py` (VIIRS DNB night-time lights + WorldPop weighting), and `scripts/run_precipitation.py` (CHIRPS daily rainfall).
 - If GEE auth fails, run `earthengine authenticate` inside the activated env.
 
 ## Data Flow
@@ -81,6 +83,15 @@ config/cities/<city>.yaml
     → src/exposome/air_quality.py  (GEE satellite)
     → scripts/run_air_quality.py
     → data/processed/<city>_air_quality_satellite_YYYY.{csv,geojson}
+```
+
+Precipitation follows the same config-driven pattern with CHIRPS daily rainfall:
+
+```
+config/cities/<city>.yaml
+    → src/exposome/precipitation.py  (GEE CHIRPS)
+    → scripts/run_precipitation.py
+    → data/processed/<city>_precipitation_chirps_YYYY_YYYY.{csv,geojson,json}
 ```
 
 Healthcare access follows the same pattern, but combines OpenStreetMap with the
@@ -119,6 +130,14 @@ python scripts/run_healthcare.py --use-network
 Generate choropleth maps:
 ```bash
 python scripts/plot_healthcare_maps.py
+```
+
+By default it reads ``data/processed/santiago_exposome_master.geojson`` and
+also emits population-adjusted ratio maps (e.g. inhabitants per primary-care
+facility). To plot only the standalone healthcare layer:
+
+```bash
+python scripts/plot_healthcare_maps.py --geojson data/processed/santiago_healthcare_access.geojson
 ```
 
 Categories currently emitted:
