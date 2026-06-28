@@ -59,6 +59,16 @@ LAYER_SPECS = [
         "columns": ["pm25_mean", "pm25_pop_weighted", "pm25_who_ratio"],
     },
     {
+        # Industrial heavy-metal air emissions from RETC point sources (MMA).
+        # Completes the chemical/toxin pillar absent from PM2.5/NO2 layers.
+        # Run scripts/run_heavy_metals.py to generate this CSV.
+        "name": "heavy_metals",
+        "csv": "santiago_heavy_metals_retc_2015_2022.csv",
+        "optional_layer": True,  # new layer — allow build before first run
+        "columns": ["hm_pb_kg", "hm_mn_kg", "hm_as_kg", "hm_cd_kg", "hm_hg_kg",
+                    "hm_pb_log", "hm_as_log", "n_sources", "hm_index"],
+    },
+    {
         "name": "air_quality_satellite",
         "csv": "santiago_air_quality_satellite_2024.csv",
         "columns": ["no2_mean", "blh_mean", "aod_mean", "no2_surface_ug_m3"],

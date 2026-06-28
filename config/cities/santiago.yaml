@@ -132,6 +132,29 @@ pm25:
   validation:
     sinca_annual_csv: "data/raw/stations_sinca/sinca_pm25_annual.csv"
 
+heavy_metals:
+  # Industrial heavy-metal air emissions from RETC point sources (MMA).
+  # Neurotoxic metals: Pb (#1 dementia), Mn (parkinsonism), As, Cd, Hg.
+  # Source: datosretc.mma.gob.cl — Emisiones al aire de fuentes puntuales (CC-BY).
+  # Window aligned with PM2.5 chronic window for joint exposure analysis.
+  years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]
+
+  # Metal keywords matched against RETC `contaminante` column (Spanish names).
+  metals:
+    - plomo         # Pb
+    - manganeso     # Mn
+    - arsénico      # As
+    - cadmio        # Cd
+    - mercurio      # Hg
+
+  # Composite index weights (Pb strongest dementia evidence → highest weight).
+  weights:
+    pb: 0.35
+    mn: 0.30
+    as: 0.20
+    cd: 0.10
+    hg: 0.05
+
 alan:
   # Artificial light at night (ALAN) — VIIRS Day/Night Band, media anual.
   year: 2024
@@ -614,7 +637,7 @@ neuro_mortality:
   region_code: 13
   years: [2018, 2019, 2020, 2021, 2022]
   source:
-    path: "/Users/bastianayalainostroza/Downloads/DEFUNCIONES_FUENTE_DEIS_1990_2023_CIFRAS_OFICIALES/DEFUNCIONES_FUENTE_DEIS_1990_2023_CIFRAS_OFICIALES.csv"
+    path: "data/raw/deis/defunciones/DEFUNCIONES_FUENTE_DEIS_1990_2023_CIFRAS_OFICIALES.csv"
     format: "csv"
     sep: ";"
     encoding: "latin1"
@@ -629,6 +652,52 @@ neuro_mortality:
       age_type: "EDAD_TIPO"
   comparison:
     outcomes: [dementia, alzheimer, cerebrovascular, parkinsonism]
+    exposures:
+      - pm25_pop_weighted
+      - no2_surface_ug_m3
+      - heat_exposure_index
+      - sleep_context_index
+      - noise_combined_pct
+      - green_cover_pct_ndvi
+      - social_index
+      - walk_index
+      - transit_index
+      - food_index
+    covariates: [nse_index, demo_pct_pop_65_plus]
+
+neuro_hospitalizations:
+  # External ecological morbidity comparator from DEIS hospital discharge exports.
+  # Not an exposome layer and therefore not merged into the master table.
+  region_code: 13
+  years: [2006]
+  source:
+    path: "data/raw/deis/egresos/EGRE_DATOS_ABIERTOS_2006.csv"
+    format: "csv"
+    sep: ";"
+    encoding: "latin1"
+    region_filter: "Metropolitana"
+    in_hospital_death_values: ["2"]
+    columns:
+      year: "ANO_EGRESO"
+      commune_code: "COMUNA_RESIDENCIA"
+      commune_name: "GLOSA_COMUNA_RESIDENCIA"
+      region_code: "REGION_RESIDENCIA"
+      region_name: "GLOSA_REGION_RESIDENCIA"
+      cause: "DIAG1"
+      age_group: "GRUPO_EDAD"
+      sex: "SEXO"
+      days_stay: "DIAS_ESTADA"
+      discharge_condition: "CONDICION_EGRESO"
+  comparison:
+    outcomes:
+      - mental_all
+      - dementia
+      - cerebrovascular
+      - parkinsonism
+      - substance
+      - psychosis
+      - mood
+      - anxiety_stress
     exposures:
       - pm25_pop_weighted
       - no2_surface_ug_m3

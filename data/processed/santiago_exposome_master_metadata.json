@@ -1,7 +1,7 @@
 {
-  "created_utc": "2026-06-28T04:38:21.034836+00:00",
+  "created_utc": "2026-06-28T14:04:28.892823+00:00",
   "n_communes": 52,
-  "n_variables_including_name_area": 252,
+  "n_variables_including_name_area": 261,
   "layers": [
     {
       "name": "socioeconomic",
@@ -37,6 +37,21 @@
         "pm25_mean",
         "pm25_pop_weighted",
         "pm25_who_ratio"
+      ]
+    },
+    {
+      "name": "heavy_metals",
+      "csv": "santiago_heavy_metals_retc_2015_2022.csv",
+      "columns": [
+        "hm_pb_kg",
+        "hm_mn_kg",
+        "hm_as_kg",
+        "hm_cd_kg",
+        "hm_hg_kg",
+        "hm_pb_log",
+        "hm_as_log",
+        "n_sources",
+        "hm_index"
       ]
     },
     {
