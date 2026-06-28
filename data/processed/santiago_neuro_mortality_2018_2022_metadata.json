@@ -1,5 +1,5 @@
 {
-  "created_utc": "2026-06-28T13:36:12.664576+00:00",
+  "created_utc": "2026-06-28T13:44:33.813664+00:00",
   "city": "santiago",
   "n_rows": 260,
   "n_communes": 52,
@@ -10,7 +10,7 @@
     2021,
     2022
   ],
-  "source_path_used": "/Users/bastianayalainostroza/Downloads/DEFUNCIONES_FUENTE_DEIS_1990_2023_CIFRAS_OFICIALES/DEFUNCIONES_FUENTE_DEIS_1990_2023_CIFRAS_OFICIALES.csv",
+  "source_path_used": "data/raw/deis/defunciones/DEFUNCIONES_FUENTE_DEIS_1990_2023_CIFRAS_OFICIALES.csv",
   "allow_crude_only": false,
   "outcomes": {
     "dementia": [

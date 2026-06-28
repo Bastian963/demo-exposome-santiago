@@ -168,7 +168,9 @@ def ensure_source_file(cfg: dict[str, Any], cache_dir: Path, refresh: bool = Fal
                 raise ValueError(f"Could not discover mortality resource via CKAN: {err}") from err
     if not url:
         raise FileNotFoundError(
-            f"Missing mortality source at {local_path} and no download URL configured."
+            "Missing mortality source. "
+            f"Expected local file at {local_path}. "
+            "Place the DEIS CSV there or configure a download URL/CKAN source."
         )
 
     _download_file(url, cache_path)
