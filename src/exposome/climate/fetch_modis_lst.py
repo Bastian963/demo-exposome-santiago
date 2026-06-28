@@ -91,9 +91,9 @@ def _fetch_single_collection_stats(
         stats_max = gee.image_to_stats(max_img, regions_fc, band=f"{band}_max_c", scale=scale, reducer="mean")
         stats_p95 = gee.image_to_stats(p95_img, regions_fc, band=f"{band}_p95_c", scale=scale, reducer="mean")
 
-        df_mean = pd.DataFrame(gee.fc_to_dicts(stats_mean))[["name", f"{band}_mean_c"]]
-        df_max = pd.DataFrame(gee.fc_to_dicts(stats_max))[["name", f"{band}_max_c"]]
-        df_p95 = pd.DataFrame(gee.fc_to_dicts(stats_p95))[["name", f"{band}_p95_c"]]
+        df_mean = pd.DataFrame(gee.fc_to_dicts(stats_mean))[["name", "mean"]].rename(columns={"mean": f"{band}_mean_c"})
+        df_max = pd.DataFrame(gee.fc_to_dicts(stats_max))[["name", "mean"]].rename(columns={"mean": f"{band}_max_c"})
+        df_p95 = pd.DataFrame(gee.fc_to_dicts(stats_p95))[["name", "mean"]].rename(columns={"mean": f"{band}_p95_c"})
 
         df = df_mean.merge(df_max, on="name", how="outer").merge(df_p95, on="name", how="outer")
         cols.append(df)
@@ -154,7 +154,7 @@ def fetch_modis_lst(
     )
 
     # Merge and average Terra + Aqua
-    merged = df_terra.merge(df_aqua, on="name", how="outer", suffix=("_terra", "_aqua"))
+    merged = df_terra.merge(df_aqua, on="name", how="outer", suffixes=("_terra", "_aqua"))
     value_cols = [c for c in merged.columns if c.endswith("_terra")]
     for col in value_cols:
         base = col.replace("_terra", "")

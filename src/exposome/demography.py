@@ -30,13 +30,15 @@ def _download_file(url: str, dest: Path, timeout: int = 300) -> None:
             f.write(chunk)
 
 
-def _ensure_census_files(cache_dir: Path) -> tuple[Path, Path]:
+def ensure_census_files(cache_dir: Path) -> tuple[Path, Path]:
     """Download and extract the INE Censo 2017 RAR if needed.
 
-    Returns paths to the manzana CSV and the commune-name CSV.
+    Returns paths to the manzana CSV and the commune-name CSV. Public so other
+    exposome layers (e.g. socioeconomic) can reuse the cached census files.
     """
     import rarfile
 
+    cache_dir = Path(cache_dir)
     rar_path = cache_dir / "censo2017_manzana.rar"
     if not rar_path.exists():
         print(f"  Downloading INE Censo 2017 RAR...")
@@ -55,6 +57,57 @@ def _ensure_census_files(cache_dir: Path) -> tuple[Path, Path]:
     return manzana_path, comuna_path
 
 
+# Backwards-compatible private alias.
+_ensure_census_files = ensure_census_files
+
+
+def normalize_comuna_name(names: pd.Series) -> pd.Series:
+    """Title-case INE commune names so they match the OSM/boundary names.
+
+    Lowercases common Spanish prepositions/articles so e.g. "CALERA DE TANGO"
+    becomes "Calera de Tango".
+    """
+    return (
+        names.astype(str)
+        .str.title()
+        .str.replace(" De ", " de ")
+        .str.replace(" Del ", " del ")
+        .str.replace(" La ", " la ")
+        .str.replace(" El ", " el ")
+        .str.replace(" Y ", " y ")
+        .str.strip()
+    )
+
+
+def load_comuna_code_name_map(
+    cache_dir: Path,
+    region_code: int | None = 13,
+) -> pd.DataFrame:
+    """Return a ``comuna_code`` → ``name`` mapping from the 2017 Census.
+
+    Names are normalised to match the exposome boundaries. When ``region_code``
+    is given, only that region's communes are returned (13 = Metropolitana).
+    """
+    _, comuna_path = ensure_census_files(Path(cache_dir))
+    df = pd.read_csv(comuna_path, sep=";", low_memory=False)
+    df = df.rename(columns={"NOM_COMUNA": "name_raw", "COMUNA": "comuna_code"})
+    df["comuna_code"] = pd.to_numeric(df["comuna_code"], errors="coerce")
+    df = df[df["comuna_code"].notna()].copy()
+    df["comuna_code"] = df["comuna_code"].astype(int)
+    if region_code is not None:
+        lo, hi = region_code * 1000, (region_code + 1) * 1000
+        df = df[(df["comuna_code"] >= lo) & (df["comuna_code"] < hi)].copy()
+    df["name"] = normalize_comuna_name(df["name_raw"])
+    return df[["comuna_code", "name"]].reset_index(drop=True)
+
+
+def load_region_manzanas(cache_dir: Path, region_code: int = 13) -> pd.DataFrame:
+    """Return the raw manzana-level census rows for a single region."""
+    manzana_path, _ = ensure_census_files(Path(cache_dir))
+    df = pd.read_csv(manzana_path, sep=";", low_memory=False)
+    return df[df["REGION"] == region_code].copy()
+
+
 def load_commune_demography(
     cache_dir: Path,
     region_code: int = 13,
@@ -69,13 +122,8 @@ def load_commune_demography(
     - ``pct_pop_0_14``, ``pct_pop_15_64``, ``pct_pop_65_plus``
     """
     cache_dir = Path(cache_dir)
-    manzana_path, comuna_path = _ensure_census_files(cache_dir)
-
-    df_manzana = pd.read_csv(manzana_path, sep=";", low_memory=False)
-    df_comuna = pd.read_csv(comuna_path, sep=";", low_memory=False)
-
-    # Select the requested region.
-    df_region = df_manzana[df_manzana["REGION"] == region_code].copy()
+    df_region = load_region_manzanas(cache_dir, region_code=region_code)
+    code_name = load_comuna_code_name_map(cache_dir, region_code=region_code)
 
     # Age columns use '*' for suppressed small counts; coerce to numeric.
     age_cols = ["EDAD_0A5", "EDAD_6A14", "EDAD_15A64", "EDAD_65YMAS"]
@@ -103,25 +151,9 @@ def load_commune_demography(
     for col in ["pop_0_14", "pop_15_64", "pop_65_plus"]:
         agg[col] = (agg[col] * agg["pop_total"] / age_sum).round(0).astype(int)
 
-    # Add commune names.
-    df_comuna = df_comuna.rename(columns={"NOM_COMUNA": "name_raw"})
-    result = agg.merge(df_comuna, on="COMUNA", how="left")
-
-    # Normalise commune names to title case for consistency with OSM/boundaries.
-    # Lowercase common prepositions so e.g. "Calera De Tango" becomes
-    # "Calera de Tango".
-    result["name"] = (
-        result["name_raw"]
-        .astype(str)
-        .str.title()
-        .str.replace(" De ", " de ")
-        .str.replace(" Del ", " del ")
-        .str.replace(" La ", " la ")
-        .str.replace(" El ", " el ")
-        .str.replace(" Y ", " y ")
-        .str.strip()
-    )
-    result["comuna_code"] = result["COMUNA"].astype(int)
+    # Add normalised commune names (matching the exposome boundaries).
+    agg["comuna_code"] = agg["COMUNA"].astype(int)
+    result = agg.merge(code_name, on="comuna_code", how="left")
 
     # Percentages.
     for col in ["pop_0_14", "pop_15_64", "pop_65_plus"]:

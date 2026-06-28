@@ -25,6 +25,9 @@ mamba run -p "$ENV" python scripts/run_greenspace_coverage.py
 echo "--- Precipitation CHIRPS 2015-2024 ---"
 mamba run -p "$ENV" python scripts/run_precipitation.py
 
+echo "--- Wildfire (MODIS burned area + FIRMS) 2015-2024 ---"
+mamba run -p "$ENV" python scripts/run_wildfire.py
+
 # FASE 2: Metricas climaticas anuales desde ERA5-Land completo
 echo "--- Climate metrics 2015-2024 ---"
 mamba run -p "$ENV" python scripts/run_climate_metrics.py \

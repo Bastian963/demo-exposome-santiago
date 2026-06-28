@@ -36,13 +36,17 @@ mamba run -p .conda/envs/exposome python -m ipykernel install --user --name expo
 ```
 1. notebooks/santiago_healthcare_access.ipynb   # or: python scripts/run_healthcare.py
 2. notebooks/santiago_air_quality.ipynb
-3. notebooks/santiago_green_spaces.ipynb
+3. notebooks/santiago_green_spaces.ipynb        # legacy; prefer scripts/run_greenspace_access.py
 4. notebooks/santiago_socioeconomic.ipynb
 5. notebooks/santiago_climate_heat_exposure.ipynb
-6. notebooks/santiago_greenspace_cv.ipynb   # optional
+6. notebooks/santiago_greenspace_cv.ipynb       # legacy demo; prefer scripts/run_greenspace_cv.py
 7. python scripts/run_alan.py   # ALAN (VIIRS night-time lights), GEE required
 8. python scripts/run_precipitation.py   # CHIRPS daily rainfall, GEE required
-9. python scripts/build_master_exposome.py
+9. python scripts/run_greenspace_coverage.py   # Landsat-8/9 NDVI/EVI, GEE required
+10. python scripts/run_greenspace_access.py    # OpenStreetMap green areas + accessibility
+11. python scripts/run_greenspace_cv.py        # high-res CV validation (optional)
+12. python scripts/run_wildfire.py             # MODIS burned area + FIRMS, GEE required
+13. python scripts/build_master_exposome.py
 ```
 
 ## Hardcoded Santiago Assumptions
@@ -61,7 +65,7 @@ mamba run -p .conda/envs/exposome python -m ipykernel install --user --name expo
 - Project ID: `exposome-api`
 - Initialized with: `ee.Initialize(project='exposome-api')`
 - `earthengine-api` and `geemap` are installed via pip inside the `exposome` env.
-- GEE is **required** for `scripts/run_air_quality.py` (Plan A+ satellite pipeline with ERA5 BLH conversion), `scripts/run_alan.py` (VIIRS DNB night-time lights + WorldPop weighting), and `scripts/run_precipitation.py` (CHIRPS daily rainfall).
+- GEE is **required** for `scripts/run_air_quality.py` (Plan A+ satellite pipeline with ERA5 BLH conversion), `scripts/run_alan.py` (VIIRS DNB night-time lights + WorldPop weighting), `scripts/run_precipitation.py` (CHIRPS daily rainfall), and `scripts/run_wildfire.py` (MODIS MCD64A1 burned area + FIRMS active fire).
 - If GEE auth fails, run `earthengine authenticate` inside the activated env.
 
 ## Data Flow
@@ -93,6 +97,23 @@ config/cities/<city>.yaml
     → scripts/run_precipitation.py
     → data/processed/<city>_precipitation_chirps_YYYY_YYYY.{csv,geojson,json}
 ```
+
+Wildfire (the "climate disasters" factor) follows the same pattern, combining
+two GEE satellite sources and an optional local CONAF/itrend CSV:
+
+```
+config/cities/<city>.yaml  (wildfire: block)
+    → src/exposome/wildfire.py  (GEE: MODIS MCD64A1 burned area + FIRMS active fire)
+    → scripts/run_wildfire.py
+    → data/processed/<city>_wildfire_YYYY_YYYY.{csv,geojson,json}
+```
+
+- Caches per-year satellite metrics in `cache/<city>_wildfire_annual_YYYY_YYYY.csv`
+  (safe to interrupt; only missing years are re-fetched).
+- Official enrichment is opt-in: drop a CSV at the path in `wildfire.official.path`
+  (default `data/raw/conaf_incendios_comuna.csv`) to add `fire_official_*` columns;
+  it is skipped gracefully when absent, so the layer is reproducible from satellite alone.
+- Reuses `demography.normalize_comuna_name()` to match official commune names to the boundaries.
 
 Healthcare access follows the same pattern, but combines OpenStreetMap with the
 official MINSAL/DEIS facility registry when available:
@@ -176,6 +197,55 @@ and the corresponding percentages.
 
 `scripts/build_master_exposome.py` merges demography and computes derived
 ratios like `health_inhabitants_per_primary_care`.
+
+### Greenspace
+
+The greenspace layer has been split into three reproducible, config-driven
+pipelines:
+
+```
+config/cities/<city>.yaml
+    → src/exposome/greenspace_satellite.py   # Landsat-8/9 NDVI/EVI
+    → scripts/run_greenspace_coverage.py
+    → data/processed/<city>_greenspace_coverage.{csv,geojson,json}
+
+config/cities/<city>.yaml
+    → src/exposome/greenspace_access.py      # OSM parks + distance/buffers
+    → scripts/run_greenspace_access.py
+    → data/processed/<city>_greenspace_access.{csv,geojson,json}
+
+config/cities/<city>.yaml
+    → src/exposome/greenspace_cv.py          # Esri World Imagery + ExG/SAM
+    → scripts/run_greenspace_cv.py
+    → data/processed/<city>_greenspace_cv_sample.{csv,geojson,json}
+    → data/processed/<city>_greenspace_cv_commune.csv
+```
+
+Run them with:
+
+```bash
+python scripts/run_greenspace_coverage.py
+python scripts/run_greenspace_access.py
+python scripts/run_greenspace_cv.py --method exg --samples-per-commune 5
+```
+
+Notes:
+- `run_greenspace_coverage.py` uses **Landsat-8/9 Collection 2** at 30 m because
+  Sentinel-2 at 10 m triggers GEE computation/download limits for the whole
+  Región Metropolitana. The composite is built for the Oct–Mar growing season.
+- `run_greenspace_access.py` computes OSM-based green area plus Euclidean
+  distance to the nearest park and green area/count within 300/500/1000 m
+  buffers. Distances are capped at `99999` m for communes with no mapped parks.
+- `run_greenspace_cv.py --method exg` samples random tiles per commune from
+  Esri World Imagery and detects vegetation with Excess Green + Otsu. It
+  demonstrates that OSM under-maps private/tree-line greenness (~90% of detected
+  vegetation falls outside OSM polygons in sampled tiles).
+- `run_greenspace_cv.py --method sam` is reserved for future GPU/overnight runs
+  using Segment Anything; it is not implemented yet.
+
+The master builder merges both `greenspace_access` (renamed to legacy
+`green_km2`, `green_pct`, `n_green`) and `greenspace_coverage` (NDVI/EVI
+metrics) into the master table.
 
 ## Demo Document
 
