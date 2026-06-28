@@ -18,12 +18,45 @@ LAYER_SPECS = [
         "name": "socioeconomic",
         "csv": "socioeconomic_exposome_rm_santiago.csv",
         "geojson": "socioeconomic_exposome_rm_santiago.geojson",
-        "columns": ["poblacion", "pobreza_pct", "ingreso", "escolaridad", "nse_index"],
+        "columns": [
+            "poblacion",
+            "ingreso",
+            "escolaridad",
+            "pobreza_pct",
+            "pobreza_ci_low",
+            "pobreza_ci_high",
+            "pobreza_multi_pct",
+            "viv_materialidad_deficitaria_pct",
+            "hacinamiento_phh",
+            "nse_index",
+            "nse_index_pca",
+            "nse_quintil",
+        ],
+        "optional_columns": [
+            "tasa_delitos_violentos",
+            "tasa_delitos_propiedad",
+            "paes_puntaje_promedio",
+            "pct_fonasa_tramo_a_b",
+            "ipp_per_capita",
+        ],
     },
     {
+        # Legacy CAMS air quality (~11 km). PM2.5 is intentionally dropped here:
+        # it is superseded by the high-resolution ACAG layer below (the coarse
+        # CSV/figures are kept for the documented CAMS-vs-satellite comparison).
         "name": "air_quality",
         "csv": "air_quality_exposome_rm_santiago.csv",
-        "columns": ["pm25_mean", "no2_mean", "n_grid", "pm25_who_ratio", "no2_who_ratio"],
+        "columns": ["no2_mean", "n_grid", "no2_who_ratio"],
+    },
+    {
+        # Chronic high-resolution PM2.5 (~1 km) from ACAG/van Donkelaar via GEE.
+        # This is the canonical pm25_* in the master (Lancet 2024 dementia driver).
+        # Required, not optional: since it replaced the legacy guaranteed pm25,
+        # a missing CSV must fail loudly (run scripts/run_pm25.py first) instead
+        # of silently dropping PM2.5 from the integrated table.
+        "name": "air_quality_pm25",
+        "csv": "santiago_pm25_acag_2015_2022.csv",
+        "columns": ["pm25_mean", "pm25_pop_weighted", "pm25_who_ratio"],
     },
     {
         "name": "air_quality_satellite",
@@ -35,9 +68,61 @@ LAYER_SPECS = [
         },
     },
     {
-        "name": "green",
-        "csv": "green_exposome_rm_santiago.csv",
-        "columns": ["green_km2", "green_pct", "n_green"],
+        "name": "alan",
+        "csv": "santiago_alan_viirs_2024.csv",
+        "columns": [
+            "alan_radiance_mean",
+            "alan_radiance_median",
+            "alan_radiance_sd",
+            "alan_radiance_max",
+        ],
+        "optional_columns": ["alan_radiance_pop_weighted"],
+    },
+    {
+        "name": "sleep_context",
+        "csv": "santiago_sleep_context.csv",
+        "optional_layer": True,
+        "columns": [
+            "sleep_alan_log",
+            "sleep_tropical_nights_20c",
+            "sleep_summer_tmin_c",
+            "sleep_exposure_index",
+            "sleep_vulnerability_index",
+            "sleep_context_index",
+        ],
+    },
+    {
+        "name": "greenspace_access",
+        "csv": "santiago_greenspace_access.csv",
+        "columns": [
+            "green_osm_km2",
+            "green_osm_pct",
+            "green_osm_n",
+            "dist_to_nearest_park_m",
+            "green_area_within_300m_km2",
+            "green_area_within_500m_km2",
+            "green_area_within_1000m_km2",
+            "green_count_within_300m",
+            "green_count_within_500m",
+            "green_count_within_1000m",
+        ],
+        "rename": {
+            "green_osm_km2": "green_km2",
+            "green_osm_pct": "green_pct",
+            "green_osm_n": "n_green",
+        },
+    },
+    {
+        "name": "greenspace_coverage",
+        "csv": "santiago_greenspace_coverage.csv",
+        "columns": [
+            "ndvi_mean",
+            "ndvi_max",
+            "evi_mean",
+            "evi_max",
+            "green_cover_pct_ndvi",
+            "green_cover_pct_evi",
+        ],
     },
     {
         "name": "healthcare",
@@ -173,6 +258,47 @@ LAYER_SPECS = [
         },
     },
     {
+        "name": "precipitation",
+        "csv": "santiago_precipitation_chirps_2015_2024.csv",
+        "columns": [
+            "precip_annual_mean_mm",
+            "precip_annual_sd_mm",
+            "precip_annual_cv",
+            "precip_wet_days",
+            "precip_wet_day_pct",
+            "precip_heavy_days_10mm",
+            "precip_very_heavy_days_20mm",
+            "precip_rx1day_mm",
+            "precip_rx5day_mm",
+            "precip_cdd_days",
+            "precip_cwd_days",
+            "precip_intensity_wet_day_mm",
+            "precip_winter_mean_mm",
+            "precip_summer_mean_mm",
+            "precip_latest_year_mm",
+            "precip_latest_anomaly_mm",
+            "precip_latest_anomaly_pct",
+            "precip_extremes_index",
+            "precip_n_years",
+            "precip_n_days",
+        ],
+    },
+    {
+        "name": "precipitation_spi",
+        "csv": "santiago_precipitation_spi.csv",
+        "columns": [
+            "drought_months_pct",
+            "drought_severe_months_pct",
+            "drought_max_duration_months",
+            "precip_trend_mm_per_decade",
+            "spi_12_latest",
+            "spi_3_mean",
+            "spi_3_std",
+            "spi_6_mean",
+            "spi_12_mean",
+        ],
+    },
+    {
         "name": "climate_openmeteo",
         "csv": "santiago_climate_metrics_annual.csv",
         "columns": [
@@ -228,12 +354,135 @@ LAYER_SPECS = [
             "tmin_p05": "om_tmin_p05_c",
         },
     },
+    {
+        "name": "wildfire",
+        "csv": "santiago_wildfire_2015_2024.csv",
+        "geojson": "santiago_wildfire_2015_2024.geojson",
+        "columns": [
+            "fire_burned_area_km2_total",
+            "fire_burned_area_mean_annual_km2",
+            "fire_burned_pct_mean_annual",
+            "fire_burned_pct_max_year",
+            "fire_burn_years_count",
+            "fire_worst_year",
+            "fire_trend_km2_per_decade",
+            "fire_detections_total",
+            "fire_detections_per_km2",
+            "fire_detections_max_year",
+            "fire_brightness_max_k",
+            "fire_exposure_index",
+        ],
+        "optional_columns": [
+            "fire_official_n_fires",
+            "fire_official_damaged_ha",
+            "fire_official_human_cause_pct",
+        ],
+    },
+    {
+        "name": "noise",
+        "csv": "santiago_noise_mma_2023.csv",
+        "geojson": "santiago_noise_mma_2023.geojson",
+        "optional_layer": True,
+        "columns": [
+            "noise_ld_pop_exposed",
+            "noise_ld_pct_exposed",
+            "noise_ln_pop_exposed",
+            "noise_ln_pct_exposed",
+            "noise_combined_pct",
+            "noise_in_gsu_map",
+        ],
+    },
+    {
+        "name": "walkability",
+        "csv": "santiago_walkability.csv",
+        "geojson": "santiago_walkability.geojson",
+        "optional_layer": True,
+        "columns": [
+            "walk_intersection_density",
+            "walk_street_density_km_km2",
+            "walk_avg_street_length_m",
+            "walk_streets_per_node",
+            "walk_circuity",
+            "walk_n_nodes",
+            "walk_index",
+        ],
+    },
+    {
+        "name": "public_transport",
+        "csv": "santiago_public_transport.csv",
+        "geojson": "santiago_public_transport.geojson",
+        "optional_layer": True,
+        "columns": [
+            "transit_n_bus_stops",
+            "transit_n_metro_stations",
+            "transit_n_rail_stations",
+            "transit_bus_density",
+            "transit_metro_density",
+            "transit_mean_dist_bus_m",
+            "transit_p90_dist_bus_m",
+            "transit_bus_coverage_300m",
+            "transit_bus_coverage_500m",
+            "transit_mean_dist_metro_m",
+            "transit_metro_coverage_1000m",
+            "transit_has_metro",
+            "transit_index",
+        ],
+    },
+    {
+        "name": "social_infrastructure",
+        "csv": "santiago_social_infrastructure.csv",
+        "geojson": "santiago_social_infrastructure.geojson",
+        "optional_layer": True,
+        "columns": [
+            "social_n_total",
+            "social_n_library",
+            "social_n_cultural",
+            "social_n_community",
+            "social_n_senior",
+            "social_n_sports",
+            "social_n_public_space",
+            "social_category_diversity",
+            "social_density_per_km2",
+            "social_points_per_10k",
+            "social_mean_nearest_m",
+            "social_median_nearest_m",
+            "social_p90_nearest_m",
+            "social_coverage_500m",
+            "social_coverage_1000m",
+            "social_n_access_grid",
+            "social_index",
+        ],
+    },
+    {
+        "name": "food_environment",
+        "csv": "santiago_food_environment.csv",
+        "geojson": "santiago_food_environment.geojson",
+        "optional_layer": True,
+        "columns": [
+            "food_n_supermarket",
+            "food_n_greengrocer",
+            "food_n_marketplace",
+            "food_n_fastfood",
+            "food_n_convenience",
+            "food_n_healthy",
+            "food_n_unhealthy",
+            "food_healthy_density",
+            "food_unhealthy_density",
+            "food_mrfei",
+            "food_swamp_ratio",
+            "food_mean_dist_supermarket_m",
+            "food_index",
+        ],
+    },
 ]
 
 
-def load_layer(spec: dict) -> pd.DataFrame:
+def load_layer(spec: dict) -> pd.DataFrame | None:
     path = DATA_DIR / spec["csv"]
     if not path.exists():
+        if spec.get("optional_layer"):
+            print(f"Skipping optional layer {spec['name']}: missing {path.name}")
+            return None
         raise FileNotFoundError(f"Missing layer CSV: {path.name}")
 
     df = pd.read_csv(path)
@@ -266,6 +515,8 @@ def build_master() -> tuple[pd.DataFrame, gpd.GeoDataFrame]:
     master = pd.DataFrame(gdf.drop(columns="geometry"))
     for spec in LAYER_SPECS:
         layer = load_layer(spec)
+        if layer is None:
+            continue
         master = master.merge(layer, on="name", how="left", validate="one_to_one")
 
     # Derived health-accessibility ratios using demography.

@@ -22,6 +22,49 @@ outputs:
   maps_dir: "maps"
   cache_dir: "cache"
 
+socioeconomic:
+  # Multidimensional commune-level NSE index from open official sources.
+  casen_year: 2022
+  region_code: 13  # Región Metropolitana (5-digit CUT prefix)
+
+  # Open, no-API-key sources (bastianolea/pobreza_chile, derived from CASEN/MDSF).
+  sources:
+    pobreza_comunal: "https://raw.githubusercontent.com/bastianolea/pobreza_chile/main/pobreza_comunal/datos_procesados/pobreza_comunal.csv"
+    casen_ingresos: "https://raw.githubusercontent.com/bastianolea/pobreza_chile/main/casen/datos_procesados/casen_2022_ingresos.csv"
+    casen_pobreza: "https://raw.githubusercontent.com/bastianolea/pobreza_chile/main/casen/datos_procesados/casen_2022_pobreza.csv"
+    # Supplementary indicators (open, no key; graceful skip if unavailable)
+    crime: "https://github.com/bastianolea/delincuencia_chile/raw/main/datos/procesados/cead_delincuencia_chile.parquet"
+    paes: "https://github.com/bastianolea/puntajes_prueba_paes/raw/main/datos/puntajes_paes_comuna_2024.csv"
+    fonasa: "https://raw.githubusercontent.com/bastianolea/fonasa_beneficiarios/master/datos/fonasa_beneficiarios_tramo_edad_sexo.csv"
+    sinim: "https://github.com/bastianolea/sinim_info_municipal/raw/main/datos/sinim_2019-2023.parquet"
+
+  # Housing materiality + overcrowding aggregated from the 2017 Census (manzana).
+  census_materiality: true
+
+  # Composite index: equal-weight z-scores + PCA (numpy SVD), oriented so that
+  # higher = better socioeconomic position.
+  index:
+    method: "zscore_equal + pca_svd"
+    components:
+      - ingreso
+      - escolaridad
+      - pobreza_pct
+      - pobreza_multi_pct
+      - viv_materialidad_deficitaria_pct
+      - hacinamiento_phh
+
+  # Optional external validation (construct validity). Drop an official index
+  # file in data/raw/ and add a source spec here to enable; missing files are
+  # skipped gracefully. Example (commented):
+  validation:
+    sources: []
+    #  - name: "Índice de Prioridad Social RM (MDSF)"
+    #    path: "data/raw/ips_rm.csv"
+    #    name_col: "comuna"
+    #    value_col: "ips"
+    #    sep: ";"
+    #    higher_is_better: true   # higher IPS = higher priority = lower NSE
+
 air_quality:
   # Date range for satellite extraction (media anual)
   year: 2024
@@ -50,6 +93,68 @@ air_quality:
   who_guidelines:
     pm25: 5.0
     no2: 10.0
+
+pm25:
+  # Chronic surface PM2.5 (ACAG / van Donkelaar) via Google Earth Engine.
+  # PM2.5 is the #1 environmental dementia risk factor (Lancet Commission 2024).
+  # We average a multi-year window because chronic (long-term) exposure is the
+  # relevant window for brain aging, and it also resolves that ACAG ends in 2022.
+  years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]
+  start_date: "2015-01-01"
+  end_date: "2023-01-01"  # exclusive upper bound → includes the 2022 annual image
+
+  # ACAG global surface PM2.5, awesome-gee-community-catalog (sat-io).
+  # V6.GL.02, 0.01° (~1 km), units µg/m^3, annual means 2000-2022. Reuses the
+  # already-authenticated GEE pipeline (init_gee("exposome-api")) — no new key.
+  collection:
+    id: "projects/sat-io/open-datasets/GLOBAL-SATELLITE-PM25/ANNUAL"
+    # Band name is not documented in the catalog. "auto" selects band 0 and
+    # renames it to pm25; set explicitly (e.g. "b1") once confirmed via
+    # ee.Image(...).bandNames().getInfo().
+    band: "auto"
+    scale_meters: 1113  # ~1 km at this latitude
+    # V6 ANNUAL is already in µg/m^3; keep 1.0 unless a future version stores
+    # scaled integers.
+    scale_factor: 1.0
+
+  # Population-weighted exposure (sum(pm25*pop)/sum(pop)). Defaults to the same
+  # WorldPop raster used by the ALAN layer (see alan.population) if omitted here.
+  # population:
+  #   id: "WorldPop/GP/100m/pop"
+  #   band: "population"
+  #   country: "CHL"
+  #   year: 2020
+  #   scale_meters: 100
+
+  # Optional ground-truth validation. Drop a CSV here with annual-mean PM2.5 by
+  # SINCA station (columns: station, lat, lon, pm25) and plot_pm25_map.py will
+  # compute ACAG-vs-SINCA agreement; missing file is skipped gracefully.
+  validation:
+    sinca_annual_csv: "data/raw/stations_sinca/sinca_pm25_annual.csv"
+
+alan:
+  # Artificial light at night (ALAN) — VIIRS Day/Night Band, media anual.
+  year: 2024
+  start_date: "2024-01-01"
+  end_date: "2024-12-31"
+
+  # VIIRS DNB monthly, stray-light corrected (VCMSLCFG). Band avg_rad in
+  # nW/cm^2/sr; native resolution ~500 m (15 arc-seconds).
+  collection:
+    id: "NOAA/VIIRS/DNB/MONTHLY_V1/VCMSLCFG"
+    band: "avg_rad"
+    cf_band: "cf_cvg"   # cloud-free coverage count; mask pixels with cf_cvg == 0
+    scale_meters: 500
+
+  # Population raster for population-weighted exposure (sum(rad*pop)/sum(pop)).
+  # WorldPop unconstrained 100 m; falls back to the area mean if it does not
+  # intersect a commune.
+  population:
+    id: "WorldPop/GP/100m/pop"
+    band: "population"
+    country: "CHL"
+    year: 2020
+    scale_meters: 100
 
 climate:
   # Historical period for time-series analysis
@@ -118,17 +223,33 @@ climate:
       - lat
       - lon
 
+precipitation:
+  # Daily precipitation exposome layer based on CHIRPS.
+  years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+  collection:
+    id: "UCSB-CHG/CHIRPS/DAILY"
+    band: "precipitation"
+    scale_meters: 5566  # ~0.05 degrees
+  thresholds:
+    wet_day_mm: 1
+    heavy_day_mm: 10
+    very_heavy_day_mm: 20
+
 greenspace:
   # Satellite-based greenness (Sentinel-2)
   satellite:
-    collection: "COPERNICUS/S2_SR_HARMONIZED"
+    # Landsat-8/9 Collection 2 Level 2 is used for greenness metrics because
+    # Sentinel-2 at 10 m triggers GEE computation/download limits at regional
+    # scale. Landsat's 30 m resolution is sufficient for commune-level NDVI/EVI.
+    collection: "LANDSAT/LC08/C02/T1_L2 + LANDSAT/LE09/C02/T1_L2"
     years: [2024]
     # Southern Hemisphere spring-summer: Oct-Mar, peak greenness, fewer clouds
     season_months: [10, 11, 12, 1, 2, 3]
-    cloud_max_pct: 20
     ndvi_threshold: 0.20
     evi_threshold: 0.15
-    scale_meters: 10
+    scale_meters: 30
 
   # Accessibility metrics based on OpenStreetMap green areas
   access:
@@ -268,3 +389,255 @@ healthcare:
       # Otherwise, a name fuzzy-match ratio (0-1) above this threshold is also
       # required. Uses difflib.SequenceMatcher.
       name_match_threshold: 0.5
+
+wildfire:
+  # Climate-disaster layer: forest-fire (wildfire) exposure per commune.
+  # Discrete-hazard complement to the continuous heat/drought/precip layers.
+  years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+  # GEE satellite backbone (no extra API key beyond the GEE project).
+  collections:
+    # MODIS Burned Area monthly, 500 m. BurnDate > 0 marks a burned pixel
+    # (ordinal day of burn); we use it only as a burned/not-burned mask.
+    burned_area:
+      id: "MODIS/061/MCD64A1"
+      band: "BurnDate"
+      scale_meters: 500
+    # FIRMS active-fire daily, ~1 km. T21 = brightness temperature (K) of the
+    # fire pixel; pixels are masked where no fire was detected.
+    active_fire:
+      id: "FIRMS"
+      band: "T21"
+      scale_meters: 1000
+
+  # Seasons with the largest fires in/around the RM (used for the peak-year
+  # detection metric and documentation).
+  peak_seasons: [2017, 2023, 2024]
+
+  # Composite 0-100 exposure index weights (burned fraction, detection
+  # density, recurrence). Mirrors heat_exposure_index / precip_extremes_index.
+  index_weights:
+    burned_pct: 0.4
+    detection_density: 0.4
+    recurrence: 0.2
+
+  # Optional official enrichment (CONAF / itrend). The public itrend endpoint
+  # is an HTML landing page (no direct CSV) and the CONAF "ocurrencia y daño
+  # por comuna 1985-2024" is distributed via the Centro Documental, so this is
+  # an opt-in local file: drop a CSV in data/raw/ and the layer adds official
+  # columns; if it is missing the layer is built from satellite alone.
+  # Mirrors the socioeconomic `validation.sources` convention.
+  official:
+    enabled: true
+    path: "data/raw/conaf_incendios_comuna.csv"
+    sep: ";"
+    # Column mapping from the official CSV to the pipeline schema. Adjust to
+    # match the downloaded file's header.
+    columns:
+      commune: "comuna"
+      n_fires: "numero_incendios"
+      damaged_ha: "superficie_total_ha"
+      human_cause_pct: "pct_causa_humana"
+
+noise:
+  source: "MMA 2024 — Minuta Mapa de Ruido Gran Santiago Urbano 2023"
+  year: 2023
+  population_reference: "INE ACON 2022"
+  n_communes_gsu: 35
+  gsu_population_total: 6910822
+  # OECD thresholds used for exposure counting
+  oecd_thresholds_dba:
+    day: 65
+    night: 55
+  period_day: "07:00–23:00"
+  period_night: "23:00–07:00"
+  # Noise model covered 13 590 km of road network across 792 km² (35 urban communes).
+  # Communes outside the GSU perimeter are set to 0 (not modelled).
+  road_km_modelled: 13590
+  area_km2_modelled: 792
+
+walkability:
+  # "all" used instead of "walk": OSM footway tagging incomplete in Santiago.
+  network_type: "all"
+  crs_metric: "EPSG:32719"
+  # Composite walk_index: z-scored, sign-oriented average rescaled to 0-100.
+  # Higher intersection density, street density, streets_per_node → more walkable (+).
+  # Higher circuity and avg block length → less walkable (inverted).
+  index:
+    method: "zscore_composite_0_100"
+    positive_metrics: [intersection_density, street_density_km, streets_per_node_avg]
+    negative_metrics: [circuity_avg, street_length_avg]
+  # Evidence: physical inactivity is the #1 modifiable dementia risk factor
+  # (Livingston et al., Lancet 2024). Walkable environments predict walking
+  # behaviour across income levels (Saelens & Handy, Med Sci Sports Exerc 2008).
+
+public_transport:
+  osm_tags:
+    bus_stop: {highway: bus_stop}
+    metro: {railway: [station, halt, subway_entrance]}
+  grid_spacing_m: 1000
+  metro_no_data_dist_m: 50000
+  index:
+    method: zscore_composite_0_100
+    positive_metrics: [bus_density, metro_density]
+    negative_metrics: [mean_dist_bus_m]
+  # Evidence: mobility constraints increase social isolation in older adults
+  # — Lancet 2024 dementia risk factor. (Musselwhite et al., Ageing Soc 2015)
+
+social_infrastructure:
+  # Proxy for opportunities for social participation and cognitive stimulation.
+  # Ecological measure only: not individual loneliness, cognition, or dementia.
+  overpass_urls:
+    - "https://overpass-api.de/api"
+    - "https://overpass.kumi.systems/api"
+  requests_timeout_s: 90
+  civic_categories: [library, cultural, community, senior]
+  curated_access_exclude: [private, customers, "no", permit]
+  osm_tags:
+    amenity:
+      - library
+      - community_centre
+      - social_centre
+      - social_facility
+      - arts_centre
+      - theatre
+      - events_venue
+    tourism:
+      - museum
+      - gallery
+    leisure:
+      - sports_centre
+      - pitch
+      - fitness_centre
+      - swimming_pool
+      - stadium
+      - recreation_ground
+      - park
+      - playground
+    club:
+      - social
+      - sport
+    place:
+      - square
+    "social_facility:for":
+      - senior
+      - elderly
+      - older_people
+  osm_tag_groups:
+    library_cultural:
+      amenity: [library, arts_centre, theatre, events_venue]
+      tourism: [museum, gallery]
+    community_senior:
+      amenity: [community_centre, social_centre, social_facility]
+      club: [social]
+      "social_facility:for": [senior, elderly, older_people]
+    sports:
+      leisure: [sports_centre, pitch, fitness_centre, swimming_pool, stadium]
+      club: [sport]
+    public_space_extra:
+      leisure: [playground]
+      place: [square]
+  reuse_greenspace_cache: true
+  categories:
+    library:
+      - tag: amenity
+        values: [library]
+    cultural:
+      - tag: amenity
+        values: [arts_centre, theatre, events_venue]
+      - tag: tourism
+        values: [museum, gallery]
+    community:
+      - tag: amenity
+        values: [community_centre, social_centre, social_facility]
+      - tag: club
+        values: [social]
+    senior:
+      - tag: "social_facility:for"
+        values: [senior, elderly, older_people]
+    sports:
+      - tag: leisure
+        values: [sports_centre, pitch, fitness_centre, swimming_pool, stadium]
+      - tag: club
+        values: [sport]
+    public_space:
+      - tag: leisure
+        values: [recreation_ground, park, garden, dog_park, playground]
+      - tag: landuse
+        values: [village_green, recreation_ground]
+      - tag: place
+        values: [square]
+  category_order: [library, cultural, community, senior, sports, public_space]
+  grid_spacing_m: 1000
+  coverage_m: [500, 1000]
+  no_data_dist_m: 99999
+  dedupe_radius_m: 50
+  index:
+    method: civic_access_recreation_weighted_0_100
+    weights:
+      civic: 0.45
+      access: 0.35
+      recreation: 0.20
+  # Evidence: social isolation is a modifiable dementia risk factor; libraries,
+  # cultural venues, community centres and recreation facilities are mapped as
+  # neighbourhood opportunities for social and cognitive engagement.
+
+food_environment:
+  # CDC modified Retail Food Environment Index (mRFEI) from OSM.
+  classification:
+    healthy:
+      - {shop: supermarket}
+      - {shop: greengrocer}
+      - {amenity: marketplace}
+    unhealthy:
+      - {amenity: fast_food}
+      - {shop: convenience}
+  dedupe_radius_m: 25
+  grid_spacing_m: 1000
+  no_supermarket_dist_m: 50000
+  index:
+    method: zscore_composite_0_100
+    positive_metrics: [food_mrfei, food_healthy_density]
+    negative_metrics: [food_mean_dist_supermarket_m]
+  # Verified OSM coverage (RM): supermarket=879, greengrocer=320, marketplace=160,
+  # fast_food=2266, convenience=3351. Ferias libres under-mapped (~160 vs ~400+);
+  # documented as a known downward bias on mRFEI in popular communes.
+  # Evidence: diet → obesity/diabetes/hypertension (3 of 14 Lancet 2024 dementia
+  # risk factors); neighbourhood food access predicts cognitive health behaviours
+  # (Finlay et al., Soc Sci Med 2026, "Cognability").
+
+neuro_mortality:
+  # External ecological outcome comparator from DEIS mortality exports.
+  # Not an exposome layer and therefore not merged into the master table.
+  region_code: 13
+  years: [2018, 2019, 2020, 2021, 2022]
+  source:
+    path: "/Users/bastianayalainostroza/Downloads/DEFUNCIONES_FUENTE_DEIS_1990_2023_CIFRAS_OFICIALES/DEFUNCIONES_FUENTE_DEIS_1990_2023_CIFRAS_OFICIALES.csv"
+    format: "csv"
+    sep: ";"
+    encoding: "latin1"
+    region_filter: "Metropolitana"
+    columns:
+      year: "AÑO"
+      commune_code: "COD_COMUNA"
+      commune_name: "COMUNA"
+      region_name: "NOMBRE_REGION"
+      cause: "DIAG1"
+      age: "EDAD_CANT"
+      age_type: "EDAD_TIPO"
+  comparison:
+    outcomes: [dementia, alzheimer, cerebrovascular, parkinsonism]
+    exposures:
+      - pm25_pop_weighted
+      - no2_surface_ug_m3
+      - heat_exposure_index
+      - sleep_context_index
+      - noise_combined_pct
+      - green_cover_pct_ndvi
+      - social_index
+      - walk_index
+      - transit_index
+      - food_index
+    covariates: [nse_index, demo_pct_pop_65_plus]
