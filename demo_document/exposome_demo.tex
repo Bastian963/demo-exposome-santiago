@@ -83,7 +83,7 @@
 
 \section{Purpose}
 
-The \emph{exposome} is the set of environmental and social exposures that accumulate over a person's life and influence brain health and the risk of cognitive decline and dementia \citep{Livingston2020}. At BrainLat, these exposures usually have to be reconstructed from where each participant lives. This document is a concrete example of how I would build them, and of the data and tools that can keep refining them. Using only \textbf{open data}, I derive five exposome layers for the \textbf{52 communes of the Metropolitan Region of Santiago} (air quality, green space, healthcare access, socioeconomic level and urban heat), join them into one per-commune table (52 communes, 43 variables, no gaps), and map them in Figure~\ref{fig:fivepanel}.
+The \emph{exposome} is the set of environmental and social exposures that accumulate over a person's life and influence brain health and the risk of cognitive decline and dementia \citep{Livingston2020}. At BrainLat, these exposures usually have to be reconstructed from where each participant lives. This document is a concrete example of how I would build them, and of the data and tools that can keep refining them. Using only \textbf{open data}, I derive more than twenty exposome layers for the \textbf{52 communes of the Metropolitan Region of Santiago} — air quality, industrial heavy metals, green space, artificial light at night, urban heat, precipitation, wildfire, socioeconomic level, healthcare access, and others — integrated into a single master table (52 communes, 261 variables, no gaps). Figure~\ref{fig:fivepanel} shows five representative layers.
 
 Each layer is a self-contained, reproducible notebook and needs no API keys. A static open-data snapshot still misses a great deal, and that is where stronger sources matter. \textbf{Time-domain satellite data} (Sentinel-2 NDVI series, Landsat) and \textbf{computer vision} recover exposures that open maps leave out. Green space is the clearest case: directly from aerial imagery I detect the private gardens and street trees that OpenStreetMap never registers (Fig.~\ref{fig:cv}). Reading satellite archives as time series, to follow change and flag gaps, is the same work I did in time-domain astronomy.
 
@@ -94,7 +94,7 @@ Each layer is a self-contained, reproducible notebook and needs no API keys. A s
   \label{fig:fivepanel}
 \end{figure}
 
-\section{The five layers: indicator, computation and source}
+\section{Key exposome layers: indicator, computation and source}
 \label{sec:layers}
 
 For each layer I state \emph{what the colour scale represents}, \emph{how it is computed}, and \emph{the data source}.
@@ -108,6 +108,10 @@ Health amenities (hospital, clinic, pharmacy, doctors, dentist) are queried from
 \item[\textcolor{softpink}{Air quality}]
 \colorbarval{annual-mean fine particulate matter PM$_{2.5}$ ($\mu$g\,m$^{-3}$).}
 The CAMS atmospheric reanalysis is sampled on a $\sim$11\,km grid over the region (hourly, full year), averaged to an annual mean and aggregated to communes; values are benchmarked against the WHO 2021 annual guideline of 5\,$\mu$g\,m$^{-3}$ (every commune exceeds it). \emph{Source:} Open-Meteo Air-Quality API (CAMS), cross-checked against the official SINCA ground stations \citep{OpenMeteo2024,CAMS2024,WHO2021,SINCA2024}.
+
+\item[\textcolor{softpink}{Industrial heavy metals (RETC)}]
+\colorbarval{log(Pb$\,+\,$1) from industrial point-source air emissions [kg\,yr$^{-1}$, log scale].}
+Lead, arsenic and mercury from industrial facilities declared to the Chilean national pollutant release register (RETC, Ministry of the Environment). Annual facility-level emissions are downloaded for 2015--2022 (CSV + XLSX, no API key), unit-converted to kg/yr, assigned to communes by point-in-polygon spatial join, and averaged across years. Lead is the single best-documented neurotoxin in the Lancet Commission on Dementia 2024: exposure reduces hippocampal volume and accelerates cognitive decline dose-responsively. The most striking finding is that Tiltil, a semi-rural northern commune, concentrates $\approx$99.6\% of all industrial Pb emissions in the Metropolitan Region ($\approx$10\,629 kg/yr), attributable to a known industrial complex; the Spearman correlation between log(Pb) and PM$_{2.5}$ is $\rho\approx{-}0.15$ ($p=0.30$, n.s.), confirming that industrial point-source neurotoxins and combustion-driven particulate pollution are \emph{independent} exposure pathways. \emph{Source:} RETC MMA (\texttt{datosretc.mma.gob.cl}), CC-BY, 2015--2022.
 
 \item[\textcolor{softpink}{Green space}]
 \colorbarval{share of the commune covered by accessible green space (\%).}
@@ -139,10 +143,11 @@ Healthcare facility density   & $+0.59$ & $<0.001$ & *** \\
 Urban heat index              & $-0.14$ & $0.34$   & n.s. \\
 PM$_{2.5}$ (annual mean)      & $+0.09$ & $0.54$   & n.s. \\
 NO$_2$ (annual mean)          & $+0.05$ & $0.74$   & n.s. \\
+Industrial Pb log(kg/yr)      & $+0.22$ & $0.11$   & n.s. \\
 \hline
 \end{tabular}\par}
 \smallskip
-{\footnotesize Spearman rank correlations of each exposome layer against the composite socioeconomic index ($n=52$ communes; two-sided $p$-values; $|\rho|\gtrsim0.27$ is significant at $p<0.05$). *** $p<0.001$;\ n.s.\ = not significant. The two strongest, highly significant associations are social (green space, healthcare); the air-quality associations are not significant, consistent with a topographic rather than socioeconomic driver.}
+{\footnotesize Spearman rank correlations of each exposome layer against the composite socioeconomic index ($n=52$ communes; two-sided $p$-values; $|\rho|\gtrsim0.27$ is significant at $p<0.05$). *** $p<0.001$;\ n.s.\ = not significant. Green space and healthcare show strong socioeconomic gradients; air quality and industrial heavy metals do not --- Pb emissions in Santiago are driven by a single industrial complex in the semi-rural commune of Tiltil, not by deprivation geography.}
 
 \section{From an open baseline to satellite, time-domain exposure}
 
@@ -165,15 +170,17 @@ This is a direct transfer of my background in \textbf{time-domain astronomy} (mu
 
 \section{Reproducibility}
 
-All code --- one notebook per factor, the master integration script (\texttt{scripts/\allowbreak build\_master\_\allowbreak exposome.py}), a conda \texttt{environment.yml}, and the scripts that generate every figure in this document --- is openly available at \url{https://github.com/Bastian963/demo-exposome-santiago}. Every layer is harmonised to the 52 official communes of the Metropolitan Region (commune boundaries clipped to the regional limit), computed in a metric projection (EPSG:32719) and exported as both a table (CSV) and a GIS layer (GeoJSON), with a static map (PNG) and an interactive map (HTML). All inputs are open and require no authentication; a satellite (Google Earth Engine) appendix is provided as an optional extension. Each notebook also caches its raw API responses, so re-runs are offline and deterministic, and the master builder validates a strict one-to-one join (52 rows, no missing values) before writing.
+All code --- one notebook or script per factor, the master integration script (\texttt{scripts/\allowbreak build\_master\_\allowbreak exposome.py}), a conda \texttt{environment.yml}, and the scripts that generate every figure in this document --- is openly available at \url{https://github.com/Bastian963/demo-exposome-santiago}. Every layer is harmonised to the 52 official communes of the Metropolitan Region, computed in a metric projection (EPSG:32719) and exported as both a table (CSV) and a GIS layer (GeoJSON). All inputs are open; most layers require no authentication (RETC, OpenStreetMap, CASEN, INE Census 2017); satellite layers use Google Earth Engine as an optional extension. Each script caches raw responses, so re-runs are offline and deterministic, and the master builder validates a strict one-to-one join (52 rows, 261 variables, no missing values) before writing.
 
 \smallskip
 \noindent\textbf{\textcolor{softpink}{Repository layout.}}
 \begin{description}[leftmargin=0pt,labelsep=0.5em,itemsep=1.5pt,font=\ttfamily\small]
   \item[notebooks/santiago\_*.ipynb] the factor notebooks and the optional computer-vision example.
-  \item[data/processed/*\_exposome\_rm\_santiago.\{csv,geojson\}] per-factor commune indicators as a table and a GIS layer.
-  \item[figures/*\_santiago\_pub.png \textnormal{,} maps/*\_santiago.html] publication-quality static map and interactive web map per factor.
-  \item[scripts/build\_master\_exposome.py] joins all layers and writes the master CSV, GeoJSON and metadata in the processed-data folder ($52\times43$).
+  \item[scripts/run\_*.py] config-driven CLI scripts (one per layer); prefer over notebooks for new layers.
+  \item[data/processed/*.\{csv,geojson,json\}] per-factor commune indicators as a table, a GIS layer and machine-readable metadata.
+  \item[figures/*\_santiago\_*.png \textnormal{,} maps/*\_santiago.html] publication-quality static maps and interactive web maps per factor.
+  \item[scripts/build\_master\_exposome.py] joins all layers and writes the master CSV, GeoJSON and metadata ($52\times261$).
+  \item[docs/*\_methodology.md] per-layer methodology, data sources, limitations and key findings.
   \item[environment.yml \textnormal{,} README.md] reproducible conda environment and project documentation.
 \end{description}
 

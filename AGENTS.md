@@ -46,7 +46,8 @@ mamba run -p .conda/envs/exposome python -m ipykernel install --user --name expo
 10. python scripts/run_greenspace_access.py    # OpenStreetMap green areas + accessibility
 11. python scripts/run_greenspace_cv.py        # high-res CV validation (optional)
 12. python scripts/run_wildfire.py             # MODIS burned area + FIRMS, GEE required
-13. python scripts/build_master_exposome.py
+13. python scripts/run_heavy_metals.py        # RETC industrial heavy metals, no GEE required
+14. python scripts/build_master_exposome.py
 ```
 
 ## Hardcoded Santiago Assumptions

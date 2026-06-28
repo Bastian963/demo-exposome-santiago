@@ -23,6 +23,9 @@ El objetivo es mostrar un flujo reproducible para construir indicadores comunale
 | **`scripts/run_precipitation.py`** | **Precipitación** | **lluvia anual, días húmedos/intensos, RX1/RX5, rachas secas/húmedas, anomalía 2024** | **GEE: CHIRPS diario** |
 | **`scripts/run_sleep_context.py`** | **Contexto sueño-circadiano** | **índice ambiental 0-100 basado en ALAN, noches cálidas y vulnerabilidad** | **Capas procesadas + ENS/ENUT como contexto regional** |
 | **`scripts/run_wildfire.py`** | **Desastres climáticos — incendios forestales** | **área quemada km²/%, recurrencia, focos activos, índice de exposición 0-100** | **GEE: MODIS MCD64A1 + FIRMS (+ CONAF opcional)** |
+| **`scripts/run_heavy_metals.py`** | **Metales pesados industriales (RETC)** | **Pb, As, Hg en kg/yr; log(Pb+1); índice compuesto; n fuentes** | **MMA RETC — fuentes puntuales 2015–2022** |
+| **`scripts/run_neuro_mortality.py`** | **Comparador sanitario — mortalidad neurológica** | **tasas comunales de demencia, Alzheimer, ACV y parkinsonismo** | **DEIS defunciones** |
+| **`scripts/run_neuro_hospitalizations.py`** | **Comparador sanitario — egresos neuropsiquiátricos** | **tasas comunales de hospitalización mental, ACV, demencia, ánimo, psicosis, sustancias** | **DEIS egresos hospitalarios** |
 | `notebooks/santiago_green_spaces.ipynb` | Áreas verdes | % área verde, km2, número de polígonos | OpenStreetMap |
 | `notebooks/santiago_healthcare_access.ipynb` | Acceso a salud | conteos, densidad, distancia media/mediana/P90 a salud y hospital | OpenStreetMap |
 | `notebooks/santiago_socioeconomic.ipynb` | Nivel socioeconómico | pobreza, ingreso, escolaridad, índice NSE | CASEN/SAE vía datos abiertos |
@@ -136,6 +139,53 @@ python scripts/plot_sleep_context.py     # figura diagnóstica opcional
 La ENS/ENUT se usa como evidencia y validación regional, no como imputación
 comunal. **Metodología completa:** `docs/sleep_context_methodology.md`.
 
+## Metales pesados industriales — RETC (MMA)
+
+Nueva capa de **toxinas industriales** para investigación en salud cerebral.
+El Plomo (Pb) es el neurotóxico #1 de la Lancet Commission 2024; el Arsénico
+(As) y el Mercurio (Hg) tienen evidencia emergente de daño al SNC.
+
+```bash
+python scripts/run_heavy_metals.py   # santiago_heavy_metals_retc_2015_2022.{csv,geojson,json}
+python scripts/plot_heavy_metals_map.py  # figura de 4 paneles
+```
+
+Fuente: **RETC MMA** (`datosretc.mma.gob.cl`), emisiones al aire de fuentes
+puntuales 2015–2022, licencia CC-BY, sin API key. Geocodificación por
+punto-en-polígono comunal con fallback a comuna más cercana.
+
+Hallazgos clave:
+- **Tiltil** concentra ~99.6% de las emisiones de Pb del RM (~10,629 kg/yr),
+  correspondiente a un complejo industrial conocido.
+- **Mn y Cd = 0 en RM**: sus fuentes industriales están en otras regiones
+  (Atacama, Maule) — hallazgo real, no error.
+- **Pb vs PM₂.₅**: ρ = −0.15 (p = 0.30, n.s.) — las fuentes industriales
+  y la combustión de fondo **no co-localizan**, confirmando que RETC añade
+  información exposómica independiente.
+
+Indicadores: `hm_pb_kg`, `hm_as_kg`, `hm_hg_kg`, `hm_pb_log`, `hm_as_log`,
+`n_sources`, `hm_index` (z-score ponderado). **Metodología completa:**
+`docs/heavy_metals_methodology.md`.
+
+## Comparadores Sanitarios DEIS
+
+Los archivos de defunciones y egresos hospitalarios se usan como desenlaces
+ecológicos externos, no como capas del exposoma. Los CSV crudos grandes viven en
+`data/raw/deis/` y no se versionan en git.
+
+```bash
+python scripts/run_neuro_mortality.py
+python scripts/compare_neuro_mortality_exposome.py
+
+python scripts/run_neuro_hospitalizations.py
+python scripts/compare_neuro_hospitalizations_exposome.py
+```
+
+La mortalidad sirve mejor para desenlaces neurológicos duros (demencia,
+Alzheimer, ACV, parkinsonismo). Los egresos hospitalarios son la fuente más útil
+para morbilidad mental no fatal (trastornos del ánimo, psicosis, sustancias,
+ansiedad/estrés). **Metodología completa:** `docs/neuro_outcomes_methodology.md`.
+
 ---
 
 ## Salida Principal
@@ -187,6 +237,10 @@ scripts/         utilidades reproducibles, incluida la integración maestra
 | `data/processed/santiago_precipitation_chirps_2015_2024.csv` | precipitación CHIRPS 2015-2024 por comuna |
 | `data/processed/santiago_sleep_context.csv` | índice comunal de contexto ambiental sueño-circadiano |
 | `data/processed/santiago_wildfire_2015_2024.csv` | exposición a incendios forestales por comuna (área quemada, focos, índice 0-100) |
+| `data/processed/santiago_heavy_metals_retc_2015_2022.csv` | emisiones industriales de Pb/As/Hg por comuna (RETC 2015–2022) |
+| `data/processed/santiago_neuro_mortality_2018_2022.csv` | comparador comunal de mortalidad neurológica DEIS |
+| `data/processed/santiago_neuro_hospitalizations_2006_2006.csv` | comparador comunal de egresos neuropsiquiátricos DEIS |
+| `data/processed/santiago_neuro_hospitalizations_exposome_correlations.csv` | correlaciones egresos neuropsiquiátricos vs exposoma |
 | `data/processed/green_exposome_rm_santiago.csv` | indicadores de áreas verdes por comuna |
 | `data/processed/healthcare_exposome_rm_santiago.csv` | acceso a salud con conteos, densidad y distancias |
 | `data/processed/socioeconomic_exposome_rm_santiago.csv` | pobreza, ingreso, escolaridad e índice NSE |
@@ -239,9 +293,10 @@ Orden sugerido de ejecución:
 8. python scripts/run_precipitation.py
 9. python scripts/run_climate_openmeteo.py
 10. python scripts/run_wildfire.py
-11. python scripts/build_master_exposome.py
-12. python scripts/run_sleep_context.py
-13. python scripts/build_master_exposome.py
+11. python scripts/run_heavy_metals.py
+12. python scripts/build_master_exposome.py
+13. python scripts/run_sleep_context.py
+14. python scripts/build_master_exposome.py
 ```
 
 Ejecutar desde la raíz del repositorio para que las rutas relativas apunten a `data/processed/`, `figures/`, `maps/` y `cache/`. Los notebooks usan caché local cuando existe, pero el directorio `cache/` queda fuera de Git para no publicar respuestas crudas de APIs ni archivos temporales.
