@@ -1,28 +1,42 @@
 {
-  "created_utc": "2026-06-26T19:34:58.544144+00:00",
+  "created_utc": "2026-06-28T04:38:21.034836+00:00",
   "n_communes": 52,
-  "n_variables_including_name_area": 118,
+  "n_variables_including_name_area": 252,
   "layers": [
     {
       "name": "socioeconomic",
       "csv": "socioeconomic_exposome_rm_santiago.csv",
       "columns": [
         "poblacion",
-        "pobreza_pct",
         "ingreso",
         "escolaridad",
-        "nse_index"
+        "pobreza_pct",
+        "pobreza_ci_low",
+        "pobreza_ci_high",
+        "pobreza_multi_pct",
+        "viv_materialidad_deficitaria_pct",
+        "hacinamiento_phh",
+        "nse_index",
+        "nse_index_pca",
+        "nse_quintil"
       ]
     },
     {
       "name": "air_quality",
       "csv": "air_quality_exposome_rm_santiago.csv",
       "columns": [
-        "pm25_mean",
         "no2_mean",
         "n_grid",
-        "pm25_who_ratio",
         "no2_who_ratio"
+      ]
+    },
+    {
+      "name": "air_quality_pm25",
+      "csv": "santiago_pm25_acag_2015_2022.csv",
+      "columns": [
+        "pm25_mean",
+        "pm25_pop_weighted",
+        "pm25_who_ratio"
       ]
     },
     {
@@ -36,12 +50,53 @@
       ]
     },
     {
-      "name": "green",
-      "csv": "green_exposome_rm_santiago.csv",
+      "name": "alan",
+      "csv": "santiago_alan_viirs_2024.csv",
       "columns": [
-        "green_km2",
-        "green_pct",
-        "n_green"
+        "alan_radiance_mean",
+        "alan_radiance_median",
+        "alan_radiance_sd",
+        "alan_radiance_max"
+      ]
+    },
+    {
+      "name": "sleep_context",
+      "csv": "santiago_sleep_context.csv",
+      "columns": [
+        "sleep_alan_log",
+        "sleep_tropical_nights_20c",
+        "sleep_summer_tmin_c",
+        "sleep_exposure_index",
+        "sleep_vulnerability_index",
+        "sleep_context_index"
+      ]
+    },
+    {
+      "name": "greenspace_access",
+      "csv": "santiago_greenspace_access.csv",
+      "columns": [
+        "green_osm_km2",
+        "green_osm_pct",
+        "green_osm_n",
+        "dist_to_nearest_park_m",
+        "green_area_within_300m_km2",
+        "green_area_within_500m_km2",
+        "green_area_within_1000m_km2",
+        "green_count_within_300m",
+        "green_count_within_500m",
+        "green_count_within_1000m"
+      ]
+    },
+    {
+      "name": "greenspace_coverage",
+      "csv": "santiago_greenspace_coverage.csv",
+      "columns": [
+        "ndvi_mean",
+        "ndvi_max",
+        "evi_mean",
+        "evi_max",
+        "green_cover_pct_ndvi",
+        "green_cover_pct_evi"
       ]
     },
     {
@@ -123,6 +178,47 @@
       ]
     },
     {
+      "name": "precipitation",
+      "csv": "santiago_precipitation_chirps_2015_2024.csv",
+      "columns": [
+        "precip_annual_mean_mm",
+        "precip_annual_sd_mm",
+        "precip_annual_cv",
+        "precip_wet_days",
+        "precip_wet_day_pct",
+        "precip_heavy_days_10mm",
+        "precip_very_heavy_days_20mm",
+        "precip_rx1day_mm",
+        "precip_rx5day_mm",
+        "precip_cdd_days",
+        "precip_cwd_days",
+        "precip_intensity_wet_day_mm",
+        "precip_winter_mean_mm",
+        "precip_summer_mean_mm",
+        "precip_latest_year_mm",
+        "precip_latest_anomaly_mm",
+        "precip_latest_anomaly_pct",
+        "precip_extremes_index",
+        "precip_n_years",
+        "precip_n_days"
+      ]
+    },
+    {
+      "name": "precipitation_spi",
+      "csv": "santiago_precipitation_spi.csv",
+      "columns": [
+        "drought_months_pct",
+        "drought_severe_months_pct",
+        "drought_max_duration_months",
+        "precip_trend_mm_per_decade",
+        "spi_12_latest",
+        "spi_3_mean",
+        "spi_3_std",
+        "spi_6_mean",
+        "spi_12_mean"
+      ]
+    },
+    {
       "name": "climate_openmeteo",
       "csv": "santiago_climate_metrics_annual.csv",
       "columns": [
@@ -150,6 +246,110 @@
         "ehdd",
         "tmax_p95",
         "tmin_p05"
+      ]
+    },
+    {
+      "name": "wildfire",
+      "csv": "santiago_wildfire_2015_2024.csv",
+      "columns": [
+        "fire_burned_area_km2_total",
+        "fire_burned_area_mean_annual_km2",
+        "fire_burned_pct_mean_annual",
+        "fire_burned_pct_max_year",
+        "fire_burn_years_count",
+        "fire_worst_year",
+        "fire_trend_km2_per_decade",
+        "fire_detections_total",
+        "fire_detections_per_km2",
+        "fire_detections_max_year",
+        "fire_brightness_max_k",
+        "fire_exposure_index"
+      ]
+    },
+    {
+      "name": "noise",
+      "csv": "santiago_noise_mma_2023.csv",
+      "columns": [
+        "noise_ld_pop_exposed",
+        "noise_ld_pct_exposed",
+        "noise_ln_pop_exposed",
+        "noise_ln_pct_exposed",
+        "noise_combined_pct",
+        "noise_in_gsu_map"
+      ]
+    },
+    {
+      "name": "walkability",
+      "csv": "santiago_walkability.csv",
+      "columns": [
+        "walk_intersection_density",
+        "walk_street_density_km_km2",
+        "walk_avg_street_length_m",
+        "walk_streets_per_node",
+        "walk_circuity",
+        "walk_n_nodes",
+        "walk_index"
+      ]
+    },
+    {
+      "name": "public_transport",
+      "csv": "santiago_public_transport.csv",
+      "columns": [
+        "transit_n_bus_stops",
+        "transit_n_metro_stations",
+        "transit_n_rail_stations",
+        "transit_bus_density",
+        "transit_metro_density",
+        "transit_mean_dist_bus_m",
+        "transit_p90_dist_bus_m",
+        "transit_bus_coverage_300m",
+        "transit_bus_coverage_500m",
+        "transit_mean_dist_metro_m",
+        "transit_metro_coverage_1000m",
+        "transit_has_metro",
+        "transit_index"
+      ]
+    },
+    {
+      "name": "social_infrastructure",
+      "csv": "santiago_social_infrastructure.csv",
+      "columns": [
+        "social_n_total",
+        "social_n_library",
+        "social_n_cultural",
+        "social_n_community",
+        "social_n_senior",
+        "social_n_sports",
+        "social_n_public_space",
+        "social_category_diversity",
+        "social_density_per_km2",
+        "social_points_per_10k",
+        "social_mean_nearest_m",
+        "social_median_nearest_m",
+        "social_p90_nearest_m",
+        "social_coverage_500m",
+        "social_coverage_1000m",
+        "social_n_access_grid",
+        "social_index"
+      ]
+    },
+    {
+      "name": "food_environment",
+      "csv": "santiago_food_environment.csv",
+      "columns": [
+        "food_n_supermarket",
+        "food_n_greengrocer",
+        "food_n_marketplace",
+        "food_n_fastfood",
+        "food_n_convenience",
+        "food_n_healthy",
+        "food_n_unhealthy",
+        "food_healthy_density",
+        "food_unhealthy_density",
+        "food_mrfei",
+        "food_swamp_ratio",
+        "food_mean_dist_supermarket_m",
+        "food_index"
       ]
     }
   ],

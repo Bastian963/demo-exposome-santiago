@@ -1,0 +1,29 @@
+{
+  "created_utc": "2026-06-27T03:31:26.830471+00:00",
+  "city": "santiago",
+  "source": "MMA 2024 — Minuta Mapa de Ruido Gran Santiago Urbano 2023",
+  "year": 2023,
+  "method": "Traffic noise modelling (13 590 km of road network) — vehicle count data from cameras, toll portals and Sistema RED; noise levels computed for 792 km² across 35 urban communes (GSU). Exposure counts = population in cells above OECD threshold.",
+  "thresholds_dba": {
+    "day_Ld": 65,
+    "night_Ln": 55
+  },
+  "periods": {
+    "day": "07:00–23:00",
+    "night": "23:00–07:00"
+  },
+  "population_reference": "INE ACON 2022",
+  "n_communes_total": 52,
+  "n_communes_in_gsu_map": 35,
+  "gsu_population_total": 6910822,
+  "columns": [
+    "name",
+    "noise_ld_pop_exposed",
+    "noise_ld_pct_exposed",
+    "noise_ln_pop_exposed",
+    "noise_ln_pct_exposed",
+    "noise_combined_pct",
+    "noise_in_gsu_map"
+  ],
+  "note": "Communes outside the GSU urban perimeter have noise_in_gsu_map=0 and all noise exposure values set to 0 (not modelled)."
+}

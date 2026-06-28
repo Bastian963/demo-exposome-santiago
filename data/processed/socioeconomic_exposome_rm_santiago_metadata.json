@@ -1,0 +1,124 @@
+{
+  "created_utc": "2026-06-26T21:37:37.550829+00:00",
+  "city": "santiago",
+  "n_rows": 52,
+  "columns": [
+    "name",
+    "area_km2",
+    "poblacion",
+    "ingreso",
+    "escolaridad",
+    "pobreza_pct",
+    "pobreza_ci_low",
+    "pobreza_ci_high",
+    "pobreza_multi_pct",
+    "viv_materialidad_deficitaria_pct",
+    "hacinamiento_phh",
+    "nse_index",
+    "nse_index_pca",
+    "nse_quintil",
+    "tasa_delitos_violentos",
+    "tasa_delitos_propiedad",
+    "paes_puntaje_promedio",
+    "pct_fonasa_tramo_a_b",
+    "ipp_per_capita"
+  ],
+  "geographic_unit": "comuna (OSM admin_level=8)",
+  "sources": {
+    "casen_year": 2022,
+    "income_education": {
+      "vars": {
+        "ytotcor": "ingreso",
+        "esc": "escolaridad"
+      },
+      "provider": "CASEN 2022 via bastianolea/pobreza_chile",
+      "url": "https://raw.githubusercontent.com/bastianolea/pobreza_chile/main/casen/datos_procesados/casen_2022_ingresos.csv"
+    },
+    "income_poverty_sae": {
+      "vars": {
+        "pobreza_p": "pobreza_pct",
+        "limite_inferior": "pobreza_ci_low",
+        "limite_superior": "pobreza_ci_high",
+        "poblacion": "poblacion"
+      },
+      "provider": "MDSF small-area estimation via bastianolea/pobreza_chile",
+      "url": "https://raw.githubusercontent.com/bastianolea/pobreza_chile/main/pobreza_comunal/datos_procesados/pobreza_comunal.csv"
+    },
+    "multidimensional_poverty": {
+      "vars": {
+        "pobreza_multi_p": "pobreza_multi_pct"
+      },
+      "provider": "CASEN 2022 via bastianolea/pobreza_chile",
+      "url": "https://raw.githubusercontent.com/bastianolea/pobreza_chile/main/casen/datos_procesados/casen_2022_pobreza.csv"
+    },
+    "housing": {
+      "vars": {
+        "MATREC+MATIRREC / total": "viv_materialidad_deficitaria_pct",
+        "PERSONAS / CANT_HOG": "hacinamiento_phh"
+      },
+      "provider": "INE Censo 2017 (manzana level)"
+    },
+    "crime": {
+      "vars": {
+        "delito_n (violent categories) / pop * 100k": "tasa_delitos_violentos",
+        "delito_n (property categories) / pop * 100k": "tasa_delitos_propiedad"
+      },
+      "provider": "CEAD via bastianolea/delincuencia_chile",
+      "url": "https://github.com/bastianolea/delincuencia_chile/raw/main/datos/procesados/cead_delincuencia_chile.parquet",
+      "note": "supplementary column; NaN if download fails"
+    },
+    "paes": {
+      "vars": {
+        "(paes_complectora + paes_matematica1) / 2": "paes_puntaje_promedio"
+      },
+      "provider": "Mineduc PAES 2024 via bastianolea/puntajes_prueba_paes",
+      "url": "https://github.com/bastianolea/puntajes_prueba_paes/raw/main/datos/puntajes_paes_comuna_2024.csv",
+      "note": "supplementary column; NaN if download fails"
+    },
+    "fonasa": {
+      "vars": {
+        "tramo A+B beneficiarios / total": "pct_fonasa_tramo_a_b"
+      },
+      "provider": "Fonasa 2023 via bastianolea/fonasa_beneficiarios",
+      "url": "https://raw.githubusercontent.com/bastianolea/fonasa_beneficiarios/master/datos/fonasa_beneficiarios_tramo_edad_sexo.csv",
+      "note": "supplementary column; NaN if download fails"
+    },
+    "sinim": {
+      "vars": {
+        "variable_id 1262 (IPPP, M$/hab)": "ipp_per_capita"
+      },
+      "provider": "Subdere SINIM 2023 via bastianolea/sinim_info_municipal",
+      "url": "https://github.com/bastianolea/sinim_info_municipal/raw/main/datos/sinim_2019-2023.parquet",
+      "note": "supplementary column; NaN if download fails"
+    }
+  },
+  "index": {
+    "orientation": "higher = better socioeconomic position",
+    "components": [
+      "ingreso",
+      "escolaridad",
+      "pobreza_pct",
+      "pobreza_multi_pct",
+      "viv_materialidad_deficitaria_pct",
+      "hacinamiento_phh"
+    ],
+    "nse_index": "equal-weight mean of standardized, sign-oriented components",
+    "nse_index_pca": "first principal component (numpy SVD), z-scored",
+    "pca_variance_explained_pc1": 0.7364,
+    "pca_loadings_pc1": {
+      "ingreso": 0.4215,
+      "escolaridad": 0.4547,
+      "pobreza_pct": 0.4494,
+      "pobreza_multi_pct": 0.4016,
+      "viv_materialidad_deficitaria_pct": 0.4002,
+      "hacinamiento_phh": 0.3038
+    },
+    "weighting_sensitivity_spearman_rho": 0.9979,
+    "weighting_sensitivity_spearman_p": 6.268005664746197e-61
+  },
+  "external_validation": [],
+  "outputs": [
+    "socioeconomic_exposome_rm_santiago.csv",
+    "socioeconomic_exposome_rm_santiago.geojson"
+  ]
+}

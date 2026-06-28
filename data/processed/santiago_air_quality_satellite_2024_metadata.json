@@ -1,0 +1,20 @@
+{
+  "created_utc": "2026-06-26T13:36:09.033674+00:00",
+  "city": "santiago",
+  "year": 2024,
+  "method": "Plan A+: GEE satellite + ERA5 BLH physics-based conversion",
+  "resolution_no2_m": 1113,
+  "resolution_aod_m": 3000,
+  "resolution_blh_m": 30000,
+  "molar_mass_no2_g_mol": 46.0055,
+  "conversion_formula": "no2_surface_ug_m3 = no2_mean * 46.0055 * 1e6 / blh_mean",
+  "columns": [
+    "name",
+    "area_km2",
+    "no2_mean",
+    "blh_mean",
+    "aod_mean",
+    "no2_surface_ug_m3"
+  ],
+  "n_rows": 52
+}

@@ -1,0 +1,60 @@
+{
+  "created_utc": "2026-06-27T01:55:53.480720+00:00",
+  "city": "santiago",
+  "n_rows": 52,
+  "columns": [
+    "name",
+    "area_km2",
+    "drought_months_pct",
+    "drought_severe_months_pct",
+    "drought_max_duration_months",
+    "precip_trend_mm_per_decade",
+    "spi_12_latest",
+    "spi_3_mean",
+    "spi_3_std",
+    "spi_6_mean",
+    "spi_12_mean"
+  ],
+  "source": {
+    "name": "CHIRPS daily precipitation",
+    "file": "santiago_precipitation_chirps_daily_2015_2024.csv",
+    "period": "2015–2024",
+    "n_communes": 52,
+    "n_days": 3653
+  },
+  "spi_algorithm": {
+    "method": "McKee et al. (1993)",
+    "distribution": "Gamma (scipy.stats.gamma, MLE fit, floc=0)",
+    "zero_handling": "mixed probability mass at zero + Gamma CDF",
+    "scales": [
+      3,
+      6,
+      12
+    ],
+    "thresholds": {
+      "moderate_drought": -1.0,
+      "severe_drought": -2.0
+    },
+    "note": "Reference period = evaluation period (2015-2024). Drought metrics reflect within-period variability. The Chilean mega-drought (2010-present) means SPI values are computed relative to an already-dry baseline."
+  },
+  "columns_description": {
+    "drought_months_pct": "% of months where SPI-3 < -1 (moderate drought)",
+    "drought_severe_months_pct": "% of months where SPI-3 < -2 (severe drought)",
+    "drought_max_duration_months": "Longest consecutive months in moderate drought",
+    "precip_trend_mm_per_decade": "Linear trend in annual precipitation (mm/decade)",
+    "spi_12_latest": "SPI-12 for the most recent month in record (2015–2024)",
+    "spi_3_mean": "Mean SPI-3 over the full record (≈ 0 by construction)",
+    "spi_3_std": "SD of SPI-3 — higher = more precipitation variability",
+    "spi_6_mean": "Mean SPI-6 over the full record",
+    "spi_12_mean": "Mean SPI-12 over the full record"
+  },
+  "brain_health_relevance": {
+    "drought_exposure": "Chronic water stress → psychological stress, neuroinflammation",
+    "drying_trend": "Long-term climate change exposure trajectory",
+    "spi_variability": "Unpredictable precipitation → food/water system disruption"
+  },
+  "outputs": [
+    "santiago_precipitation_spi.csv",
+    "santiago_precipitation_spi.geojson"
+  ]
+}

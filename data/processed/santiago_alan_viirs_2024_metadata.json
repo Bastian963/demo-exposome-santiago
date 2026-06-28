@@ -1,0 +1,30 @@
+{
+  "created_utc": "2026-06-26T21:04:16.616068+00:00",
+  "city": "santiago",
+  "year": 2024,
+  "method": "VIIRS DNB monthly (VCMSLCFG) annual-mean radiance, cloud-free masked and clamped at 0; commune zonal statistics + WorldPop population-weighted mean.",
+  "resolution_m": 500,
+  "units": "nW/cm^2/sr",
+  "sources": {
+    "viirs_dnb": {
+      "provider": "NOAA/Colorado School of Mines (EOG)",
+      "collection": "NOAA/VIIRS/DNB/MONTHLY_V1/VCMSLCFG",
+      "band": "avg_rad"
+    },
+    "population": {
+      "provider": "WorldPop",
+      "collection": "WorldPop/GP/100m/pop",
+      "year": 2020
+    }
+  },
+  "columns": [
+    "name",
+    "area_km2",
+    "alan_radiance_mean",
+    "alan_radiance_median",
+    "alan_radiance_sd",
+    "alan_radiance_max",
+    "alan_radiance_pop_weighted"
+  ],
+  "n_rows": 52
+}

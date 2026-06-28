@@ -69,6 +69,8 @@
 
 \newcommand{\colorbarval}[1]{\textit{Colour scale:}~#1}
 
+\setlength{\emergencystretch}{2em}
+
 \begin{document}
 
 \begin{center}
@@ -81,9 +83,9 @@
 
 \section{Purpose}
 
-The \emph{exposome} is the totality of environmental and social exposures that accumulate over a person's life and shape brain health and the risk of cognitive decline and dementia \citep{Livingston2020}. A central task for BrainLat is to derive such exposures from where participants live. This document demonstrates that capability end to end: starting only from a residential geographic unit (the \textbf{52 communes of the Metropolitan Region of Santiago}) and \textbf{open data}, I build five harmonised exposome layers, integrate them into a single analysis-ready table, and produce maps that can be linked to clinical, cognitive or epidemiological cohorts.
+The \emph{exposome} is the set of environmental and social exposures that accumulate over a person's life and influence brain health and the risk of cognitive decline and dementia \citep{Livingston2020}. At BrainLat, these exposures usually have to be reconstructed from where each participant lives. This document is a concrete example of how I would build them, and of the data and tools that can keep refining them. Using only \textbf{open data}, I derive five exposome layers for the \textbf{52 communes of the Metropolitan Region of Santiago} (air quality, green space, healthcare access, socioeconomic level and urban heat), join them into one per-commune table (52 communes, 43 variables, no gaps), and map them in Figure~\ref{fig:fivepanel}.
 
-Each layer is a standalone, reproducible Jupyter notebook; a master script joins all of them on a common key (the commune name) into one table of $52\times43$ variables with no missing values. The pipeline uses no API keys and is fully reproducible from a single \texttt{environment.yml}. Beyond mapping current open-data indicators, the demo also treats those indicators as auditable baselines: the green-space layer is later contrasted with computer-vision vegetation detection to show where open maps miss private gardens, street trees and unmapped greenery. Figure~\ref{fig:fivepanel} shows the five headline indicators.
+Each layer is a self-contained, reproducible notebook and needs no API keys. A static open-data snapshot still misses a great deal, and that is where stronger sources matter. \textbf{Time-domain satellite data} (Sentinel-2 NDVI series, Landsat) and \textbf{computer vision} recover exposures that open maps leave out. Green space is the clearest case: directly from aerial imagery I detect the private gardens and street trees that OpenStreetMap never registers (Fig.~\ref{fig:cv}). Reading satellite archives as time series, to follow change and flag gaps, is the same work I did in time-domain astronomy.
 
 \begin{figure}[h]
   \centering
@@ -163,7 +165,7 @@ This is a direct transfer of my background in \textbf{time-domain astronomy} (mu
 
 \section{Reproducibility}
 
-The accompanying repository contains one notebook per factor, the master integration script (\texttt{scripts/build\_master\_exposome.py}), and a conda \texttt{environment.yml}. Every layer is harmonised to the 52 official communes of the Metropolitan Region (commune boundaries clipped to the regional limit), computed in a metric projection (EPSG:32719) and exported as both a table (CSV) and a GIS layer (GeoJSON), with a static map (PNG) and an interactive map (HTML). All inputs are open and require no authentication; a satellite (Google Earth Engine) appendix is provided as an optional extension. Each notebook also caches its raw API responses, so re-runs are offline and deterministic, and the master builder validates a strict one-to-one join (52 rows, no missing values) before writing.
+All code --- one notebook per factor, the master integration script (\texttt{scripts/\allowbreak build\_master\_\allowbreak exposome.py}), a conda \texttt{environment.yml}, and the scripts that generate every figure in this document --- is openly available at \url{https://github.com/Bastian963/demo-exposome-santiago}. Every layer is harmonised to the 52 official communes of the Metropolitan Region (commune boundaries clipped to the regional limit), computed in a metric projection (EPSG:32719) and exported as both a table (CSV) and a GIS layer (GeoJSON), with a static map (PNG) and an interactive map (HTML). All inputs are open and require no authentication; a satellite (Google Earth Engine) appendix is provided as an optional extension. Each notebook also caches its raw API responses, so re-runs are offline and deterministic, and the master builder validates a strict one-to-one join (52 rows, no missing values) before writing.
 
 \smallskip
 \noindent\textbf{\textcolor{softpink}{Repository layout.}}

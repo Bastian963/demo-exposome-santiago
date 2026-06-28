@@ -1,0 +1,71 @@
+{
+  "created_utc": "2026-06-28T00:37:52.668057+00:00",
+  "city": "santiago",
+  "period": "2015-2024",
+  "n_rows": 52,
+  "columns": [
+    "name",
+    "area_km2",
+    "fire_burned_area_km2_total",
+    "fire_burned_area_mean_annual_km2",
+    "fire_burned_pct_mean_annual",
+    "fire_burned_pct_max_year",
+    "fire_burn_years_count",
+    "fire_worst_year",
+    "fire_trend_km2_per_decade",
+    "fire_detections_total",
+    "fire_detections_per_km2",
+    "fire_detections_max_year",
+    "fire_brightness_max_k",
+    "fire_exposure_index"
+  ],
+  "method": "Commune zonal statistics over MODIS MCD64A1 burned area (binary burned mask x pixel area, summed) and FIRMS active-fire detections (per-pixel detection-day count, summed). Composite exposure index = weighted, sqrt-normalised burned fraction + detection density + recurrence (max commune = 100 per component).",
+  "sources": {
+    "burned_area": {
+      "provider": "NASA LP DAAC / MODIS",
+      "collection": "MODIS/061/MCD64A1",
+      "band": "BurnDate",
+      "resolution_m": 500
+    },
+    "active_fire": {
+      "provider": "NASA FIRMS (MODIS + VIIRS)",
+      "collection": "FIRMS",
+      "band": "T21",
+      "resolution_m": 1000
+    },
+    "official": "CONAF / itrend forest-fire statistics by commune (optional, local data/raw/ CSV; merged when present)"
+  },
+  "index_weights": {
+    "burned_pct": 0.4,
+    "detection_density": 0.4,
+    "recurrence": 0.2
+  },
+  "peak_seasons": [
+    2017,
+    2023,
+    2024
+  ],
+  "columns_description": {
+    "fire_burned_area_km2_total": "Cumulative burned area over the period (km^2)",
+    "fire_burned_area_mean_annual_km2": "Mean annual burned area (km^2)",
+    "fire_burned_pct_mean_annual": "Mean annual burned area as % of commune area",
+    "fire_burned_pct_max_year": "Worst single-year burned fraction (%)",
+    "fire_burn_years_count": "Years (of 10) with a burn > 0.01 km^2",
+    "fire_worst_year": "Calendar year with the highest burned area for this commune",
+    "fire_trend_km2_per_decade": "Linear trend in annual burned area (km^2/decade, OLS slope x 10). Positive = increasing fire, negative = decreasing. Interpret cautiously: only 10 data points with high inter-annual variability.",
+    "fire_detections_total": "Total FIRMS detection-days over the period",
+    "fire_detections_per_km2": "FIRMS detection-days per km^2 (size-comparable)",
+    "fire_detections_max_year": "FIRMS detection-days in the worst year",
+    "fire_brightness_max_k": "Max FIRMS T21 brightness temperature (K). 0 = no fire detection in the entire period (not 0 Kelvin — used as sentinel).",
+    "fire_exposure_index": "Composite wildfire exposure index (0-100)"
+  },
+  "brain_health_relevance": {
+    "wildfire_smoke": "Acute PM2.5/PM10 spikes -> neuroinflammation, cognitive decline",
+    "recurrent_exposure": "Chronic stress, displacement, loss of green space"
+  },
+  "limitations": "MCD64A1 at 500 m underestimates small/urban fires; FIRMS complements it for interface fires. Dense urban communes are near-zero by design.",
+  "outputs": [
+    "santiago_wildfire_2015_2024.csv",
+    "santiago_wildfire_2015_2024.geojson"
+  ]
+}

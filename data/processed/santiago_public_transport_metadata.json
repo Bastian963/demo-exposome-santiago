@@ -1,0 +1,88 @@
+{
+  "created_utc": "2026-06-28T01:00:21.724180+00:00",
+  "city": "santiago",
+  "source": "OpenStreetMap via osmnx",
+  "osm_tags": {
+    "bus_stop": "highway=bus_stop",
+    "metro": "railway=[station,halt,subway_entrance] — filtered post-download to Metro S.A. only",
+    "rail": "railway=station/halt — EFE/MetroTren (informative only, not in index)"
+  },
+  "deduplication": {
+    "bus_cluster_radius_m": 30,
+    "metro_cluster_radius_m": 150
+  },
+  "coverage_thresholds_m": {
+    "bus_300m": 300,
+    "bus_500m": 500,
+    "metro_1000m": 1000
+  },
+  "grid_spacing_m": 1000,
+  "crs_metric": "EPSG:32719",
+  "method": "Bus stops and metro features downloaded for the entire region via osmnx features_from_place. Metro features filtered to Metro S.A. only (subway_entrance nodes + station nodes with station=subway or operator=Metro S.A.). Bus stops deduplicated at 30m; metro stations at 150m. Distance metrics computed on 1 km grid. transit_index = z-scored composite of bus_density (+), metro_density (+), bus_coverage_500m (+), mean_dist_bus_m (–); rescaled 0–100.",
+  "evidence": "Mobility constraints limit social participation and healthcare access in older adults, increasing social isolation — a Lancet 2024 modifiable dementia risk factor. (Musselwhite et al., Ageing Soc 2015; Lord et al., J Transp Geogr 2011)",
+  "n_communes": 52,
+  "n_communes_with_metro": 27,
+  "n_bus_stops_deduplicated": 11815,
+  "n_metro_stations_deduplicated": 137,
+  "n_rail_stations_efe": 36,
+  "top5_most_accessible": [
+    [
+      "Santiago",
+      100.0
+    ],
+    [
+      "Lo Prado",
+      96.9
+    ],
+    [
+      "Providencia",
+      90.4
+    ],
+    [
+      "Ñuñoa",
+      87.8
+    ],
+    [
+      "San Miguel",
+      87.4
+    ]
+  ],
+  "bot5_least_accessible": [
+    [
+      "San José de Maipo",
+      0.0
+    ],
+    [
+      "Lo Barnechea",
+      19.1
+    ],
+    [
+      "Alhué",
+      23.5
+    ],
+    [
+      "Curacaví",
+      24.5
+    ],
+    [
+      "Colina",
+      25.3
+    ]
+  ],
+  "columns": [
+    "name",
+    "transit_n_bus_stops",
+    "transit_n_metro_stations",
+    "transit_n_rail_stations",
+    "transit_bus_density",
+    "transit_metro_density",
+    "transit_mean_dist_bus_m",
+    "transit_p90_dist_bus_m",
+    "transit_bus_coverage_300m",
+    "transit_bus_coverage_500m",
+    "transit_mean_dist_metro_m",
+    "transit_metro_coverage_1000m",
+    "transit_has_metro",
+    "transit_index"
+  ]
+}
