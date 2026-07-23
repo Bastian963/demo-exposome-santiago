@@ -1,6 +1,5 @@
 # Santiago Urban Exposome Demo
 
-Proyecto demostrativo para una postulación a **Data Scientist in Brain Health and Exposome Data Analysis**.
 
 El objetivo es mostrar un flujo reproducible para construir indicadores comunales del **exposoma urbano** en la Región Metropolitana de Santiago, usando fuentes abiertas, geoprocesamiento en Python y salidas listas para integrarse con datos clínicos, cognitivos o epidemiológicos.
 
