@@ -1,0 +1,22 @@
+schema_version: 1
+id: cartagena
+name: Cartagena de Indias
+country: Colombia
+country_code: CO
+country_code3: COL
+timezone: America/Bogota
+
+# Compact OSM query for the DANE 2024 cabecera municipal (DIVIPOLA 13001).
+region_query: "Cartagena de Indias, Bolivar, Colombia"
+
+# Conservative envelope around the urban cabecera, with margin for provider
+# grids. The study polygon, not this bbox, remains the analysis authority.
+bbox:
+  west: -75.68
+  south: 10.20
+  east: -75.35
+  north: 10.58
+
+crs:
+  geographic: EPSG:4326
+  metric: auto

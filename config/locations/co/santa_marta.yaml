@@ -1,0 +1,24 @@
+schema_version: 1
+id: santa_marta
+name: Santa Marta
+country: Colombia
+country_code: CO
+country_code3: COL
+timezone: America/Bogota
+
+# Compact OSM query for the DANE 2024 cabecera municipal (DIVIPOLA 47001).
+# The authoritative polygon is materialized locally by
+# scripts/migrations/build_colombia_urban_references.py before preflight.
+region_query: "Santa Marta, Magdalena, Colombia"
+
+# Conservative envelope around the urban cabecera, with margin for provider
+# grids. The study polygon, not this bbox, remains the analysis authority.
+bbox:
+  west: -74.36
+  south: 11.06
+  east: -74.05
+  north: 11.39
+
+crs:
+  geographic: EPSG:4326
+  metric: auto

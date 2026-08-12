@@ -132,6 +132,23 @@ class StudyConfigTest(unittest.TestCase):
         self.assertTrue(exception.reason)
         self.assertTrue(exception.doc)
 
+    def test_colombia_download_node_studies_share_one_official_urban_unit(self) -> None:
+        for aggregate_id, native_id, code in (
+            ("santa_marta_urban", "santa_marta_native", "47001"),
+            ("cartagena_urban", "cartagena_native", "13001"),
+            ("pasto_urban", "pasto_native", "52001"),
+        ):
+            with self.subTest(study=aggregate_id):
+                aggregate = load_study(aggregate_id, repo_root_path=REPO_ROOT)
+                native = load_study(native_id, repo_root_path=REPO_ROOT)
+                self.assertEqual(aggregate.expected_units, 1)
+                self.assertEqual(aggregate.study.unit_type, "dane_cabecera_municipal")
+                self.assertEqual(aggregate.study.raw["detail"]["native_study"], native_id)
+                self.assertTrue(native.is_native)
+                self.assertTrue(native.study.hidden)
+                self.assertEqual(native.aoi_path, aggregate.spatial_path)
+                self.assertIn(code, aggregate.study.spatial_source)
+
 
 class TemporalExceptionParsingTest(unittest.TestCase):
     ENABLED = ("greenspace_multisource", "pm25")

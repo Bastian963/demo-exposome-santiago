@@ -61,6 +61,33 @@ PYTHONPYCACHEPREFIX=/tmp .venv/bin/python -m unittest \
 .venv/bin/python scripts/run_multicity_overnight.py --city lima --dry-run
 ```
 
+## Referencias urbanas de Colombia
+
+Santa Marta, Cartagena y Pasto usan la cabecera municipal oficial del Marco
+Geoestadístico Nacional 2024 del DANE. No se usa el municipio rural completo y
+no se inventan barrios. Una persona ejecuta una vez el constructor reanudable:
+
+```bash
+cd "$HOME/projects/Brainlat-runner"
+.venv/bin/python scripts/migrations/build_colombia_urban_references.py
+```
+
+El comando muestra una barra de progreso de tres ciudades. Después de cada una
+guarda un snapshot inmutable y manifestado bajo `data/raw/dane/`, y genera el
+GeoJSON normalizado bajo `data/reference/co/`. Si se interrumpe, ejecuta el
+mismo comando: verificará y omitirá las ciudades ya guardadas.
+
+Como esas referencias se generan sólo en el nodo y no son código, se pueden
+ocultar del estado Git local sin borrarlas:
+
+```bash
+printf '%s\n' \
+  '/data/reference/co/santa_marta/santa_marta_urban/' \
+  '/data/reference/co/cartagena/cartagena_urban/' \
+  '/data/reference/co/pasto/pasto_urban/' \
+  >> .git/info/exclude
+```
+
 ## Credenciales humanas
 
 Google Earth Engine usa el proyecto `exposome-api`. Una persona autentica una
@@ -82,7 +109,7 @@ Esto guarda las credenciales en `~/.netrc`, fuera del repositorio. Nunca copies
 ese archivo al proyecto, GitHub, logs o mensajes. El resto de las capas puede
 usar GEE, Open-Meteo, OSM/Overpass o fuentes locales según su configuración.
 
-## Preflight y primera ciudad
+## Preflight de las tres ciudades
 
 Ejecuta siempre desde la raíz del repositorio. Antes de una noche de trabajo,
 comprueba espacio, estado Git y el plan offline:
@@ -91,7 +118,8 @@ comprueba espacio, estado Git y el plan offline:
 cd "$HOME/projects/Brainlat-runner"
 df -h /
 git status --short
-.venv/bin/python scripts/run_multicity_overnight.py --city lima --dry-run
+.venv/bin/python scripts/run_multicity_overnight.py \
+  --city santa_marta --city cartagena --city pasto --dry-run
 ```
 
 El dry-run no descarga ni escribe productos. Cuando el plan sea correcto, abre
@@ -100,7 +128,8 @@ una sesión persistente:
 ```bash
 tmux new -s brainlat
 cd "$HOME/projects/Brainlat-runner"
-.venv/bin/python scripts/run_multicity_overnight.py --city lima --max-hours 10
+.venv/bin/python scripts/run_multicity_overnight.py \
+  --city santa_marta --city cartagena --city pasto --max-hours 10
 ```
 
 Desacopla `tmux` con `Ctrl-b` y luego `d`. Para volver:

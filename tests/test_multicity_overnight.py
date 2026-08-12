@@ -26,10 +26,17 @@ class MulticityOvernightTests(unittest.TestCase):
             "config/operations/multicity_14.yaml", repo_root=ROOT
         )
 
-    def test_config_declares_seven_city_pairs_and_portable_14(self) -> None:
+    def test_config_declares_twelve_city_pairs_and_portable_14(self) -> None:
         self.assertEqual(len(self.batch.portable_layers), 14)
-        self.assertEqual(len(self.batch.cities), 9)
+        self.assertEqual(len(self.batch.cities), 12)
         validate_batch_studies(self.batch, repo_root=ROOT)
+
+    def test_colombia_download_node_cities_are_selectable(self) -> None:
+        selected = select_cities(self.batch, ["santa_marta", "cartagena", "pasto"])
+        self.assertEqual(
+            [city.aggregate_study for city in selected],
+            ["santa_marta_urban", "cartagena_urban", "pasto_urban"],
+        )
 
     def test_plan_splits_provider_work_by_layer_and_temporal_product(self) -> None:
         city = select_cities(self.batch, ["lima"])

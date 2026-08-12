@@ -1,0 +1,22 @@
+schema_version: 1
+id: pasto_urban
+location: co/pasto
+hidden: false
+
+# The DANE cabecera keeps the urban study separate from Pasto's extensive
+# rural municipality and gives every provider one explicit AOI.
+spatial:
+  path: data/reference/co/pasto/pasto_urban/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: dane_cabecera_municipal
+  expected_units: 1
+  source: DANE Marco Geoestadistico Nacional 2024, layer 305 Zona Urbana, cabecera municipal DIVIPOLA 52001
+  license: CC BY 4.0; attribute Departamento Administrativo Nacional de Estadistica - DANE (www.dane.gov.co)
+
+period: {start_date: "2015-01-01", end_date: "2024-12-31"}
+
+detail:
+  native_study: pasto_native
+
+layers: [pm25, air_quality_satellite, alan, greenspace_coverage, greenspace_multisource, precipitation, climate_heat, wind, wildfire, greenspace_access, walkability, social_infrastructure, food_environment, healthcare]

@@ -1,0 +1,22 @@
+schema_version: 1
+id: pasto
+name: Pasto
+country: Colombia
+country_code: CO
+country_code3: COL
+timezone: America/Bogota
+
+# Compact OSM query for the DANE 2024 cabecera municipal (DIVIPOLA 52001).
+region_query: "Pasto, Narino, Colombia"
+
+# Conservative envelope around the urban cabecera, with margin for provider
+# grids. The study polygon, not this bbox, remains the analysis authority.
+bbox:
+  west: -77.43
+  south: 1.04
+  east: -77.14
+  north: 1.37
+
+crs:
+  geographic: EPSG:4326
+  metric: auto

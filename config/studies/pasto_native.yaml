@@ -1,0 +1,11 @@
+schema_version: 1
+id: pasto_native
+location: co/pasto
+mode: native
+hidden: true
+aoi:
+  path: data/reference/co/pasto/pasto_urban/spatial_units.geojson
+  source: DANE MGN 2024 cabecera municipal DIVIPOLA 52001
+  license: same as pasto_urban
+period: {start_date: "2015-01-01", end_date: "2024-12-31"}
+layers: [air_quality_pm25, air_quality_satellite, alan, greenspace_coverage, greenspace_multisource, precipitation, climate_heat, wind, wildfire, greenspace_access, walkability, social_infrastructure, food_environment, healthcare]

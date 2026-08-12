@@ -1,0 +1,23 @@
+schema_version: 1
+id: santa_marta_urban
+location: co/santa_marta
+hidden: false
+
+# First production unit: the official DANE 2024 cabecera municipal, not the
+# much larger rural municipality. This is one city-wide aggregate; the paired
+# native study preserves source-resolution products where the method permits.
+spatial:
+  path: data/reference/co/santa_marta/santa_marta_urban/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: dane_cabecera_municipal
+  expected_units: 1
+  source: DANE Marco Geoestadistico Nacional 2024, layer 305 Zona Urbana, cabecera municipal DIVIPOLA 47001
+  license: CC BY 4.0; attribute Departamento Administrativo Nacional de Estadistica - DANE (www.dane.gov.co)
+
+period: {start_date: "2015-01-01", end_date: "2024-12-31"}
+
+detail:
+  native_study: santa_marta_native
+
+layers: [pm25, air_quality_satellite, alan, greenspace_coverage, greenspace_multisource, precipitation, climate_heat, wind, wildfire, greenspace_access, walkability, social_infrastructure, food_environment, healthcare]

@@ -37,6 +37,15 @@ cities:
   - id: medellin
     aggregate_study: medellin_comunas
     native_study: medellin_native
+  - id: santa_marta
+    aggregate_study: santa_marta_urban
+    native_study: santa_marta_native
+  - id: cartagena
+    aggregate_study: cartagena_urban
+    native_study: cartagena_native
+  - id: pasto
+    aggregate_study: pasto_urban
+    native_study: pasto_native
   - id: cdmx
     aggregate_study: cdmx_alcaldias
     native_study: cdmx_native
