@@ -75,25 +75,58 @@ class CitySpec:
     department: str
     dane_code: str
     aggregate_study: str
+    bbox: tuple[float, float, float, float]
 
 
 CITY_SPECS = (
-    CitySpec("santa_marta", "Santa Marta", "Magdalena", "47001", "santa_marta_urban"),
+    CitySpec(
+        "santa_marta",
+        "Santa Marta",
+        "Magdalena",
+        "47001",
+        "santa_marta_urban",
+        (-74.36, 11.06, -74.05, 11.39),
+    ),
     CitySpec(
         "cartagena",
         "Cartagena de Indias",
         "Bolivar",
         "13001",
         "cartagena_urban",
+        (-75.68, 10.20, -75.35, 10.58),
     ),
-    CitySpec("pasto", "Pasto", "Narino", "52001", "pasto_urban"),
+    CitySpec(
+        "pasto",
+        "Pasto",
+        "Narino",
+        "52001",
+        "pasto_urban",
+        (-77.43, 1.04, -77.14, 1.37),
+    ),
 )
 CITY_BY_SLUG = {spec.slug: spec for spec in CITY_SPECS}
 
 
-def _query_params(spec: CitySpec) -> dict[str, str]:
+def _discovery_query_params(spec: CitySpec) -> dict[str, str]:
+    west, south, east, north = spec.bbox
     return {
-        "where": f"mpio_cdpmp = '{spec.dane_code}' AND clas_ccdgo = '1'",
+        # The alternate official host's WAF rejects quoted compound SQL filters.
+        # Discover the cabecera OBJECTID spatially, then fetch only that feature.
+        "where": "1=1",
+        "geometry": f"{west},{south},{east},{north}",
+        "geometryType": "esriGeometryEnvelope",
+        "inSR": "4326",
+        "spatialRel": "esriSpatialRelIntersects",
+        "outFields": "OBJECTID,mpio_cdpmp,clas_ccdgo,Categoria",
+        "returnGeometry": "false",
+        "resultRecordCount": "100",
+        "f": "json",
+    }
+
+
+def _feature_query_params(object_id: str) -> dict[str, str]:
+    return {
+        "objectIds": object_id,
         "outFields": OUT_FIELDS,
         "returnGeometry": "true",
         "outSR": "4326",
@@ -101,11 +134,50 @@ def _query_params(spec: CitySpec) -> dict[str, str]:
     }
 
 
-def _prepared_url(spec: CitySpec, service_url: str = SERVICE_URLS[0]) -> str:
-    prepared = requests.Request("GET", service_url, params=_query_params(spec)).prepare()
+def _prepared_url(
+    spec: CitySpec,
+    service_url: str = SERVICE_URLS[0],
+    *,
+    object_id: str | None = None,
+) -> str:
+    params = (
+        _feature_query_params(object_id)
+        if object_id is not None
+        else _discovery_query_params(spec)
+    )
+    prepared = requests.Request("GET", service_url, params=params).prepare()
     if not prepared.url:
         raise RuntimeError(f"Could not prepare DANE request for {spec.slug}")
     return prepared.url
+
+
+def _select_object_id(payload: Any, spec: CitySpec) -> str:
+    if not isinstance(payload, Mapping):
+        raise ValueError(f"DANE discovery response for {spec.slug} is not an object")
+    features = payload.get("features")
+    if not isinstance(features, list):
+        raise ValueError(f"DANE discovery features for {spec.slug} are not a list")
+    candidates: list[Any] = []
+    for feature in features:
+        if not isinstance(feature, Mapping):
+            continue
+        attributes = feature.get("attributes")
+        if not isinstance(attributes, Mapping):
+            continue
+        code = str(attributes.get("mpio_cdpmp", "")).strip()
+        klass = str(attributes.get("clas_ccdgo", "")).strip()
+        category = str(attributes.get("Categoria", "")).strip()
+        if code == spec.dane_code and klass == "1" and category == "Cabecera Municipal":
+            candidates.append(attributes.get("OBJECTID"))
+    if len(candidates) != 1 or candidates[0] is None:
+        raise ValueError(
+            f"Expected exactly one DANE cabecera OBJECTID for {spec.slug} "
+            f"({spec.dane_code}), found {len(candidates)}"
+        )
+    object_id = str(candidates[0]).strip()
+    if not object_id.isdigit():
+        raise ValueError(f"Invalid DANE OBJECTID for {spec.slug}: {candidates[0]!r}")
+    return object_id
 
 
 def _snapshot_root(root: Path, spec: CitySpec) -> Path:
@@ -143,26 +215,31 @@ def _validate_payload(payload: Any, spec: CitySpec) -> Mapping[str, Any]:
     if not isinstance(payload, Mapping) or payload.get("type") != "FeatureCollection":
         raise ValueError(f"DANE response for {spec.slug} is not a GeoJSON FeatureCollection")
     features = payload.get("features")
-    if not isinstance(features, list) or len(features) != 1:
-        found = len(features) if isinstance(features, list) else "non-list"
+    if not isinstance(features, list):
+        raise ValueError(f"DANE features for {spec.slug} are not a list")
+    candidates: list[Mapping[str, Any]] = []
+    for feature in features:
+        if not isinstance(feature, Mapping):
+            raise ValueError(f"Invalid DANE feature for {spec.slug}")
+        properties = feature.get("properties")
+        if not isinstance(properties, Mapping):
+            raise ValueError(f"DANE feature for {spec.slug} has no properties")
+        code = str(properties.get("mpio_cdpmp", "")).strip()
+        klass = str(properties.get("clas_ccdgo", "")).strip()
+        if code == spec.dane_code and klass == "1":
+            candidates.append(feature)
+    if len(candidates) != 1:
         raise ValueError(
             f"Expected exactly one DANE cabecera feature for {spec.slug} "
-            f"({spec.dane_code}), found {found}"
+            f"({spec.dane_code}), found {len(candidates)}"
         )
-    feature = features[0]
-    if not isinstance(feature, Mapping):
-        raise ValueError(f"Invalid DANE feature for {spec.slug}")
+    feature = candidates[0]
     properties = feature.get("properties")
     geometry = feature.get("geometry")
-    if not isinstance(properties, Mapping):
-        raise ValueError(f"DANE feature for {spec.slug} has no properties")
+    assert isinstance(properties, Mapping)
     missing = sorted(REQUIRED_FIELDS - set(properties))
     if missing:
         raise ValueError(f"DANE feature for {spec.slug} is missing fields: {missing}")
-    if str(properties.get("mpio_cdpmp", "")).strip() != spec.dane_code:
-        raise ValueError(f"DANE municipality code mismatch for {spec.slug}")
-    if str(properties.get("clas_ccdgo", "")).strip() != "1":
-        raise ValueError(f"DANE feature for {spec.slug} is not a cabecera municipal")
     if str(properties.get("Categoria", "")).strip() != "Cabecera Municipal":
         raise ValueError(f"Unexpected DANE Categoria for {spec.slug}: {properties.get('Categoria')!r}")
     if not isinstance(geometry, Mapping) or geometry.get("type") not in {
@@ -201,9 +278,23 @@ def _download_source(
                 f"(attempt {attempt}/{attempts_per_service})"
             )
             try:
+                discovery = requests.get(
+                    service_url,
+                    params=_discovery_query_params(spec),
+                    headers={"User-Agent": "BrainLat-exposome-reference-builder/1.1"},
+                    timeout=(connect_timeout_seconds, read_timeout_seconds),
+                )
+                discovery.raise_for_status()
+                try:
+                    discovery_payload = discovery.json()
+                except requests.JSONDecodeError as exc:
+                    raise ValueError(
+                        f"DANE returned non-JSON discovery content for {spec.slug}"
+                    ) from exc
+                object_id = _select_object_id(discovery_payload, spec)
                 response = requests.get(
                     service_url,
-                    params=_query_params(spec),
+                    params=_feature_query_params(object_id),
                     headers={"User-Agent": "BrainLat-exposome-reference-builder/1.1"},
                     timeout=(connect_timeout_seconds, read_timeout_seconds),
                 )

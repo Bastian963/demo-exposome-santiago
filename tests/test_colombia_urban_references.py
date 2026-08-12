@@ -57,6 +57,44 @@ def _feature_collection(city_spec) -> dict:
     }
 
 
+def _populated_center(city_spec) -> dict:
+    feature = json.loads(json.dumps(_feature_collection(city_spec)["features"][0]))
+    feature["properties"].update(
+        {
+            "clas_ccdgo": "2",
+            "zu_ccdgo": "001",
+            "zu_cdivi": f"{city_spec.dane_code}001",
+            "zu_cnmbre": "CENTRO POBLADO",
+            "zu_ccnct": f"{city_spec.dane_code}200000001",
+            "Categoria": "Centro Poblado",
+        }
+    )
+    return feature
+
+
+def _discovery_response(city_spec) -> dict:
+    return {
+        "features": [
+            {
+                "attributes": {
+                    "OBJECTID": 100,
+                    "mpio_cdpmp": city_spec.dane_code,
+                    "clas_ccdgo": "2",
+                    "Categoria": "Centro Poblado",
+                }
+            },
+            {
+                "attributes": {
+                    "OBJECTID": 7418,
+                    "mpio_cdpmp": city_spec.dane_code,
+                    "clas_ccdgo": "1",
+                    "Categoria": "Cabecera Municipal",
+                }
+            },
+        ]
+    }
+
+
 class ColombiaUrbanReferenceTests(unittest.TestCase):
     def test_declares_three_distinct_official_codes(self) -> None:
         self.assertEqual(
@@ -68,19 +106,57 @@ class ColombiaUrbanReferenceTests(unittest.TestCase):
         spec = module.CITY_BY_SLUG["santa_marta"]
         payload = _feature_collection(spec)
         payload["features"][0]["properties"]["mpio_cdpmp"] = "13001"
-        with self.assertRaisesRegex(ValueError, "code mismatch"):
+        with self.assertRaisesRegex(ValueError, "found 0"):
             module._validate_payload(payload, spec)
+
+    def test_query_uses_spatial_envelope_without_quoted_sql(self) -> None:
+        spec = module.CITY_BY_SLUG["santa_marta"]
+        params = module._discovery_query_params(spec)
+
+        self.assertEqual(params["where"], "1=1")
+        self.assertEqual(params["geometry"], "-74.36,11.06,-74.05,11.39")
+        self.assertEqual(params["geometryType"], "esriGeometryEnvelope")
+        self.assertEqual(params["returnGeometry"], "false")
+        self.assertNotIn("'", params["where"])
+
+    def test_discovery_selects_only_the_official_cabecera_object_id(self) -> None:
+        spec = module.CITY_BY_SLUG["santa_marta"]
+
+        object_id = module._select_object_id(_discovery_response(spec), spec)
+
+        self.assertEqual(object_id, "7418")
+        self.assertEqual(module._feature_query_params(object_id)["objectIds"], "7418")
+
+    def test_payload_accepts_nearby_non_cabecera_features(self) -> None:
+        spec = module.CITY_BY_SLUG["santa_marta"]
+        payload = _feature_collection(spec)
+        payload["features"].insert(0, _populated_center(spec))
+
+        selected = module._validate_payload(payload, spec)
+
+        self.assertEqual(selected["properties"]["clas_ccdgo"], "1")
 
     def test_download_falls_back_to_second_official_dane_service(self) -> None:
         spec = module.CITY_BY_SLUG["santa_marta"]
+        discovery = Mock()
+        discovery.json.return_value = _discovery_response(spec)
+        discovery.raise_for_status.return_value = None
         response = Mock()
         response.json.return_value = _feature_collection(spec)
         response.raise_for_status.return_value = None
-        response.url = module._prepared_url(spec, module.SERVICE_URLS[1])
+        response.url = module._prepared_url(
+            spec,
+            module.SERVICE_URLS[1],
+            object_id="7418",
+        )
         with patch.object(
             module.requests,
             "get",
-            side_effect=[module.requests.ConnectTimeout("primary down"), response],
+            side_effect=[
+                module.requests.ConnectTimeout("primary down"),
+                discovery,
+                response,
+            ],
         ) as get:
             result = module._download_source(
                 spec,
@@ -91,9 +167,11 @@ class ColombiaUrbanReferenceTests(unittest.TestCase):
             )
 
         self.assertIs(result, response)
-        self.assertEqual(get.call_count, 2)
+        self.assertEqual(get.call_count, 3)
         self.assertEqual(get.call_args_list[0].args[0], module.SERVICE_URLS[0])
         self.assertEqual(get.call_args_list[1].args[0], module.SERVICE_URLS[1])
+        self.assertEqual(get.call_args_list[2].args[0], module.SERVICE_URLS[1])
+        self.assertEqual(get.call_args_list[2].kwargs["params"]["objectIds"], "7418")
         self.assertEqual(get.call_args_list[0].kwargs["timeout"], (1, 2))
 
     def test_build_reference_is_offline_and_resume_safe(self) -> None:
@@ -103,7 +181,9 @@ class ColombiaUrbanReferenceTests(unittest.TestCase):
             snapshot = module._snapshot_root(root, spec)
             source = snapshot / "zona_urbana.geojson"
             source.parent.mkdir(parents=True)
-            source.write_text(json.dumps(_feature_collection(spec)), encoding="utf-8")
+            payload = _feature_collection(spec)
+            payload["features"].insert(0, _populated_center(spec))
+            source.write_text(json.dumps(payload), encoding="utf-8")
             asset = module.build_raw_source_asset(
                 snapshot,
                 source,
