@@ -20,6 +20,7 @@ import json
 import os
 from pathlib import Path
 import tempfile
+import time
 from typing import Any, Mapping
 
 import geopandas as gpd
@@ -35,9 +36,15 @@ from exposome.raw_sources import (
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SERVICE_URL = (
-    "https://geoportal.dane.gov.co/mparcgis/rest/services/MGN2024/"
-    "Serv_CapasMGN_2024/FeatureServer/305/query"
+SERVICE_URLS = (
+    (
+        "https://geoportal.dane.gov.co/mparcgis/rest/services/MGN2024/"
+        "Serv_CapasMGN_2024/FeatureServer/305/query"
+    ),
+    (
+        "https://portalgis.dane.gov.co/mparcgis/rest/services/MGN2024/"
+        "Serv_CapasMGN_2024/MapServer/305/query"
+    ),
 )
 SOURCE_VERSION = "2024"
 SOURCE_LICENSE = (
@@ -94,8 +101,8 @@ def _query_params(spec: CitySpec) -> dict[str, str]:
     }
 
 
-def _prepared_url(spec: CitySpec) -> str:
-    prepared = requests.Request("GET", SERVICE_URL, params=_query_params(spec)).prepare()
+def _prepared_url(spec: CitySpec, service_url: str = SERVICE_URLS[0]) -> str:
+    prepared = requests.Request("GET", service_url, params=_query_params(spec)).prepare()
     if not prepared.url:
         raise RuntimeError(f"Could not prepare DANE request for {spec.slug}")
     return prepared.url
@@ -175,7 +182,60 @@ def _read_payload(path: Path, spec: CitySpec) -> Mapping[str, Any]:
     return payload
 
 
-def _checkpoint_source(root: Path, spec: CitySpec, *, timeout_seconds: int) -> tuple[Path, Path]:
+def _download_source(
+    spec: CitySpec,
+    *,
+    connect_timeout_seconds: int,
+    read_timeout_seconds: int,
+    attempts_per_service: int,
+    retry_wait_seconds: float,
+) -> requests.Response:
+    if attempts_per_service < 1:
+        raise ValueError("attempts_per_service must be at least 1")
+    errors: list[str] = []
+    for service_url in SERVICE_URLS:
+        host = requests.utils.urlparse(service_url).hostname or service_url
+        for attempt in range(1, attempts_per_service + 1):
+            tqdm.write(
+                f"{spec.name}: trying {host} "
+                f"(attempt {attempt}/{attempts_per_service})"
+            )
+            try:
+                response = requests.get(
+                    service_url,
+                    params=_query_params(spec),
+                    headers={"User-Agent": "BrainLat-exposome-reference-builder/1.1"},
+                    timeout=(connect_timeout_seconds, read_timeout_seconds),
+                )
+                response.raise_for_status()
+                try:
+                    payload = response.json()
+                except requests.JSONDecodeError as exc:
+                    raise ValueError(
+                        f"DANE returned non-JSON content for {spec.slug}"
+                    ) from exc
+                _validate_payload(payload, spec)
+                return response
+            except (requests.RequestException, ValueError) as exc:
+                errors.append(f"{host} attempt {attempt}: {exc}")
+                tqdm.write(f"{spec.name}: {host} unavailable: {exc}")
+                if attempt < attempts_per_service and retry_wait_seconds > 0:
+                    time.sleep(retry_wait_seconds)
+    detail = "\n  - ".join(errors)
+    raise RuntimeError(
+        f"All official DANE services failed for {spec.name}:\n  - {detail}"
+    )
+
+
+def _checkpoint_source(
+    root: Path,
+    spec: CitySpec,
+    *,
+    connect_timeout_seconds: int,
+    read_timeout_seconds: int,
+    attempts_per_service: int,
+    retry_wait_seconds: float,
+) -> tuple[Path, Path]:
     snapshot_root = _snapshot_root(root, spec)
     source = snapshot_root / "zona_urbana.geojson"
     manifest = snapshot_root / SOURCE_MANIFEST_NAME
@@ -196,18 +256,13 @@ def _checkpoint_source(root: Path, spec: CitySpec, *, timeout_seconds: int) -> t
         print(f"{spec.name}: completing manifest for existing raw checkpoint")
     else:
         print(f"{spec.name}: downloading official DANE urban boundary")
-        response = requests.get(
-            SERVICE_URL,
-            params=_query_params(spec),
-            headers={"User-Agent": "BrainLat-exposome-reference-builder/1.0"},
-            timeout=timeout_seconds,
+        response = _download_source(
+            spec,
+            connect_timeout_seconds=connect_timeout_seconds,
+            read_timeout_seconds=read_timeout_seconds,
+            attempts_per_service=attempts_per_service,
+            retry_wait_seconds=retry_wait_seconds,
         )
-        response.raise_for_status()
-        try:
-            payload = response.json()
-        except requests.JSONDecodeError as exc:
-            raise ValueError(f"DANE returned non-JSON content for {spec.slug}") from exc
-        _validate_payload(payload, spec)
         _atomic_bytes(source, response.content)
         # The durable checkpoint exists before moving to the next city.
         source_url = response.url
@@ -297,6 +352,7 @@ def _build_reference(root: Path, spec: CitySpec, source: Path, manifest: Path) -
     os.replace(staged_output, output)
 
     bounds = [float(value) for value in result.total_bounds]
+    snapshot = load_source_manifest(manifest.parent, verify=True)
     metadata = {
         "schema_version": 1,
         "study_id": spec.aggregate_study,
@@ -304,8 +360,8 @@ def _build_reference(root: Path, spec: CitySpec, source: Path, manifest: Path) -
         "source_geometry": source.relative_to(root).as_posix(),
         "source_geometry_sha256": source_hash,
         "source_manifest": manifest.relative_to(root).as_posix(),
-        "source_url": _prepared_url(spec),
-        "source_layer": "DANE MGN 2024 FeatureServer layer 305 Zona Urbana",
+        "source_url": snapshot.assets[0].url,
+        "source_layer": "DANE MGN 2024 ArcGIS layer 305 Zona Urbana",
         "filter": f"mpio_cdpmp = '{spec.dane_code}' AND clas_ccdgo = '1'",
         "license": SOURCE_LICENSE,
         "unit_count": 1,
@@ -333,11 +389,26 @@ def _build_reference(root: Path, spec: CitySpec, source: Path, manifest: Path) -
     return output
 
 
-def run(*, root: Path, city_slugs: list[str], timeout_seconds: int) -> list[Path]:
+def run(
+    *,
+    root: Path,
+    city_slugs: list[str],
+    connect_timeout_seconds: int,
+    read_timeout_seconds: int,
+    attempts_per_service: int,
+    retry_wait_seconds: float,
+) -> list[Path]:
     specs = [CITY_BY_SLUG[slug] for slug in city_slugs] if city_slugs else list(CITY_SPECS)
     outputs: list[Path] = []
     for spec in tqdm(specs, desc="DANE urban references", unit="city"):
-        source, manifest = _checkpoint_source(root, spec, timeout_seconds=timeout_seconds)
+        source, manifest = _checkpoint_source(
+            root,
+            spec,
+            connect_timeout_seconds=connect_timeout_seconds,
+            read_timeout_seconds=read_timeout_seconds,
+            attempts_per_service=attempts_per_service,
+            retry_wait_seconds=retry_wait_seconds,
+        )
         outputs.append(_build_reference(root, spec, source, manifest))
     return outputs
 
@@ -351,9 +422,19 @@ def main() -> None:
         default=[],
         help="Build one city; repeat for several. Defaults to all three.",
     )
-    parser.add_argument("--timeout-seconds", type=int, default=120)
+    parser.add_argument("--connect-timeout-seconds", type=int, default=15)
+    parser.add_argument("--read-timeout-seconds", type=int, default=120)
+    parser.add_argument("--attempts-per-service", type=int, default=2)
+    parser.add_argument("--retry-wait-seconds", type=float, default=3)
     args = parser.parse_args()
-    outputs = run(root=ROOT, city_slugs=args.city, timeout_seconds=args.timeout_seconds)
+    outputs = run(
+        root=ROOT,
+        city_slugs=args.city,
+        connect_timeout_seconds=args.connect_timeout_seconds,
+        read_timeout_seconds=args.read_timeout_seconds,
+        attempts_per_service=args.attempts_per_service,
+        retry_wait_seconds=args.retry_wait_seconds,
+    )
     print("\nReady references:")
     for output in outputs:
         print(f"  - {output.relative_to(ROOT)}")

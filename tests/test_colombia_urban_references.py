@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import Mock, patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -69,6 +70,31 @@ class ColombiaUrbanReferenceTests(unittest.TestCase):
         payload["features"][0]["properties"]["mpio_cdpmp"] = "13001"
         with self.assertRaisesRegex(ValueError, "code mismatch"):
             module._validate_payload(payload, spec)
+
+    def test_download_falls_back_to_second_official_dane_service(self) -> None:
+        spec = module.CITY_BY_SLUG["santa_marta"]
+        response = Mock()
+        response.json.return_value = _feature_collection(spec)
+        response.raise_for_status.return_value = None
+        response.url = module._prepared_url(spec, module.SERVICE_URLS[1])
+        with patch.object(
+            module.requests,
+            "get",
+            side_effect=[module.requests.ConnectTimeout("primary down"), response],
+        ) as get:
+            result = module._download_source(
+                spec,
+                connect_timeout_seconds=1,
+                read_timeout_seconds=2,
+                attempts_per_service=1,
+                retry_wait_seconds=0,
+            )
+
+        self.assertIs(result, response)
+        self.assertEqual(get.call_count, 2)
+        self.assertEqual(get.call_args_list[0].args[0], module.SERVICE_URLS[0])
+        self.assertEqual(get.call_args_list[1].args[0], module.SERVICE_URLS[1])
+        self.assertEqual(get.call_args_list[0].kwargs["timeout"], (1, 2))
 
     def test_build_reference_is_offline_and_resume_safe(self) -> None:
         spec = module.CITY_BY_SLUG["santa_marta"]
