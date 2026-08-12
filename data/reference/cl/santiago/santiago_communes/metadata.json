@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "study_id": "santiago_communes",
+  "spatial_id": "CUT comuna, 5-digit string",
+  "source_geometry": "data/processed/socioeconomic_exposome_rm_santiago.geojson",
+  "source_geometry_sha256": "5fcce7d61203b3883b2e6edf78d1862abfe21c522d39bf19d66e925384aafb5d",
+  "source_cut_table": "cache/Censo2017_16R_ManzanaEntidad_CSV/Censo2017_Identificación_Geográfica/Microdato_Censo2017-Comunas.csv",
+  "source_cut_table_sha256": "35190572c5c699e08f67727673750ddc7b6977cfac01da8fc0cd8084eaa768f8",
+  "unit_count": 52
+}

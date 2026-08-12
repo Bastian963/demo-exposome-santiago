@@ -1,0 +1,144 @@
+schema_version: 1
+id: healthcare
+settings:
+  osm_tags:
+    amenity:
+    - hospital
+    - clinic
+    - pharmacy
+    - doctors
+    - health_post
+    - dentist
+    healthcare:
+    - hospital
+    - clinic
+    - centre
+    - doctor
+    - pharmacy
+    - dentist
+    - laboratory
+  categories:
+    hospital:
+    - tag: amenity
+      values:
+      - hospital
+    - tag: healthcare
+      values:
+      - hospital
+    clinic:
+    - tag: amenity
+      values:
+      - clinic
+    - tag: healthcare
+      values:
+      - clinic
+    primary_care:
+    - tag: amenity
+      values:
+      - doctors
+      - health_post
+    - tag: healthcare
+      values:
+      - centre
+      - doctor
+    pharmacy:
+    - tag: amenity
+      values:
+      - pharmacy
+    - tag: healthcare
+      values:
+      - pharmacy
+    laboratory:
+    - tag: healthcare
+      values:
+      - laboratory
+    dental:
+    - tag: amenity
+      values:
+      - dentist
+    - tag: healthcare
+      values:
+      - dentist
+    mental_health:
+    - tag: healthcare
+      values:
+      - psychotherapist
+    all_health:
+    - tag: amenity
+      values:
+      - hospital
+      - clinic
+      - pharmacy
+      - doctors
+      - health_post
+      - dentist
+    - tag: healthcare
+      values:
+      - hospital
+      - clinic
+      - centre
+      - doctor
+      - pharmacy
+      - dentist
+      - laboratory
+  grid_spacing_m: 1000
+  output_base: santiago_healthcare_access
+  network:
+    enabled: false
+    network_type: walk
+    graph_cache: cache/santiago_walk_graph.graphml
+    max_snap_distance_m: 500
+  official_source:
+    # Chile-only optional sub-source (MINSAL/DEIS). Off by default ON PURPOSE:
+    # opt in per country, in config/countries/cl.yaml.
+    #
+    # This default was `true` until 2026-08-10. Because settings.py treats a
+    # missing config/countries/<iso2>.yaml as a silent no-op, every country
+    # without an override file inherited the Chilean registry -- healthcare for
+    # pais_vasco_provincias actually downloaded this CSV. Opt-in is the safe
+    # direction: a new country now fails closed instead of fetching Chilean data.
+    #
+    # NOTE: `country_args: {default: [--no-official]}` in config/layers.yaml is
+    # NOT what protects non-CL studies. It is rendered into plan.command, which
+    # the in-process adapter path never executes.
+    enabled: false
+    ckan_package_url: https://datos.gob.cl/api/3/action/package_show?id=establecimientos-de-salud-vigentes
+    csv_url: https://datos.gob.cl/dataset/3bf4cf7c-f638-4735-9a01-f65faae4beca/resource/2c44d782-3365-44e3-aefb-2c8b8363a1bc/download/establecimientos_20260623.csv
+    csv_sep: ;
+    columns:
+      name: EstablecimientoGlosa
+      type: TipoEstablecimientoGlosa
+      region: RegionGlosa
+      commune: ComunaGlosa
+      lat: Latitud
+      lon: Longitud
+      status: EstadoFuncionamiento
+      system_type: TipoSistemaSaludGlosa
+      dependency: DependenciaAdministrativa
+      affiliation: TipoPertenenciaEstabGlosa
+    region_filter: Metropolitana de Santiago
+    status_contains: Vigente
+    type_mapping:
+      hospital:
+      - Hospital
+      clinic:
+      - Clínica
+      primary_care:
+      - Centro de Salud Familiar (CESFAM)
+      - Servicio de Atención Primaria de Urgencia (SAPU)
+      - Servicio de Atención Primaria de Urgencia de Alta Resolutividad (SAR)
+      - Consultorio General Urbano (CGU)
+      - Consultorio General Rural (CGR)
+      - Posta de Salud Rural (PSR)
+      - Centro Comunitario de Salud Familiar (CECOSF)
+      - Servicio de Urgencia Rural (SUR)
+      laboratory:
+      - Laboratorio Clínico
+      dental:
+      - Clínica Dental
+      mental_health:
+      - Centro Comunitario de Salud Mental (COSAM)
+    conflation:
+      buffer_m: 150
+      strict_buffer_m: 50
+      name_match_threshold: 0.5

@@ -1,0 +1,20 @@
+schema_version: 1
+id: barcelona
+name: Barcelona — distritos MER 2022
+country: España
+country_code: ES
+country_code3: ESP
+timezone: Europe/Madrid
+region_query: "Barcelona, Catalunya, España"
+
+# Municipal bounds with a small margin. The canonical area is the official
+# 10-district reference, never this display/query bbox.
+bbox:
+  west: 2.04
+  south: 41.30
+  east: 2.24
+  north: 41.49
+
+crs:
+  geographic: EPSG:4326
+  metric: EPSG:32631

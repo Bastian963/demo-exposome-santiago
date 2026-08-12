@@ -1,0 +1,18 @@
+schema_version: 1
+id: barcelones
+name: Barcelonès — piloto MER 2022
+country: España
+country_code: ES
+country_code3: ESP
+timezone: Europe/Madrid
+region_query: "Barcelonès, Catalunya, España"
+
+bbox:
+  west: 2.03
+  south: 41.30
+  east: 2.29
+  north: 41.51
+
+crs:
+  geographic: EPSG:4326
+  metric: EPSG:32631

@@ -1,0 +1,35 @@
+schema_version: 1
+id: heavy_metals
+settings:
+  temporal:
+    status: annual_downloadable
+    adapter: heavy_metals
+    available_start_year: 2005
+    available_end_year: 2024
+    source: RETC emisiones al aire de fuentes puntuales
+    indicators:
+    - exposome_id: heavy_metals
+      value_column: hm_index
+      label: Metales pesados
+      unit: índice
+  years:
+  - 2015
+  - 2016
+  - 2017
+  - 2018
+  - 2019
+  - 2020
+  - 2021
+  - 2022
+  metals:
+  - plomo
+  - manganeso
+  - arsénico
+  - cadmio
+  - mercurio
+  weights:
+    pb: 0.35
+    mn: 0.3
+    as: 0.2
+    cd: 0.1
+    hg: 0.05

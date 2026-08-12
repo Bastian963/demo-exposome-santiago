@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "source_study": "cataluna_comarques",
+  "source_unit_id": "cat_13",
+  "source_unit_name": "Barcelonès",
+  "source": "ICGC divisions administratives, comarques_5000",
+  "license": "CC BY 4.0",
+  "extraction": "Feature-preserving extract from data/reference/es/cataluna/cataluna_comarques/spatial_units.geojson"
+}

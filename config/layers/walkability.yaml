@@ -1,0 +1,14 @@
+schema_version: 1
+id: walkability
+settings:
+  network_type: all
+  crs_metric: EPSG:32719
+  index:
+    method: zscore_composite_0_100
+    positive_metrics:
+    - intersection_density
+    - street_density_km
+    - streets_per_node_avg
+    negative_metrics:
+    - circuity_avg
+    - street_length_avg

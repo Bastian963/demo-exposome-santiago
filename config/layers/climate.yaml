@@ -1,0 +1,90 @@
+schema_version: 1
+id: climate
+settings:
+  # New studies derive summer from their location hemisphere unless a country
+  # or city explicitly selects a local convention.
+  summer_convention: hemisphere_meteorological
+  years:
+  - 2015
+  - 2016
+  - 2017
+  - 2018
+  - 2019
+  - 2020
+  - 2021
+  - 2022
+  - 2023
+  - 2024
+  start_date: '2015-01-01'
+  end_date: '2024-12-31'
+  seasons:
+    summer:
+    - 12
+    - 1
+    - 2
+    autumn:
+    - 3
+    - 4
+    - 5
+    winter:
+    - 6
+    - 7
+    - 8
+    spring:
+    - 9
+    - 10
+    - 11
+  collections:
+    era5land_daily:
+      id: ECMWF/ERA5_LAND/DAILY_AGGR
+      bands:
+      - temperature_2m
+      - temperature_2m_min
+      - temperature_2m_max
+      - dewpoint_temperature_2m
+      - total_precipitation_sum
+      scale_meters: 11132
+    modis_lst_day:
+      id: MODIS/061/MOD11A1
+      band: LST_Day_1km
+      qa_band: QC_Day
+      scale_meters: 1000
+    modis_lst_night:
+      id: MODIS/061/MYD11A1
+      band: LST_Night_1km
+      qa_band: QC_Night
+      scale_meters: 1000
+    landsat_lst:
+      id: LANDSAT/LC08/C02/T1_L2
+      band: ST_B10
+      qa_band: QA_PIXEL
+      scale_meters: 30
+    chirps:
+      id: UCSB-CHG/CHIRPS/DAILY
+      band: precipitation
+      scale_meters: 5566
+  thresholds:
+    hot_day_c: 30
+    very_hot_day_c: 35
+    tropical_night_c: 20
+    frost_day_c: 0
+    heat_wave_percentile: 0.9
+    cold_spell_percentile: 0.1
+    heat_wave_min_days: 2
+    cold_spell_min_days: 2
+    cdd_base_c: 18
+    hdd_base_c: 10
+  downscaling:
+    grid_resolution_m: 1000
+    model_type: lightgbm
+    target_variables:
+    - tmax
+    - tmin
+    covariates:
+    - elevation
+    - built_up_fraction
+    - tree_cover_fraction
+    - ndvi_mean
+    - distance_to_city_center
+    - lat
+    - lon

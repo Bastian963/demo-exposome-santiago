@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GEMMA — Global Exposome Modeling, Mapping & Analytics</title>
+    <meta name="description" content="GEMMA: mapa interactivo pixel art del exposoma urbano de Santiago y su conexión con el envejecimiento cerebral." />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css"
+    />
+
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body class="latam-mode">
+    <header class="app-header">
+      <button
+        id="backButton"
+        class="back-button"
+        type="button"
+        aria-label="Volver al mundo"
+      >
+        <span class="back-icon">&larr;</span> MUNDO
+      </button>
+      <span class="app-logo app-logo--gemma" role="img" aria-label="GEMMA"></span>
+      <h1 class="app-title">GEMMA</h1>
+      <p class="app-subtitle" id="appSubtitle">Pixel edition · Mundo</p>
+    </header>
+
+    <div class="time-slider-bar" id="timeSliderBar" hidden>
+      <button class="time-slider-play" id="timeSliderPlay" type="button" aria-label="Play temporal evolution">▶ Play</button>
+      <div class="time-slider-track">
+        <!-- Stops are rendered per exposome by renderTimeSlider() in
+             main.js: annual GeoJSON files for pm25 (`has_annual`), column
+             swaps for long `year_columns` series (heat/rain). -->
+        <div class="time-slider-labels" id="timeSliderLabels"></div>
+        <input type="range" min="0" max="8" value="8" id="timeSlider" aria-label="Year selector" />
+      </div>
+      <div class="time-slider-current" id="timeSliderLabel">Promedio</div>
+    </div>
+
+    <!-- Discrete-year tabs for exposomes with a few vintages (palette
+         `year_columns`), e.g. food_insecurity CASEN 2020/2022. Shares the
+         time-slider grid area; only one of the two bars shows at a time. -->
+    <div class="year-tabs-bar" id="yearTabsBar" hidden>
+      <span class="year-tabs-label" id="yearTabsLabel">Año</span>
+      <div class="year-tabs" id="yearTabs" role="tablist" aria-label="Selector de año"></div>
+    </div>
+
+    <main class="map-container" id="mapContainer">
+      <div class="map-area">
+        <div id="map"></div>
+        <div id="characterContainer" class="character-container" hidden></div>
+        <div
+          id="locationProfileAvatar"
+          class="location-profile-avatar"
+          aria-label="Ubicación del perfil local"
+          hidden
+        ></div>
+        <div id="legend" class="legend" hidden></div>
+        <div id="pixelIndicator" class="pixel-indicator" hidden>
+          <span class="pixel-indicator-label" id="pixelIndicatorLabel">Pixel 1km</span>
+          <span class="pixel-indicator-value" id="pixelIndicatorValue">—</span>
+          <span class="pixel-indicator-unit" id="pixelIndicatorUnit">µg/m³</span>
+        </div>
+        <button
+          id="muteButton"
+          class="mute-button"
+          type="button"
+          aria-label="Toggle sound"
+          hidden
+        >
+          <span class="mute-icon" id="muteIcon"></span>
+        </button>
+        <div
+          id="locationProfileWidget"
+          class="location-profile-widget"
+          aria-label="Perfil local"
+          hidden
+        >
+          <div class="location-profile-widget-header">
+            <span class="location-profile-widget-title">ZIP / Monito</span>
+            <button
+              id="locationWidgetToggle"
+              class="location-profile-widget-toggle"
+              type="button"
+              aria-expanded="true"
+              aria-label="Minimizar"
+              title="Minimizar"
+            >–</button>
+          </div>
+          <form id="locationZipForm" class="location-zip-form">
+            <label for="locationZipInput">ZIP</label>
+            <input
+              id="locationZipInput"
+              name="zipcode"
+              type="text"
+              inputmode="numeric"
+              autocomplete="postal-code"
+              maxlength="7"
+              placeholder="0000000"
+            />
+            <button id="locationZipSubmit" type="submit">OK</button>
+          </form>
+          <div class="location-profile-actions">
+            <button id="locationPickButton" type="button">Poner monito</button>
+            <button id="locationCloseButton" type="button">Cerrar</button>
+          </div>
+          <p id="locationProfileStatus" class="location-profile-status"></p>
+        </div>
+      </div>
+      <!-- Visibility is driven by the `hidden` attribute alone; a static
+           aria-hidden would go stale when main.js shows the panel. -->
+      <aside
+        id="rightPanel"
+        class="right-panel"
+        hidden
+      >
+        <div class="right-panel-header">
+          <h2>Perfil</h2>
+        </div>
+        <div class="right-panel-body" id="rightTabProfileContent">
+          <div
+            class="commune-exposome-switcher"
+            id="communeExposomeSwitcher"
+            aria-label="Cambiar exposoma"
+          ></div>
+          <section id="outcomeAssociationPanel" class="outcome-association-panel" hidden></section>
+          <section
+            id="locationProfileCard"
+            class="location-profile-card"
+            aria-label="Perfil local de exposoma"
+            hidden
+          >
+            <div class="location-profile-card-empty">
+              Selecciona un punto del mapa o ingresa un código postal.
+            </div>
+          </section>
+          <div class="airchamber-section instrument-panel">
+            <div class="instrument-header" aria-hidden="true">
+              <span class="instrument-brand">EXPOSOME MONITOR</span>
+              <span class="instrument-status">
+                <span></span><span></span><span></span>
+              </span>
+            </div>
+            <div class="airchamber-canvas-wrap">
+              <div class="airchamber-canvas-label">
+                <span class="airchamber-cube-label" id="airchamberSceneLabel">1 m³</span>
+                <span class="airchamber-cube-sublabel" id="airchamberSceneSublabel">cámara de aire</span>
+              </div>
+              <div id="airchamberCanvas" class="airchamber-canvas"></div>
+              <div class="airchamber-scale" id="airchamberScale">
+                <span class="airchamber-scale-label">Escala visual</span>
+                <span class="airchamber-scale-text" id="airchamberScaleText">
+                  Cubo = 1 m real | Particula = 8 px (~2.5 µm amplificado)
+                </span>
+              </div>
+            </div>
+            <div class="airchamber-display">
+              <div class="airchamber-value-row">
+                <span class="airchamber-value-label" id="airchamberValueLabel">PM2.5:</span>
+                <span class="airchamber-value-num" id="airchamberValue">—</span>
+                <span class="airchamber-value-unit" id="airchamberValueUnit">µg/m³</span>
+              </div>
+              <div class="airchamber-count-row">
+                <span class="airchamber-count-label" id="airchamberCountLabel">Particulas visibles</span>
+                <span class="airchamber-count-value" id="airchamberCount">0</span>
+              </div>
+              <p class="airchamber-caption" id="airchamberCaption">Concentración de partículas finas en 1 m³ de aire</p>
+              <p class="airchamber-help" id="airchamberHelp">
+                PM2.5 indica partículas con diámetro ≤2.5 µm. El valor en µg/m³
+                representa la masa total de estas partículas presente en un
+                metro cúbico de aire. <strong>En realidad, 1 m³ a 15 µg/m³
+                contiene ~15 millones de partículas</strong>; aquí mostramos
+                60-600 por claridad visual.
+              </p>
+            </div>
+          </div>
+          <details class="commune-profile-collapsible" id="communeProfileCollapsible">
+            <summary id="communeProfileSummary">
+              <span class="right-panel-empty">Haz click en una comuna para ver su perfil.</span>
+            </summary>
+            <div id="communeProfileBody"></div>
+          </details>
+          <nav class="info-tabs" role="tablist">
+            <button class="info-tab active" data-tab="fuente" type="button" role="tab" aria-selected="true" aria-controls="infoTabsContent">Fuente</button>
+            <button class="info-tab" data-tab="specs" type="button" role="tab" aria-selected="false" aria-controls="infoTabsContent">Especificaciones</button>
+            <!-- Sin tildes a propósito: Press Start 2P dibuja Í/Ó como
+                 glifos pequeños tipo minúscula (ver "Voz del copy" en el
+                 README). -->
+            <button class="info-tab" data-tab="metodologia" type="button" role="tab" aria-selected="false" aria-controls="infoTabsContent">Metodologia</button>
+            <button class="info-tab" data-tab="citacion" type="button" role="tab" aria-selected="false" aria-controls="infoTabsContent">Citacion</button>
+            <button class="info-tab" data-tab="descargar" type="button" role="tab" aria-selected="false" aria-controls="infoTabsContent">Descargar</button>
+          </nav>
+          <div class="info-tabs-content" id="infoTabsContent" role="tabpanel">
+            <p class="right-panel-empty">Cargando info del exposoma...</p>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <div id="cityOverviewPanel" class="city-overview-panel" aria-label="Selector de exposomas" hidden></div>
+
+    <div id="analyticsPanel" class="analytics-panel" aria-label="Comparar distribuciones entre ciudades" hidden></div>
+
+    <div id="pointDownloadPanel" class="point-download-panel" aria-label="Descargar exposomas por punto" hidden></div>
+
+    <aside
+      id="sidePanel"
+      class="side-panel"
+      hidden
+    >
+      <button
+        class="side-panel-close"
+        id="sidePanelClose"
+        type="button"
+        aria-label="Cerrar panel"
+      >×</button>
+      <div class="side-panel-content" id="sidePanelContent">
+        <p class="side-panel-empty">Haz click en una comuna para ver su perfil completo.</p>
+      </div>
+    </aside>
+
+    <div id="loadingOverlay" class="loading-overlay" role="status" aria-live="polite" aria-atomic="true">
+      <div class="loading-box">
+        <p class="loading-text">Cargando...</p>
+        <div id="loadingActions" class="loading-actions" hidden>
+          <button id="loadingRetry" class="loading-action" type="button">Reintentar</button>
+          <button id="loadingBack" class="loading-action loading-action--secondary" type="button">Volver al mundo</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      <span>GEMMA · Datos: CASEN, DEIS, ERA5-Land, VIIRS, ACAG, OSM, RETC</span>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

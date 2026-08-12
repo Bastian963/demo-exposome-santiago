@@ -1,0 +1,40 @@
+schema_version: 1
+id: caba_native
+location: ar/buenos_aires
+mode: native
+
+# Buenos Aires publishes an aggregate comunas study (buenos_aires_comunas) as
+# its primary, picker-visible entry. This native-resolution study is hidden
+# from the city picker so Buenos Aires only shows once, and stays queryable
+# by study_id + coordinates via the scripts/query_exposome.py CLI
+# (--study caba_native --lon ... --lat ...). It is NOT independently
+# routable in the webapp itself — see cdmx_native.yaml for the full
+# reasoning (same applies here).
+hidden: true
+
+# Versioned administrative AOI obtained from the OSM CABA relation. The original
+# bbox remains in the same directory as a reproducible fallback and audit aid.
+aoi:
+  path: data/reference/ar/buenos_aires/caba_native/aoi.geojson
+  source: OpenStreetMap geocoder (Ciudad Autónoma de Buenos Aires, Argentina)
+  license: ODbL; verify attribution before publication
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+layers:
+  - air_quality_pm25
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - air_quality_satellite
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

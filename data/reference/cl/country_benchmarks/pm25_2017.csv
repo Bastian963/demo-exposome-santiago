@@ -1,0 +1,2 @@
+country_code,country_name,exposome_id,year,value,unit,weighting,scope,n_stations,source_title,source_page,source_url
+CL,Chile,air_quality_pm25,2017,26.0,µg/m³,population,"cities with population-representative monitoring stations",29,"Cuarto Reporte del Estado del Medio Ambiente",125,https://sinia.mma.gob.cl/wp-content/uploads/2019/02/copy-10-calidad-del-aire-pdf.pdf

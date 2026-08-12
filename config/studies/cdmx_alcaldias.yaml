@@ -1,0 +1,57 @@
+schema_version: 1
+id: cdmx_alcaldias
+location: mx/cdmx
+
+# Validation study for Mexico, same role buenos_aires_comunas played for
+# Argentina: smallest self-contained unit set (16 alcaldias) to prove the
+# portable pipeline on a third country before any metro-scale study (ZMVM)
+# or native study is attempted. Picker visibility is enabled; the generated
+# catalog still marks it unavailable until a validated bundle is published.
+hidden: false
+
+spatial:
+  path: data/reference/mx/cdmx/cdmx_alcaldias/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: alcaldia
+  expected_units: 16
+  source: INEGI Marco Geoestadistico (municipal layer, CVE_ENT 09) - https://www.inegi.org.mx/temas/mg/
+  license: CC-BY-NC 2.5 MX (INEGI Marco Geoestadistico via CONABIO mirror; attribution + non-commercial use — see data/raw/mx/cdmx/inegi_marco_geoestadistico/2022/README.md)
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+detail:
+  native_study: cdmx_native
+
+# Full portable layer set (14), same as santiago_communes' global subset and
+# buenos_aires_comunas: global rasters (GEE, single-call, already
+# skip-if-cached) + OSM localities (already tqdm + per-locality/per-tag
+# checkpointed). No CL-only or AR-only layers -- those stay excluded by
+# config/layers.yaml's countries filter.
+#
+# precipitation_spi is deliberately NOT enabled yet: it requires
+# layer_inputs.precipitation_spi.chirps_daily_csv pointing at precipitation's
+# own output CSV, which only exists after precipitation has actually run once
+# for this study (see santiago_communes.yaml for the pattern). Whole-study
+# preflight checks every layer upfront and aborts the entire run if one is
+# missing_input (src/exposome/layers.py:918-925), so adding it now would
+# block all 14 other layers too. Add it back in a follow-up pass once
+# data/processed/mx/cdmx/cdmx_alcaldias/precipitation/cdmx_alcaldias_precipitation_chirps_daily_2015_2024.csv
+# exists.
+layers:
+  - pm25
+  - air_quality_satellite
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

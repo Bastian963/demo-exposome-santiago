@@ -1,0 +1,57 @@
+schema_version: 1
+id: climate_heat
+settings:
+  temporal:
+    status: annual_downloadable
+    adapter: climate_heat
+    available_start_year: 1950
+    available_end_year: 2024
+    source: ERA5-Land Daily Aggregated
+    indicators:
+    - exposome_id: heat_summer_tmax
+      value_column: summer_tmax_mean_c
+      label: Tmax verano
+      unit: °C
+      detail:
+        kind: native_raster
+        band: 1
+        native_resolution_m: 11132
+        source_label: ERA5-Land
+        metric_label: Tmax verano
+        unit: °C
+        required_for_production: true
+    - exposome_id: heat_hot_days
+      value_column: hot_days_30c
+      label: Dias >30°C
+      unit: d
+      detail:
+        kind: native_raster
+        band: 2
+        native_resolution_m: 11132
+        source_label: ERA5-Land
+        metric_label: Días >30°C
+        unit: d
+        required_for_production: true
+    - exposome_id: heat_tropical_nights
+      value_column: tropical_nights_20c
+      label: Noches tropicales
+      unit: d
+      detail:
+        kind: native_raster
+        band: 3
+        native_resolution_m: 11132
+        source_label: ERA5-Land
+        metric_label: Noches tropicales
+        unit: d
+        required_for_production: true
+  # Native ERA5-Land pixels are calculated before any administrative
+  # aggregation. Open-Meteo point fallback is intentionally unsupported.
+  source: era5land
+  year: 2024
+  heat_components:
+  - summer_tmax_mean_c
+  - tmax_p95_c
+  - hot_days_30c
+  - apparent_hot_days_35c
+  - tropical_nights_20c
+  fallback_to_representative_point: false

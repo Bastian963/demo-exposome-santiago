@@ -1,0 +1,35 @@
+schema_version: 1
+id: barcelona_districts_noise
+location: es/barcelona
+
+# This study remains invisible until the local official district reference is
+# built and its noise bundle is verified/published.
+hidden: false
+
+spatial:
+  path: data/reference/es/barcelona/barcelona_districts_noise/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: distrito
+  expected_units: 10
+  source: Ajuntament de Barcelona Open Data — districtes municipals (version and checksum in reference metadata)
+  license: Ajuntament de Barcelona Open Data terms; recorded with the immutable raw source manifest
+
+period:
+  start_date: "2022-01-01"
+  end_date: "2022-12-31"
+
+layers: [noise_spain]
+
+# The partial SICA snapshot includes every validated agglomeration whose Lden
+# geometry intersects Barcelonès. It is suitable for this municipal pilot but
+# must remain explicitly partial until the complete Cataluña source snapshot
+# can be frozen.
+noise_spain:
+  source_region: cataluna
+  coverage: partial
+  public_status: pilot
+
+layer_inputs:
+  noise_spain:
+    source_manifest: data/raw/miteco/sica-mer-agglomerations/4f-2022-barcelones-pilot/source_manifest.json

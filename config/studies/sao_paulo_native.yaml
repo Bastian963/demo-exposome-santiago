@@ -1,0 +1,33 @@
+schema_version: 1
+id: sao_paulo_native
+location: br/sao_paulo
+mode: native
+hidden: true
+
+# The native runner dissolves the 96 GeoSampa district polygons internally.
+# Administrative boundaries therefore clip the AOI but never set raster
+# pixels, grid phase, values or resampling.
+aoi:
+  path: data/reference/br/sao_paulo/sao_paulo_distritos/spatial_units.geojson
+  source: Dissolve of the São Paulo distritos reference
+  license: same as sao_paulo_distritos
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+layers:
+  - air_quality_pm25
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - air_quality_satellite
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

@@ -1,0 +1,100 @@
+schema_version: 1
+id: pais_vasco_provincias
+location: es/pais_vasco
+
+# Not cohort-driven -- same note as config/studies/cataluna_comarques.yaml:
+# the 2026-07 cohort delivery has 0 genuine Spain residents. Added by
+# direct request, deliberately not added to docs/multicity_status.md's
+# cohort-priority table.
+hidden: false
+
+spatial:
+  path: data/reference/es/pais_vasco/pais_vasco_provincias/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: provincia
+  expected_units: 3
+  source: Eurostat GISCO NUTS level 3 (Araba/Álava, Gipuzkoa, Bizkaia) - see data/raw/gisco/nuts/2024/README.md
+  license: Eurostat/GISCO - free reuse with attribution
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+# Companion native study. Without this declaration `exposome detail` has no
+# source rasters, every raster indicator publishes as `missing`, and the 3
+# provinces end up defining the painted value instead of only masking it --
+# exactly what docs/resolution_manifest.md forbids. Measured on 2026-08-11:
+# with this absent, the published bundle read publication_tier=preview with
+# 1 of 14 spatial indicators complete.
+detail:
+  native_study: pais_vasco_native
+
+# Full portable layer set (14) -- see cataluna_comarques.yaml for the same
+# reasoning (no country-specific layers apply to Spain).
+#
+# precipitation_spi is deliberately NOT enabled yet -- same two-phase
+# pattern as every other study (needs precipitation's own output CSV,
+# which only exists after a first run). Add it back once
+# data/processed/es/pais_vasco/pais_vasco_provincias/precipitation/pais_vasco_provincias_precipitation_chirps_daily_2015_2024.csv
+# exists.
+# `noise_spain` se reactivó el 2026-08-10 junto con cataluna_comarques: los
+# cinco ZIP truncados de la entrega (Baix Llobregat II, Vallès Occidental II,
+# Lleida, Barakaldo, Bilbao) fueron re-descargados de SICA y el snapshot
+# completo de 16 archivos quedó congelado con CRC, integridad SQLite y capa
+# Lden verificados en
+# data/raw/miteco/sica-mer-agglomerations/4f-2022/source_manifest.json
+# (secuencia en docs/planning/spain_noise_integration.md).
+#
+# A diferencia de Cataluña, esta referencia NO necesita simplificación: GISCO
+# NUTS3 trae 1.498 vértices en las 3 provincias (499 por unidad), frente a los
+# 702.080 que traía el ICGC 1:5.000 catalán y que colgaban a GEE.
+# `layers:` es el contrato de release -- misma regla y mismos gates que
+# cataluna_comarques.yaml, ver el comentario extenso ahí.
+#
+# Habilitado 2026-08-10 (deadline 2026-08-12): las 10 ya materializadas más
+# walkability. Habilitarlas también desbloquea las 45 series anuales que
+# faltan de 83 (temporal_exposomes.py:181 cruza contra enabled_layers).
+layers:
+  - noise_spain
+  - pm25
+  - air_quality_satellite
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  # walkability DESHABILITADA 2026-08-10 18:30 -- release de 14 capas.
+  # Mismo motivo y misma evidencia que en config/studies/cataluna_comarques.yaml:
+  # ningún mirror de Overpass sirve, y el francés bloquea por IP, no por
+  # User-Agent. Tiene que salir del `layers:` (no basta con no correrla) porque
+  # la corrida completa final va sin --layers y sin ella no hay master ni
+  # release manifest. No cuesta series anuales: los targets siguen en 83.
+  # - walkability
+  # Capas de tags OSM: leen el extracto local congelado, no Overpass.
+  - greenspace_access
+  - social_infrastructure
+  - food_environment
+  - healthcare
+layer_inputs:
+  noise_spain:
+    source_manifest: data/raw/miteco/sica-mer-agglomerations/4f-2022/source_manifest.json
+
+# Extracto OSM local congelado (Geofabrik, corte 2026-08-09) -- mismo
+# razonamiento que en cataluna_comarques.yaml. Este estudio es además el patrón
+# oro de la validación: contra los 196 tiles de Álava que Overpass alcanzó a
+# cachear, recortando ambos lados al límite real de la comunidad, la contención
+# es del 100%. Procedencia y SHA-256 en
+# data/raw/geofabrik/pais_vasco/260809/source_manifest.json.
+layer_overrides:
+  greenspace:
+    access:
+      osm_extract: data/raw/geofabrik/pais_vasco/260809/pais_vasco.osm.pbf
+  food_environment:
+    osm_extract: data/raw/geofabrik/pais_vasco/260809/pais_vasco.osm.pbf
+  healthcare:
+    osm_extract: data/raw/geofabrik/pais_vasco/260809/pais_vasco.osm.pbf
+  social_infrastructure:
+    osm_extract: data/raw/geofabrik/pais_vasco/260809/pais_vasco.osm.pbf

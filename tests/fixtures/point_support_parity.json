@@ -1,0 +1,767 @@
+{
+  "_comment": "Generated from src/exposome/point_support.py, the canonical implementation. Each case carries the RAW support declarations so the JS mirror has to recompute effective_support_m rather than being handed the answer. tests/test_point_support.py checks Python still matches; webapp/tests/cog-sample-contract.test.js checks the JS mirror does too.",
+  "generated_from": "exposome.point_support",
+  "latitude": -33.45,
+  "cases": [
+    {
+      "indicator": "pm25",
+      "latitude": -33.45,
+      "radius_m": 0.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "x": 0.01,
+            "y": 0.01,
+            "unit": "degree"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "x": 0.01,
+            "y": 0.01,
+            "unit": "degree"
+          }
+        }
+      },
+      "effective_support_m": 1113.2,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 1113.2,
+      "emits_sd": false
+    },
+    {
+      "indicator": "pm25",
+      "latitude": -33.45,
+      "radius_m": 300.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "x": 0.01,
+            "y": 0.01,
+            "unit": "degree"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "x": 0.01,
+            "y": 0.01,
+            "unit": "degree"
+          }
+        }
+      },
+      "effective_support_m": 1113.2,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 1113.2,
+      "emits_sd": false
+    },
+    {
+      "indicator": "pm25",
+      "latitude": -33.45,
+      "radius_m": 500.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "x": 0.01,
+            "y": 0.01,
+            "unit": "degree"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "x": 0.01,
+            "y": 0.01,
+            "unit": "degree"
+          }
+        }
+      },
+      "effective_support_m": 1113.2,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 1113.2,
+      "emits_sd": false
+    },
+    {
+      "indicator": "pm25",
+      "latitude": -33.45,
+      "radius_m": 1000.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "x": 0.01,
+            "y": 0.01,
+            "unit": "degree"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "x": 0.01,
+            "y": 0.01,
+            "unit": "degree"
+          }
+        }
+      },
+      "effective_support_m": 1113.2,
+      "radius_status": "resolved",
+      "delivered_support_m": 2000.0,
+      "emits_sd": true
+    },
+    {
+      "indicator": "no2",
+      "latitude": -33.45,
+      "radius_m": 0.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "x": 3500,
+            "y": 5500,
+            "y_max": 7000,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 1113.2,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 7000.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 7000.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "no2",
+      "latitude": -33.45,
+      "radius_m": 300.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "x": 3500,
+            "y": 5500,
+            "y_max": 7000,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 1113.2,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 7000.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 7000.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "no2",
+      "latitude": -33.45,
+      "radius_m": 500.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "x": 3500,
+            "y": 5500,
+            "y_max": 7000,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 1113.2,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 7000.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 7000.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "no2",
+      "latitude": -33.45,
+      "radius_m": 1000.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "x": 3500,
+            "y": 5500,
+            "y_max": 7000,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 1113.2,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 7000.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 7000.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "alan",
+      "latitude": -33.45,
+      "radius_m": 0.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 463.83,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 463.83,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 463.83,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 463.83,
+      "emits_sd": false
+    },
+    {
+      "indicator": "alan",
+      "latitude": -33.45,
+      "radius_m": 300.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 463.83,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 463.83,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 463.83,
+      "radius_status": "resolved",
+      "delivered_support_m": 600.0,
+      "emits_sd": true
+    },
+    {
+      "indicator": "alan",
+      "latitude": -33.45,
+      "radius_m": 500.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 463.83,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 463.83,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 463.83,
+      "radius_status": "resolved",
+      "delivered_support_m": 1000.0,
+      "emits_sd": true
+    },
+    {
+      "indicator": "alan",
+      "latitude": -33.45,
+      "radius_m": 1000.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 463.83,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 463.83,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 463.83,
+      "radius_status": "resolved",
+      "delivered_support_m": 2000.0,
+      "emits_sd": true
+    },
+    {
+      "indicator": "wind",
+      "latitude": -33.45,
+      "radius_m": 0.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 11132.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 11132.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "wind",
+      "latitude": -33.45,
+      "radius_m": 300.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 11132.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 11132.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "wind",
+      "latitude": -33.45,
+      "radius_m": 500.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 11132.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 11132.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "wind",
+      "latitude": -33.45,
+      "radius_m": 1000.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 11132.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 11132.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "canopy",
+      "latitude": -33.45,
+      "radius_m": 0.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 1,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 30,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 30.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 30.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "canopy",
+      "latitude": -33.45,
+      "radius_m": 300.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 1,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 30,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 30.0,
+      "radius_status": "resolved",
+      "delivered_support_m": 600.0,
+      "emits_sd": true
+    },
+    {
+      "indicator": "canopy",
+      "latitude": -33.45,
+      "radius_m": 500.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 1,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 30,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 30.0,
+      "radius_status": "resolved",
+      "delivered_support_m": 1000.0,
+      "emits_sd": true
+    },
+    {
+      "indicator": "canopy",
+      "latitude": -33.45,
+      "radius_m": 1000.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 1,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 30,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 30.0,
+      "radius_status": "resolved",
+      "delivered_support_m": 2000.0,
+      "emits_sd": true
+    },
+    {
+      "indicator": "rain_annual",
+      "latitude": -33.45,
+      "radius_m": 0.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "x": 0.05,
+            "y": 0.05,
+            "unit": "degree"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "x": 0.05,
+            "y": 0.05,
+            "unit": "degree"
+          }
+        }
+      },
+      "effective_support_m": 5566.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 5566.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "rain_annual",
+      "latitude": -33.45,
+      "radius_m": 300.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "x": 0.05,
+            "y": 0.05,
+            "unit": "degree"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "x": 0.05,
+            "y": 0.05,
+            "unit": "degree"
+          }
+        }
+      },
+      "effective_support_m": 5566.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 5566.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "rain_annual",
+      "latitude": -33.45,
+      "radius_m": 500.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "x": 0.05,
+            "y": 0.05,
+            "unit": "degree"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "x": 0.05,
+            "y": 0.05,
+            "unit": "degree"
+          }
+        }
+      },
+      "effective_support_m": 5566.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 5566.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "rain_annual",
+      "latitude": -33.45,
+      "radius_m": 1000.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "x": 0.05,
+            "y": 0.05,
+            "unit": "degree"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "x": 0.05,
+            "y": 0.05,
+            "unit": "degree"
+          }
+        }
+      },
+      "effective_support_m": 5566.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 5566.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "heat_summer_tmax",
+      "latitude": -33.45,
+      "radius_m": 0.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 11132.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 11132.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "heat_summer_tmax",
+      "latitude": -33.45,
+      "radius_m": 300.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 11132.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 11132.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "heat_summer_tmax",
+      "latitude": -33.45,
+      "radius_m": 500.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 11132.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 11132.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "heat_summer_tmax",
+      "latitude": -33.45,
+      "radius_m": 1000.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 11132,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 11132.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 11132.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "green",
+      "latitude": -33.45,
+      "radius_m": 0.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 10,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 1000,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 1000.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 1000.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "green",
+      "latitude": -33.45,
+      "radius_m": 300.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 10,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 1000,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 1000.0,
+      "radius_status": "sub_observation",
+      "delivered_support_m": 1000.0,
+      "emits_sd": false
+    },
+    {
+      "indicator": "green",
+      "latitude": -33.45,
+      "radius_m": 500.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 10,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 1000,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 1000.0,
+      "radius_status": "resolved",
+      "delivered_support_m": 1000.0,
+      "emits_sd": true
+    },
+    {
+      "indicator": "green",
+      "latitude": -33.45,
+      "radius_m": 1000.0,
+      "record": {
+        "observation": {
+          "resolution": {
+            "value": 10,
+            "unit": "m"
+          }
+        },
+        "analysis": {
+          "resolution": {
+            "value": 1000,
+            "unit": "m"
+          }
+        }
+      },
+      "effective_support_m": 1000.0,
+      "radius_status": "resolved",
+      "delivered_support_m": 2000.0,
+      "emits_sd": true
+    }
+  ]
+}

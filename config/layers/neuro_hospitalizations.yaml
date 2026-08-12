@@ -1,0 +1,236 @@
+schema_version: 1
+id: neuro_hospitalizations
+settings:
+  region_code: 13
+  years:
+  - 2011
+  - 2012
+  - 2013
+  - 2014
+  - 2015
+  - 2016
+  - 2017
+  - 2018
+  - 2019
+  - 2020
+  source:
+    path: data/raw/deis/egresos/deis_download_2026-07-18/EGRESOS_20*.zip
+    format: zip_csv
+    sep: ;
+    encoding: latin1
+    chunksize: 250000
+    region_filter: Metropolitana
+    in_hospital_death_values:
+    - '2'
+    columns:
+      year: ANO_EGRESO
+      commune_code: COMUNA_RESIDENCIA
+      commune_name: GLOSA_COMUNA_RESIDENCIA
+      region_code: REGION_RESIDENCIA
+      region_name: GLOSA_REGION_RESIDENCIA
+      cause: DIAG1
+      age_group: GRUPO_EDAD
+      sex: SEXO
+      days_stay: DIAS_ESTADA
+      discharge_condition: CONDICION_EGRESO
+  population:
+    path: data/raw/ine/population_projections/base_2017/ine_estimaciones_y_proyecciones_2002_2035_comunas.csv
+    provider: INE Chile
+    base: Censo 2017
+  analysis:
+    primary_years: [2018, 2019]
+    covid_sensitivity_years: [2018, 2019, 2020]
+    trend_years: [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019]
+    panel_years: [2015, 2016, 2017, 2018, 2019]
+    panel_covid_years: [2015, 2016, 2017, 2018, 2019, 2020]
+    inference:
+      schema_version: 1
+      study: santiago_communes
+      protocol: docs/hospitalization_inference_protocol.md
+      protocol_version: '1.0'
+      scope:
+        product: offline_data_analysis
+        webapp: false
+        exposome_master: false
+        automated_publish: false
+      seed: 20260718
+      inputs:
+        smr: data/processed/cl/santiago/santiago_communes/neuro_hospitalizations/santiago_neuro_hospitalizations_2011_2020_windows.csv
+        annual_expected: data/processed/cl/santiago/santiago_communes/neuro_hospitalizations/santiago_neuro_hospitalizations_annual_expected.csv.gz
+        exposures: data/processed/cl/santiago/santiago_communes/analysis/hospitalizations/chronic_exposure_matrix.csv
+        master: data/processed/cl/santiago/santiago_communes/master.csv
+        geometry: data/reference/cl/santiago/santiago_communes/spatial_units.geojson
+        mortality: data/processed/cl/santiago/santiago_communes/neuro_mortality/santiago_neuro_mortality_2018_2022.csv
+      output_dir: data/processed/cl/santiago/santiago_communes/analysis/hospitalizations/inference
+      windows:
+        primary: primary_pre_covid_2018_2019
+        year_2018: [2018]
+        year_2019: [2019]
+        covid_sensitivity: covid_sensitivity_2018_2020
+      outcomes:
+        confirmatory:
+        - cardiovascular
+        - respiratory
+        - respiratory_copd
+        - cerebrovascular
+        - mental_all
+        exploratory:
+        - all_cause
+        - dementia
+        - alzheimer
+        - parkinsonism
+        - substance
+        - psychosis
+        - mood
+        - anxiety_stress
+        - respiratory_pneumonia
+        - respiratory_acute_lower
+        negative_control:
+        - injury_poisoning
+      exposures:
+      - id: pm25_hist
+        source_column: pm25_hist
+        family: confirmatory_chronic
+        evidence_level: confirmatory
+        orientation: 1
+        period: 2000-2017
+        temporal_interpretation: antecedent
+      - id: no2
+        source_column: no2_surface_ug_m3
+        family: secondary_cross_sectional
+        evidence_level: secondary
+        orientation: 1
+        period: '2024'
+        temporal_interpretation: cross_sectional
+      - id: ndvi
+        source_column: green_cover_pct_ndvi
+        family: secondary_cross_sectional
+        evidence_level: secondary
+        orientation: -1
+        period: '2024'
+        temporal_interpretation: cross_sectional
+      - id: social
+        source_column: social_index
+        family: secondary_cross_sectional
+        evidence_level: secondary
+        orientation: -1
+        period: '2026'
+        temporal_interpretation: cross_sectional
+      - id: heat
+        source_column: heat_exposure_index
+        family: exploratory_exposome
+        evidence_level: exploratory
+        orientation: 1
+      - id: sleep
+        source_column: sleep_context_index
+        family: exploratory_exposome
+        evidence_level: exploratory
+        orientation: 1
+      - id: noise
+        source_column: noise_combined_pct
+        family: exploratory_exposome
+        evidence_level: exploratory
+        orientation: 1
+      - id: walkability
+        source_column: walk_index
+        family: exploratory_exposome
+        evidence_level: exploratory
+        orientation: -1
+      - id: transport
+        source_column: transit_index
+        family: exploratory_exposome
+        evidence_level: exploratory
+        orientation: -1
+      - id: food_environment
+        source_column: food_index
+        family: exploratory_exposome
+        evidence_level: exploratory
+        orientation: -1
+      covariates:
+        core:
+        - nse_index
+        - demo_pct_pop_65_plus
+        - log_population_density
+        access:
+        - nse_index
+        - demo_pct_pop_65_plus
+        - log_population_density
+        - log_primary_care_per_100k
+      missingness:
+        minimum_communes: 45
+        minimum_distinct_values: 10
+        impute: false
+      correlations:
+        bootstrap_samples: 2000
+        confidence: 0.95
+        bivariate_moran_permutations: 9999
+      multiplicity:
+        confirmatory_chronic: [holm, fdr_bh]
+        secondary_cross_sectional: [fdr_bh]
+        exploratory_exposome: [fdr_bh]
+        exploratory_outcomes: [fdr_bh]
+      joint_exposome:
+        collinearity_rho_threshold: 0.8
+        vif_threshold: 10
+        horn_permutations: 1000
+        spatial_blocks: 5
+        elastic_net_l1_ratios: [0.1, 0.5, 0.9, 1.0]
+        elastic_net_alphas: [0.001, 0.01, 0.1, 1.0]
+        stability_resamples: 500
+      bym2:
+        chains: 4
+        tune: 2000
+        draws: 2000
+        target_accept: 0.95
+        retry_tune: 4000
+        retry_draws: 4000
+        retry_target_accept: 0.99
+        coefficient_sd: 0.5
+        log_alpha_mean: 2.995732273553991
+        log_alpha_sd: 1.5
+        spatial_sigma_tail_probability_above_one: 0.01
+        rho_prior: [0.5, 0.5]
+        rho_prior_sensitivity: [1.0, 1.0]
+        pareto_k_reloo_threshold: 0.7
+        diagnostics:
+          max_rhat: 1.01
+          min_ess_bulk: 400
+          min_ess_tail: 400
+          min_bfmi: 0.30
+          max_divergences: 0
+      evidence:
+        rope_rr: [0.95, 1.05]
+        minimum_direction_probability: 0.975
+        require_hdi_excludes_one: true
+        require_direction_stability: true
+        require_no_influential_commune: true
+        require_negative_control_clear: true
+  comparison:
+    outcomes:
+    - mental_all
+    - dementia
+    - cerebrovascular
+    - parkinsonism
+    - substance
+    - psychosis
+    - mood
+    - anxiety_stress
+    - cardiovascular
+    - respiratory
+    - respiratory_pneumonia
+    - respiratory_acute_lower
+    - respiratory_copd
+    exposures:
+    - pm25_pop_weighted
+    - no2_surface_ug_m3
+    - heat_exposure_index
+    - sleep_context_index
+    - noise_combined_pct
+    - green_cover_pct_ndvi
+    - social_index
+    - walk_index
+    - transit_index
+    - food_index
+    covariates:
+    - nse_index
+    - demo_pct_pop_65_plus

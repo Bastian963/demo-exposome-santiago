@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "study_id": "sao_paulo_distritos",
+  "spatial_id": "unit_id (cd_distrito_municipal)",
+  "source_geometry": "data/raw/br/sao_paulo/geosampa_distrito_municipal/2026-07/distrito_municipal.geojson",
+  "source_geometry_sha256": "fd3fd259d98d6c42d2a475c98dfd274aebfce1d49c91b88bec995a44981a609b",
+  "unit_count": 96,
+  "total_bounds": [
+    -46.8262824,
+    -24.00817226,
+    -46.36509233,
+    -23.35679084
+  ]
+}

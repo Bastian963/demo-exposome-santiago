@@ -1,0 +1,50 @@
+schema_version: 1
+id: cataluna_native
+location: es/cataluna
+mode: native
+
+# cataluna_comarques is the primary, picker-visible aggregate study for
+# Catalonia. This native-resolution study is hidden from the city picker (same
+# reasoning as santiago_native/cdmx_native/pais_vasco_native) and stays
+# queryable by study_id + coordinates via scripts/query_exposome.py.
+hidden: true
+
+# Why this exists: see the 2026-08-11 audit in docs/resolution_manifest.md.
+# cataluna_comarques read `production / complete / 0 required` in the published
+# catalog only because it had been published with `noise_spain` alone -- with no
+# raster layer published, the gate had no indicator to require. Republishing it
+# with its 14 layers drops it to `preview / partial` with the same 13 missing
+# indicators País Vasco had. Declaring this companion is what lets
+# `exposome detail` produce the COGs that keep the 43 comarques as masks rather
+# than as the thing that defines the painted value.
+#
+# AOI is the dissolve of the 43 official comarca polygons already used by
+# cataluna_comarques. Rebuild it with
+#   python3 scripts/migrations/build_native_aoi.py \
+#     --study cataluna_comarques --native-study cataluna_native
+# Measured: 32104.5 km2, matching Catalonia's official 32108 km2 to -0.01%.
+aoi:
+  path: data/reference/es/cataluna/cataluna_native/aoi.geojson
+  source: Dissolve of cataluna_comarques' 43 official comarca polygons (ICGC, simplified to 10 m)
+  license: same as cataluna_comarques' spatial reference -- see data/reference/es/cataluna/cataluna_comarques/README.md
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+# Same narrow set as pais_vasco_native: only the layers that feed a missing
+# raster indicator through spatial_plan.py's _DIRECT_RECIPES. See that file for
+# the per-indicator mapping and for why greenspace_coverage and the OSM layers
+# are deliberately absent.
+#
+# Cost warning: Catalonia's AOI is 4.4x the Basque Country's (32104 vs 7225
+# km2), so budget proportionally more than the ~1 h measured for
+# pais_vasco_native before committing this to a delivery window.
+layers:
+  - air_quality_pm25
+  - air_quality_satellite
+  - alan
+  - wind
+  - greenspace_multisource
+  - climate_heat
+  - precipitation

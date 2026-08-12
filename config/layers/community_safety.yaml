@@ -1,0 +1,6 @@
+schema_version: 1
+id: community_safety
+settings:
+  years: [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  source: Dirección Nacional de Estadística Criminal (DNEC), SAT Propiedad
+  population_source: INDEC estimaciones por departamento/partido/comuna

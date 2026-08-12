@@ -1,0 +1,44 @@
+schema_version: 1
+id: buenos_aires_comunas
+location: ar/buenos_aires
+
+# Superseded as the picker-visible Buenos Aires entry by buenos_aires_amba
+# (55 units: these same 15 CABA comunas + the 40 AMBA province partidos).
+# Stays published and fully queryable via study_id, just hidden from the
+# city picker so Buenos Aires only shows once — same pattern as caba_native.
+hidden: true
+
+spatial:
+  path: data/reference/ar/buenos_aires/buenos_aires_comunas/spatial_units.geojson
+  id_column: comuna
+  # display_name composite: "Comuna N · barrios" (see
+  # scripts/migrations/build_buenos_aires_amba_reference.py). GCBA's own
+  # "nombre" column is just "Comuna N"; display_name adds the real
+  # neighborhood names people recognize.
+  name_column: display_name
+  unit_type: comuna
+  expected_units: 15
+  source: Buenos Aires Data (GCBA) - https://data.buenosaires.gob.ar/dataset/comunas
+  license: CC-BY-2.5-AR
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+detail:
+  native_study: caba_native
+
+layers:
+  - pm25
+  - alan
+  - greenspace_coverage
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - air_quality_satellite
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

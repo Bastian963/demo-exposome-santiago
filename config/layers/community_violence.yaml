@@ -1,0 +1,15 @@
+schema_version: 1
+id: community_violence
+settings:
+  years: [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+  public_windows:
+    - [2017, 2019]
+    - [2018, 2020]
+    - [2019, 2021]
+    - [2020, 2022]
+    - [2021, 2023]
+    - [2022, 2024]
+    - [2023, 2025]
+  suppression_threshold: 5
+  source: Dirección Nacional de Estadística Criminal (DNEC), SNIC departamentos
+  population_source: INDEC estimaciones por departamento/partido/comuna

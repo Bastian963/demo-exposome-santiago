@@ -1,0 +1,78 @@
+schema_version: 1
+id: cataluna
+name: Catalunya
+country: España
+country_code: ES
+country_code3: ESP
+timezone: Europe/Madrid
+
+# Per-comarca list, same pattern as buenos_aires_amba/bogota/medellin/cdmx
+# and san_juan_departamentos: greenspace_access._unit_geometry_for_region
+# splits each region_query entry on its first comma, normalizes it, and
+# looks it up against this study's own spatial_units.geojson unit_name
+# column to get a per-unit bbox for Overpass tiling. A single
+# "Catalunya, España" entry would never match any of the 43 comarca names,
+# so it would fall through to an untiled features_from_place() query over
+# the whole region -- exactly what broke san_juan_departamentos before its
+# region_query was split per department (see
+# config/locations/ar/san_juan.yaml). Verified mechanically for all 43
+# entries against scripts/migrations/build_cataluna_reference.py's
+# unit_name spelling (via greenspace_access._normalise_unit_name) before
+# committing this list -- Nominatim never geocodes these strings once the
+# name matches; the fetch uses the comarca's own ICGC polygon bbox.
+region_query:
+  - "Alt Camp, Catalunya, España"
+  - "Alt Empordà, Catalunya, España"
+  - "Alt Penedès, Catalunya, España"
+  - "Alt Urgell, Catalunya, España"
+  - "Alta Ribagorça, Catalunya, España"
+  - "Anoia, Catalunya, España"
+  - "Bages, Catalunya, España"
+  - "Baix Camp, Catalunya, España"
+  - "Baix Ebre, Catalunya, España"
+  - "Baix Empordà, Catalunya, España"
+  - "Baix Llobregat, Catalunya, España"
+  - "Baix Penedès, Catalunya, España"
+  - "Barcelonès, Catalunya, España"
+  - "Berguedà, Catalunya, España"
+  - "Cerdanya, Catalunya, España"
+  - "Conca de Barberà, Catalunya, España"
+  - "Garraf, Catalunya, España"
+  - "Garrigues, Catalunya, España"
+  - "Garrotxa, Catalunya, España"
+  - "Gironès, Catalunya, España"
+  - "Lluçanès, Catalunya, España"
+  - "Maresme, Catalunya, España"
+  - "Moianès, Catalunya, España"
+  - "Montsià, Catalunya, España"
+  - "Noguera, Catalunya, España"
+  - "Osona, Catalunya, España"
+  - "Pallars Jussà, Catalunya, España"
+  - "Pallars Sobirà, Catalunya, España"
+  - "Pla d'Urgell, Catalunya, España"
+  - "Pla de l'Estany, Catalunya, España"
+  - "Priorat, Catalunya, España"
+  - "Ribera d'Ebre, Catalunya, España"
+  - "Ripollès, Catalunya, España"
+  - "Segarra, Catalunya, España"
+  - "Segrià, Catalunya, España"
+  - "Selva, Catalunya, España"
+  - "Solsonès, Catalunya, España"
+  - "Tarragonès, Catalunya, España"
+  - "Terra Alta, Catalunya, España"
+  - "Urgell, Catalunya, España"
+  - "Val d'Aran, Catalunya, España"
+  - "Vallès Occidental, Catalunya, España"
+  - "Vallès Oriental, Catalunya, España"
+
+# total_bounds of the 43-comarca ICGC reference
+# (scripts/migrations/build_cataluna_reference.py) plus a ~0.1 deg margin.
+bbox:
+  west: 0.06
+  south: 40.42
+  east: 3.43
+  north: 42.96
+
+crs:
+  geographic: EPSG:4326
+  metric: auto

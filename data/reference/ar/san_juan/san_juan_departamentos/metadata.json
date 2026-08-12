@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "study_id": "san_juan_departamentos",
+  "spatial_id": "unit_id (sj_<in1>)",
+  "source": "data/raw/ign/departamentos/v2024/departamentos_san_juan.geojson",
+  "source_sha256": "3c4cbc743a1ecd8397e6d7cd88453abcb6594b978893f13abdc7c2af54f6cbf3",
+  "unit_count": 19,
+  "total_bounds": [
+    -70.56929168,
+    -32.6263605,
+    -66.6617883,
+    -28.38875189
+  ]
+}

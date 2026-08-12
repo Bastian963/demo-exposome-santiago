@@ -1,0 +1,58 @@
+schema_version: 1
+id: valle_aburra
+name: Valle de Aburrá
+country: Colombia
+country_code: CO
+country_code3: COL
+timezone: America/Bogota
+
+# Metro-scale location spanning the 10 municipios of the Area Metropolitana
+# del Valle de Aburra. This is a SEPARATE location from co/medellin
+# (Medellin city only, sub-municipal comunas/corregimientos) -- same
+# relationship as ar/buenos_aires_amba (metro) vs ar/buenos_aires (CABA
+# only): independent, not one derived from the other. Chosen because the
+# cohort's own residence data groups 508 participants under "Valle de
+# Aburra (Medellin)" metro-wide, not Medellin-city-only -- see
+# docs/multicity_status.md fila 3.
+#
+# Names come from
+# data/reference/co/valle_aburra/valle_aburra_municipios/spatial_units.geojson
+# (AMVA's own "Division Politica" layer -- see
+# scripts/migrations/build_valle_aburra_municipios_reference.py's
+# docstring), title-cased from the source's ALL-CAPS S_MUNICIPIO. Query
+# suffix is ", Antioquia, Colombia" rather than ", Medellin, Colombia":
+# these are sibling municipios of Medellin within the department, not
+# sub-units of it, and several of the 10 names ("La Estrella", "Barbosa",
+# "Girardota") are common enough elsewhere in Colombia/LatAm that anchoring
+# to the department instead avoids resolving to the wrong place entirely.
+# This list has NOT been individually verified against ox.geocode_to_gdf
+# (offline config edit, out of scope) -- same accepted risk as
+# Bogota/Lima/CDMX/Medellin; the per-locality retry/cache design in
+# greenspace_access.py means any entry that fails or resolves wrong shows
+# up alone, by name, in the run log.
+region_query:
+  - "Medellín, Antioquia, Colombia"
+  - "Bello, Antioquia, Colombia"
+  - "Itagüí, Antioquia, Colombia"
+  - "Envigado, Antioquia, Colombia"
+  - "Sabaneta, Antioquia, Colombia"
+  - "La Estrella, Antioquia, Colombia"
+  - "Caldas, Antioquia, Colombia"
+  - "Copacabana, Antioquia, Colombia"
+  - "Girardota, Antioquia, Colombia"
+  - "Barbosa, Antioquia, Colombia"
+
+# total_bounds of the 10-unit reference
+# (scripts/migrations/build_valle_aburra_municipios_reference.py,
+# data/reference/co/valle_aburra/valle_aburra_municipios/metadata.json)
+# plus a ~0.1 deg margin -- same convention as config/locations/co/medellin.yaml,
+# config/locations/mx/cdmx.yaml and config/locations/ar/buenos_aires_amba.yaml.
+bbox:
+  west: -75.82
+  south: 5.88
+  east: -75.12
+  north: 6.61
+
+crs:
+  geographic: EPSG:4326
+  metric: auto

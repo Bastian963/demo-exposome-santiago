@@ -1,0 +1,75 @@
+schema_version: 1
+id: buenos_aires_amba
+location: ar/buenos_aires_amba
+
+# CABA's 15 comunas + the 40 AMBA partidos of Buenos Aires province = 55
+# units. Gran La Plata (La Plata, Berisso, Ensenada) is deliberately
+# included. Reference built by
+# scripts/migrations/build_buenos_aires_amba_reference.py from:
+#   - GCBA comunas (data.buenosaires.gob.ar/dataset/comunas, CC-BY-2.5-AR)
+#   - IGN Argentina departamentos, filtered to Buenos Aires province
+#     partidos via WFS CQL_FILTER=in1 LIKE '06%' (CC-BY, IGN Argentina)
+#
+# Partido list (24 GBA + 16 outer-ring AMBA, pinned by INDEC in1 code in
+# the build script; names as spelled by IGN, source-faithful/accented):
+# Almirante Brown, Avellaneda, Berazategui, Esteban Echeverría, Ezeiza,
+# Florencio Varela, General San Martín, Hurlingham, Ituzaingó, José C.
+# Paz, La Matanza, Lanús, Lomas de Zamora, Malvinas Argentinas, Merlo,
+# Moreno, Morón, Quilmes, San Fernando, San Isidro, San Miguel, Tigre,
+# Tres de Febrero, Vicente López, Berisso, Brandsen, Campana, Cañuelas,
+# Ensenada, Escobar, Exaltación de la Cruz, General Las Heras, General
+# Rodríguez, La Plata, Luján, Marcos Paz, Pilar, Presidente Perón, San
+# Vicente, Zárate.
+spatial:
+  path: data/reference/ar/buenos_aires_amba/buenos_aires_amba/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: admin_unit
+  expected_units: 55
+  source: >-
+    GCBA comunas (data.buenosaires.gob.ar/dataset/comunas) + IGN Argentina
+    departamentos (wms.ign.gob.ar WFS, ign:departamento layer)
+  license: CC-BY-2.5-AR (GCBA) / CC-BY (IGN Argentina)
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+# Must cover all 55 visible AMBA units. caba_native is deliberately not a
+# substitute: it covers only CABA and would leak a partial detail product into
+# the AMBA map.
+detail:
+  native_study: buenos_aires_amba_native
+
+# Explicit non-layer inputs for derived products (mirrors santiago_communes.yaml).
+# precipitation_spi reuses the CHIRPS daily CSV already fetched for `precipitation`.
+# climate_openmeteo needs a dedicated per-commune Open-Meteo daily fetch first:
+#   python scripts/run_climate_openmeteo.py --city buenos_aires_amba --years 2024
+layer_inputs:
+  precipitation_spi:
+    chirps_daily_csv: data/processed/ar/buenos_aires_amba/buenos_aires_amba/precipitation/buenos_aires_amba_precipitation_chirps_daily_2015_2024.csv
+  climate_openmeteo:
+    daily_csv: data/processed/buenos_aires_amba_climate_openmeteo_daily_2024_2024.csv
+
+layers:
+  - community_safety
+  - community_violence
+  - suicide_mortality
+  - road_traffic_mortality
+  - pm25
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - precipitation_spi
+  - climate_heat
+  - climate_openmeteo
+  - air_quality_satellite
+  - air_quality
+  - wind
+  - wildfire
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

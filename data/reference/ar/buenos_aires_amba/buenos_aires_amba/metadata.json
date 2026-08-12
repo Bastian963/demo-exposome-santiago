@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "study_id": "buenos_aires_amba",
+  "spatial_id": "unit_id (caba_comuna_NN or pba_<in1>)",
+  "source_comunas": "data/raw/ar/buenos_aires/buenos_aires_comunas/comunas.geojson",
+  "source_comunas_sha256": "ec5b947bc1cf410663d421d3683a07e202d40cb6169f614ca1ce04e075c18f7e",
+  "source_partidos": "data/raw/ign/departamentos/v2024/departamentos_buenos_aires.geojson",
+  "source_partidos_sha256": "6d76f25427a45cacf1f6fd97461494410e38e7a20d34be2593fdd5b4be1a901c",
+  "unit_count": 55,
+  "n_comunas": 15,
+  "n_partidos": 40,
+  "total_bounds": [
+    -59.378109,
+    -35.42143667,
+    -57.7082235,
+    -33.80639648
+  ]
+}

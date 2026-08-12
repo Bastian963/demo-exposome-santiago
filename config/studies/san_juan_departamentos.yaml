@@ -1,0 +1,82 @@
+schema_version: 1
+id: san_juan_departamentos
+location: ar/san_juan
+
+# San Juan is the #1 city by cohort residence within Argentina (195
+# participants, 5.0% of the full cohort -- see docs/multicity_status.md) yet
+# had no study at all: Buenos Aires studies do not cover it. Prior next-action
+# ("Decidir estudio Gran San Juan") is resolved here as whole-province,
+# department-level, not metro-only: the 2026-07 cohort delivery's `City`
+# column for San Juan carries department-level values (verified against
+# data/raw/zipcodes/2026-07/participant_locations.csv), spanning ~13 of the
+# 19 departments. Gran San Juan (Capital, Chimbas, Rawson, Rivadavia, Santa
+# Lucía, Pocito) holds the bulk, but Iglesia, Calingasta, Jáchal, Albardón,
+# Angaco, Caucete and 9 de Julio are also non-zero -- a metro-only study
+# would drop real cohort residents.
+hidden: false
+
+spatial:
+  path: data/reference/ar/san_juan/san_juan_departamentos/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: departamento
+  expected_units: 19
+  source: IGN Argentina departamentos (wms.ign.gob.ar WFS, ign:departamento layer, CQL_FILTER=in1 LIKE '70%') - see data/raw/ign/departamentos/v2024/README.md
+  license: CC-BY (IGN Argentina)
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+# Companion native study, declared before this study has ever run. Without it,
+# `exposome detail` has no source rasters and the 19 departamentos would define
+# the painted value instead of only masking it -- see the 2026-08-11 audit in
+# docs/resolution_manifest.md, where that omission cost País Vasco a full native
+# collection run discovered the day before a delivery.
+detail:
+  native_study: san_juan_native
+
+# Full portable layer set (14), same subset as santiago_communes/
+# buenos_aires_comunas/cdmx_alcaldias/lima_distritos: global rasters (GEE,
+# single-call, already skip-if-cached) + OSM layers (already tqdm and
+# per-locality/per-tag checkpointed). San Juan province is a single OSM
+# relation (see config/locations/ar/san_juan.yaml), so no per-department
+# region_query enumeration is needed the way AMBA/Bogotá/Medellín/CDMX
+# required it.
+#
+# The four AR-only layers in config/layers.yaml (community_safety,
+# community_violence, suicide_mortality, road_traffic_mortality) are NOT
+# included: unlike the CL/MX/PE-only layers (excluded here purely by
+# config/layers.yaml's countries filter), these four are hardcoded in code
+# to buenos_aires_amba specifically (src/exposome/community_safety.py:163-164,
+# community_violence.py:150-151, argentina_outcomes.py:102-103 all raise
+# ValueError if study.id != "buenos_aires_amba"). Generalizing them to
+# San Juan needs a code change (parameterizing the department-matching
+# logic against DNEC SNIC/SAT source data), not a config line -- follow-up,
+# not part of this study's initial scope.
+#
+# precipitation_spi is deliberately NOT enabled yet: it requires
+# layer_inputs.precipitation_spi.chirps_daily_csv pointing at precipitation's
+# own output CSV, which only exists after precipitation has actually run once
+# for this study (see santiago_communes.yaml/cdmx_alcaldias.yaml for the same
+# pattern). Whole-study preflight checks every layer upfront and aborts the
+# entire run if one is missing_input (src/exposome/layers.py:918-925), so
+# adding it now would block all 14 other layers too. Add it back in a
+# follow-up pass once
+# data/processed/ar/san_juan/san_juan_departamentos/precipitation/san_juan_departamentos_precipitation_chirps_daily_2015_2024.csv
+# exists.
+layers:
+  - pm25
+  - air_quality_satellite
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

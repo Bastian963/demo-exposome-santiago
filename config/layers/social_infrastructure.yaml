@@ -1,0 +1,158 @@
+schema_version: 1
+id: social_infrastructure
+settings:
+  overpass_urls:
+  - https://overpass-api.de/api
+  - https://overpass.kumi.systems/api
+  requests_timeout_s: 90
+  civic_categories:
+  - library
+  - cultural
+  - community
+  - senior
+  curated_access_exclude:
+  - private
+  - customers
+  - 'no'
+  - permit
+  osm_tags:
+    amenity:
+    - library
+    - community_centre
+    - social_centre
+    - social_facility
+    - arts_centre
+    - theatre
+    - events_venue
+    tourism:
+    - museum
+    - gallery
+    leisure:
+    - sports_centre
+    - pitch
+    - fitness_centre
+    - swimming_pool
+    - stadium
+    - recreation_ground
+    - park
+    - playground
+    club:
+    - social
+    - sport
+    place:
+    - square
+    social_facility:for:
+    - senior
+    - elderly
+    - older_people
+  osm_tag_groups:
+    library_cultural:
+      amenity:
+      - library
+      - arts_centre
+      - theatre
+      - events_venue
+      tourism:
+      - museum
+      - gallery
+    community_senior:
+      amenity:
+      - community_centre
+      - social_centre
+      - social_facility
+      club:
+      - social
+      social_facility:for:
+      - senior
+      - elderly
+      - older_people
+    sports:
+      leisure:
+      - sports_centre
+      - pitch
+      - fitness_centre
+      - swimming_pool
+      - stadium
+      club:
+      - sport
+    public_space_extra:
+      leisure:
+      - playground
+      place:
+      - square
+  reuse_greenspace_cache: true
+  categories:
+    library:
+    - tag: amenity
+      values:
+      - library
+    cultural:
+    - tag: amenity
+      values:
+      - arts_centre
+      - theatre
+      - events_venue
+    - tag: tourism
+      values:
+      - museum
+      - gallery
+    community:
+    - tag: amenity
+      values:
+      - community_centre
+      - social_centre
+      - social_facility
+    - tag: club
+      values:
+      - social
+    senior:
+    - tag: social_facility:for
+      values:
+      - senior
+      - elderly
+      - older_people
+    sports:
+    - tag: leisure
+      values:
+      - sports_centre
+      - pitch
+      - fitness_centre
+      - swimming_pool
+      - stadium
+    - tag: club
+      values:
+      - sport
+    public_space:
+    - tag: leisure
+      values:
+      - recreation_ground
+      - park
+      - garden
+      - dog_park
+      - playground
+    - tag: landuse
+      values:
+      - village_green
+      - recreation_ground
+    - tag: place
+      values:
+      - square
+  category_order:
+  - library
+  - cultural
+  - community
+  - senior
+  - sports
+  - public_space
+  grid_spacing_m: 1000
+  coverage_m:
+  - 500
+  - 1000
+  no_data_dist_m: 99999
+  dedupe_radius_m: 50
+  index:
+    method: civic_access_recreation_weighted_0_100
+    weights:
+      civic: 0.45
+      access: 0.35
+      recreation: 0.2

@@ -1,0 +1,59 @@
+schema_version: 1
+id: cdmx
+name: Ciudad de México
+country: Mexico
+country_code: MX
+country_code3: MEX
+timezone: America/Mexico_City
+
+# The single-region query anticipated below did in fact time out: the
+# 2026-07-16 overnight run failed greenspace_access twice in a row with a
+# ConnectionError after ~3:45 of Overpass churn on "Ciudad de Mexico,
+# Mexico" (same failure mode AMBA hit with 41 combined partidos). Switched
+# to a 16-entry alcaldia region_query list, mirroring
+# config/locations/ar/buenos_aires_amba.yaml's per-locality pattern (see
+# src/exposome/greenspace_access.py fetch_green_areas docstring) -- each
+# alcaldia is now its own Overpass query with its own cache file, so a
+# failure only loses one alcaldia's data, not the whole city's.
+#
+# Names below come from data/reference/mx/cdmx/cdmx_alcaldias/
+# spatial_units.geojson (INEGI Marco Geoestadistico 2022) qualified with
+# ", Ciudad de Mexico, Mexico" for Nominatim disambiguation -- several
+# alcaldia names (Benito Juarez, Cuauhtemoc, Miguel Hidalgo) collide with
+# municipality names elsewhere in Mexico without that qualifier. Unlike
+# buenos_aires_amba.yaml's list, these have NOT been individually verified
+# with ox.geocode_to_gdf yet (that call hits Nominatim, which is out of
+# scope for an offline config edit) -- the per-locality retry/cache design
+# means any entry that fails to geocode will fail alone, by name, in the
+# run log, rather than silently corrupting the whole layer.
+region_query:
+  - "Azcapotzalco, Ciudad de Mexico, Mexico"
+  - "Benito Juárez, Ciudad de Mexico, Mexico"
+  - "Coyoacán, Ciudad de Mexico, Mexico"
+  - "Cuajimalpa de Morelos, Ciudad de Mexico, Mexico"
+  - "Cuauhtémoc, Ciudad de Mexico, Mexico"
+  - "Gustavo A. Madero, Ciudad de Mexico, Mexico"
+  - "Iztacalco, Ciudad de Mexico, Mexico"
+  - "Iztapalapa, Ciudad de Mexico, Mexico"
+  - "La Magdalena Contreras, Ciudad de Mexico, Mexico"
+  - "Miguel Hidalgo, Ciudad de Mexico, Mexico"
+  - "Milpa Alta, Ciudad de Mexico, Mexico"
+  - "Tlalpan, Ciudad de Mexico, Mexico"
+  - "Tláhuac, Ciudad de Mexico, Mexico"
+  - "Venustiano Carranza, Ciudad de Mexico, Mexico"
+  - "Xochimilco, Ciudad de Mexico, Mexico"
+  - "Álvaro Obregón, Ciudad de Mexico, Mexico"
+
+# total_bounds of the 16-alcaldia reference (scripts/migrations/
+# build_cdmx_alcaldias_reference.py, INEGI Marco Geoestadistico 2022 via
+# CONABIO) plus a ~0.1 deg margin -- same convention as
+# config/locations/ar/buenos_aires_amba.yaml.
+bbox:
+  west: -99.46
+  south: 18.95
+  east: -98.84
+  north: 19.69
+
+crs:
+  geographic: EPSG:4326
+  metric: auto

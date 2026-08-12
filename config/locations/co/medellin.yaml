@@ -1,0 +1,76 @@
+schema_version: 1
+id: medellin
+name: Medellín
+country: Colombia
+country_code: CO
+country_code3: COL
+timezone: America/Bogota
+
+# Medellin (Municipio) sub-municipal division: 16 comunas (urban) + 5
+# corregimientos (rural). This is a SEPARATE, city-only location from
+# co/valle_aburra (the metro's 10 municipios) -- same relationship as
+# ar/buenos_aires (CABA only) vs ar/buenos_aires_amba (metro) -- not one
+# derived from the other. See docs/multicity_status.md fila 3 for why both
+# exist: the cohort's residence data groups 508 participants under "Valle
+# de Aburra (Medellin)" metro-wide, so the metro study is what actually
+# matches the cohort, while this city-only study adds intra-Medellin detail.
+#
+# Names come from
+# data/reference/co/medellin/medellin_comunas/spatial_units.geojson (DAP's
+# "Comunas y Corregimientos" layer -- see
+# scripts/migrations/build_medellin_comunas_reference.py's docstring for
+# the source and the Referer+User-Agent headers its ArcGIS REST endpoint
+# requires). Unlike Bogota/Lima's ALL-CAPS unaccented source names,
+# Medellin's own data already carries correct accents (e.g. "Belen", "El
+# Poblado", "La America", "San Javier") -- used verbatim, no re-accenting
+# needed. Corregimiento names already include a "Corregimiento de X" prefix
+# in the source, which doubles as useful Nominatim disambiguation.
+#
+# Highest-risk entries for region_query: several of the 16 comuna names are
+# short, generic Spanish words/place-names with no "Comuna" prefix in the
+# source spelling -- "Popular", "Santa Cruz", "Buenos Aires", "La America"
+# in particular are common enough (a city in Bolivia, several Argentine
+# provinces, generic "popular" as an adjective) that Nominatim could
+# plausibly resolve to the wrong feature even with the ", Medellin,
+# Colombia" suffix. Not individually verified against ox.geocode_to_gdf
+# (offline config edit, out of scope) -- same accepted risk as
+# Bogota/Lima/CDMX; the per-locality retry/cache design in
+# greenspace_access.py means any entry that resolves wrong or fails shows
+# up alone, by name, in the run log rather than silently corrupting others.
+region_query:
+  - "Popular, Medellín, Colombia"
+  - "Santa Cruz, Medellín, Colombia"
+  - "Manrique, Medellín, Colombia"
+  - "Aranjuez, Medellín, Colombia"
+  - "Castilla, Medellín, Colombia"
+  - "Doce de Octubre, Medellín, Colombia"
+  - "Robledo, Medellín, Colombia"
+  - "Villa Hermosa, Medellín, Colombia"
+  - "Buenos Aires, Medellín, Colombia"
+  - "La Candelaria, Medellín, Colombia"
+  - "Laureles Estadio, Medellín, Colombia"
+  - "La América, Medellín, Colombia"
+  - "San Javier, Medellín, Colombia"
+  - "El Poblado, Medellín, Colombia"
+  - "Guayabal, Medellín, Colombia"
+  - "Belén, Medellín, Colombia"
+  - "Corregimiento de San Sebastián de Palmitas, Medellín, Colombia"
+  - "Corregimiento de San Cristóbal, Medellín, Colombia"
+  - "Corregimiento de Altavista, Medellín, Colombia"
+  - "Corregimiento de San Antonio de Prado, Medellín, Colombia"
+  - "Corregimiento de Santa Elena, Medellín, Colombia"
+
+# total_bounds of the 21-unit reference
+# (scripts/migrations/build_medellin_comunas_reference.py,
+# data/reference/co/medellin/medellin_comunas/metadata.json) plus a ~0.1 deg
+# margin -- same convention as config/locations/co/bogota.yaml,
+# config/locations/mx/cdmx.yaml and config/locations/pe/lima.yaml.
+bbox:
+  west: -75.82
+  south: 6.06
+  east: -75.37
+  north: 6.47
+
+crs:
+  geographic: EPSG:4326
+  metric: auto

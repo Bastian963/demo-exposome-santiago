@@ -1,0 +1,47 @@
+schema_version: 1
+id: cdmx_native
+location: mx/cdmx
+mode: native
+
+# cdmx_alcaldias is the primary, picker-visible aggregate study for CDMX.
+# This native-resolution study is hidden from the city picker (same
+# reasoning as caba_native/santiago_native) and stays queryable by
+# study_id + coordinates via the scripts/query_exposome.py CLI
+# (--study cdmx_native --lon ... --lat ...). It is NOT independently
+# routable in the webapp itself — the frontend only resolves cities by
+# slug (webapp/src/utils/url-state.js) against catalog.cities, which
+# excludes every hidden:true study by construction
+# (src/exposome/publishing.py build_catalog). If browser-based access to
+# a hidden native study is ever needed, that would require adding real
+# ?study= URL routing — separate work, not implied by "hidden".
+hidden: true
+
+# AOI is the dissolve of the 16 official alcaldia polygons already used by
+# cdmx_alcaldias (spatial_units.geojson) into a single Ciudad de Mexico
+# polygon — reuses validated boundaries instead of geocoding a new
+# metropolitan limit. Same method used for santiago_native (see
+# docs/resolution_manifest.md).
+aoi:
+  path: data/reference/mx/cdmx/cdmx_native/aoi.geojson
+  source: Dissolve of cdmx_alcaldias' 16 official alcaldia polygons (INEGI Marco Geoestadistico 2022)
+  license: same as cdmx_alcaldias' spatial reference — see data/reference/mx/cdmx/cdmx_alcaldias/README.md
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+layers:
+  - air_quality_pm25
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - air_quality_satellite
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

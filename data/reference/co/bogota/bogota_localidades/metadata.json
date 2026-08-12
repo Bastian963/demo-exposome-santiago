@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "study_id": "bogota_localidades",
+  "spatial_id": "unit_id (LOCCODIGO)",
+  "source_geometry": "data/raw/co/bogota/ideca_localidades/2026/localidades_bogota.geojson",
+  "source_geometry_sha256": "a27784fecf9aa8a60fa8e998559b26e562371a06720167954ee22741cd18c14c",
+  "unit_count": 20,
+  "total_bounds": [
+    -74.44977952809569,
+    3.731030342448469,
+    -73.98653427808141,
+    4.836779094200477
+  ]
+}

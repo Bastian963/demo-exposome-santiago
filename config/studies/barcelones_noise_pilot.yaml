@@ -1,0 +1,35 @@
+schema_version: 1
+id: barcelones_noise_pilot
+location: es/barcelones
+
+# Public pilot only. It must not be interpreted as the complete Cataluña
+# release, which remains blocked until its 12 SICA agglomeration archives are
+# validated.
+hidden: false
+
+spatial:
+  path: data/reference/es/barcelones/barcelones_noise_pilot/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: comarca
+  expected_units: 1
+  source: ICGC divisions administratives, comarques_5000 (Barcelonès extract)
+  license: CC BY 4.0 (ICGC)
+
+period:
+  start_date: "2022-01-01"
+  end_date: "2022-12-31"
+
+layers: [noise_spain]
+
+# The partial snapshot is selected spatially from all readable Cataluña SICA
+# archives. Its source region is Cataluña even though this pilot has its own
+# public location id.
+noise_spain:
+  source_region: cataluna
+  coverage: partial
+  public_status: pilot
+
+layer_inputs:
+  noise_spain:
+    source_manifest: data/raw/miteco/sica-mer-agglomerations/4f-2022-barcelones-pilot/source_manifest.json

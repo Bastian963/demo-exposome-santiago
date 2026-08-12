@@ -1,0 +1,22 @@
+schema_version: 1
+id: buenos_aires
+name: Buenos Aires
+country: Argentina
+country_code: AR
+country_code3: ARG
+timezone: America/Argentina/Buenos_Aires
+region_query: "Ciudad Autónoma de Buenos Aires, Argentina"
+
+# Ciudad Autonoma de Buenos Aires. For metropolitan-scale studies (AMBA,
+# incl. La Plata) use config/locations/ar/buenos_aires_amba.yaml instead --
+# do not expand this bbox, it would silently change caba_native/
+# buenos_aires_comunas inputs on rebuild.
+bbox:
+  west: -58.55
+  south: -34.72
+  east: -58.32
+  north: -34.50
+
+crs:
+  geographic: EPSG:4326
+  metric: auto

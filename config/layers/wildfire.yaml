@@ -1,0 +1,68 @@
+schema_version: 1
+id: wildfire
+settings:
+  temporal:
+    status: annual_downloadable
+    adapter: wildfire
+    available_start_year: 2001
+    available_end_year: 2024
+    source: MODIS MCD64A1 + FIRMS
+    indicators:
+    - exposome_id: wildfire
+      value_column: fire_burned_pct
+      label: Área quemada
+      unit: "%"
+  years:
+  - 2015
+  - 2016
+  - 2017
+  - 2018
+  - 2019
+  - 2020
+  - 2021
+  - 2022
+  - 2023
+  - 2024
+  start_date: '2015-01-01'
+  end_date: '2024-12-31'
+  collections:
+    # scale_meters is the nominal product label used by the aggregate zonal
+    # reducer. native_scale_meters is Earth Engine's actual nominalScale for
+    # the source grid (SR-ORG:6974 MODIS sinusoidal), which the strict native
+    # export grid check (native._validate_export_grid, 5% tolerance) compares
+    # against -- MODIS "500 m" is 463.31 m and FIRMS "1 km" is 926.63 m in GEE,
+    # the same sub-nominal offset as alan's 463.83. Only the native detail
+    # export reads native_scale_meters; the aggregate keeps scale_meters.
+    burned_area:
+      id: MODIS/061/MCD64A1
+      band: BurnDate
+      scale_meters: 500
+      native_scale_meters: 463.3127
+    active_fire:
+      id: FIRMS
+      band: T21
+      scale_meters: 1000
+      native_scale_meters: 926.6254
+  peak_seasons:
+  - 2017
+  - 2023
+  - 2024
+  index_weights:
+    burned_pct: 0.4
+    detection_density: 0.4
+    recurrence: 0.2
+  official:
+    # Chile-only optional sub-source (CONAF). Off by default ON PURPOSE: opt in
+    # per country, in config/countries/cl.yaml. Same reasoning as the
+    # official_source block in config/layers/healthcare.yaml -- a missing country
+    # override file must not silently enrich a foreign study with Chilean fire
+    # statistics. The merge at wildfire.py is a plain join on `name`, so Chilean
+    # commune names could collide with place names elsewhere in Latin America.
+    enabled: false
+    path: data/raw/conaf_incendios_comuna.csv
+    sep: ;
+    columns:
+      commune: comuna
+      n_fires: numero_incendios
+      damaged_ha: superficie_total_ha
+      human_cause_pct: pct_causa_humana

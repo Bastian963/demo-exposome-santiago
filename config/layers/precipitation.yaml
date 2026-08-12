@@ -1,0 +1,67 @@
+schema_version: 1
+id: precipitation
+settings:
+  temporal:
+    status: annual_downloadable
+    adapter: precipitation
+    available_start_year: 1981
+    available_end_year: 2024
+    source: CHIRPS Daily
+    indicators:
+    - exposome_id: rain_annual
+      value_column: precip_annual_mm
+      label: Lluvia anual
+      unit: mm
+      detail:
+        kind: native_raster
+        band: 1
+        native_resolution_m: 5566
+        source_label: CHIRPS Daily
+        metric_label: Lluvia anual
+        unit: mm
+        required_for_production: true
+    - exposome_id: rain_dry_spell
+      value_column: precip_cdd_days
+      label: Racha seca
+      unit: d
+      detail:
+        kind: native_raster
+        band: 2
+        native_resolution_m: 5566
+        source_label: CHIRPS Daily
+        metric_label: Racha seca
+        unit: d
+        required_for_production: true
+    - exposome_id: rain_heavy
+      value_column: precip_heavy_days_10mm
+      label: Lluvia intensa
+      unit: d
+      detail:
+        kind: native_raster
+        band: 3
+        native_resolution_m: 5566
+        source_label: CHIRPS Daily
+        metric_label: Lluvia intensa
+        unit: d
+        required_for_production: true
+  years:
+  - 2015
+  - 2016
+  - 2017
+  - 2018
+  - 2019
+  - 2020
+  - 2021
+  - 2022
+  - 2023
+  - 2024
+  start_date: '2015-01-01'
+  end_date: '2024-12-31'
+  collection:
+    id: UCSB-CHG/CHIRPS/DAILY
+    band: precipitation
+    scale_meters: 5566
+  thresholds:
+    wet_day_mm: 1
+    heavy_day_mm: 10
+    very_heavy_day_mm: 20

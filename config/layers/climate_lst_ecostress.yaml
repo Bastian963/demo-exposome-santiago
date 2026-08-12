@@ -1,0 +1,92 @@
+schema_version: 1
+id: climate_lst_ecostress
+settings:
+  # ECOSTRESS is the only provider in the pipeline that does not come from
+  # Earth Engine.  GEE hosts ECO_L2T_LSTE but has ingested only tiles over the
+  # Los Angeles metro area, so no Latin American city can be served from it.
+  # See docs/evaluacion_fuentes_nasa.md.
+  collection:
+    short_name: ECO_L2T_LSTE
+    # v002, NOT v003, and this is measured rather than assumed.  The NASA
+    # catalog lists v003 as covering "2018-07-09 to present", but that is the
+    # *intended* extent: reprocessing is still rolling forward.  Granule counts
+    # from CMR over the Santiago bbox, 2026-08-02:
+    #   year   v002   v003
+    #   2019   1188     11
+    #   2021   1826      0
+    #   2023   2825      0
+    #   2024   1198      0
+    #   2025   1763    255
+    #   2026   1026   2100
+    # Defaulting to v003 would silently yield a near-empty composite for
+    # 2019-2024.  Re-check this table before switching; when v003 is fully
+    # backfilled it is the better collection, and ADR 0005 requires changing
+    # the cache namespace at the same time.
+    version: "002"
+    provider: NASA Earthdata LP DAAC
+    native_resolution_m: 70
+  period:
+    start: "2019-01-01"
+    end: "2026-01-01"
+    # The instrument launched 2018-07; 2019 is the first complete year.  This
+    # series is therefore shorter than the 2015-2024 climate series and must
+    # never be padded to match it.
+    available_start_year: 2019
+
+  # The ISS precesses, so acquisitions land at varying local solar hours --
+  # the one thing no sun-synchronous sensor offers (MODIS is fixed at
+  # 10:30/13:30, Landsat at ~10:00).  Reductions are therefore binned by local
+  # solar hour.  The gap between the windows is collected but not reduced: a
+  # transition-hour mean mixes heating and cooling regimes.
+  solar_windows:
+  - name: day
+    start_hour: 10.0
+    end_hour: 16.0
+  - name: night
+    start_hour: 22.0
+    end_hour: 5.0
+
+  quality:
+    max_qc_level: 1          # 0 = best, 1 = nominal
+    drop_cloud: true
+    drop_water: true
+    plausible_range_c: [-50.0, 80.0]
+
+  temporal:
+    status: annual_downloadable
+    adapter: climate_lst_ecostress
+    available_start_year: 2019
+    available_end_year: 2025
+    source: ECOSTRESS ECO_L2T_LSTE v002
+    indicators:
+    - exposome_id: lst_day_mean
+      value_column: lst_day_mean_c
+      label: LST diurna
+      unit: °C
+      detail:
+        kind: native_raster
+        band: 1
+        native_resolution_m: 70
+        source_label: ECOSTRESS
+        metric_label: LST diurna media
+        unit: °C
+        # Deliberately false at launch.  ADR 0007 makes an annual series
+        # atomic: with required_for_production true, every year in
+        # expected_years must publish its own COG or production publication
+        # fails outright.  Granule counts are uneven (Santiago 756 in 2023 but
+        # 324 in 2024; Lima only 76 in 2024, before cloud masking), so the
+        # series is promoted to true only after per-city clear-sky counts are
+        # validated.  See docs/evaluacion_fuentes_nasa.md.
+        required_for_production: false
+    - exposome_id: lst_night_mean
+      value_column: lst_night_mean_c
+      label: LST nocturna
+      unit: °C
+      detail:
+        kind: native_raster
+        band: 4
+        native_resolution_m: 70
+        source_label: ECOSTRESS
+        metric_label: LST nocturna media
+        unit: °C
+        required_for_production: false

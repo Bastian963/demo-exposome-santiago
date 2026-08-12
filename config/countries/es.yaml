@@ -1,0 +1,19 @@
+schema_version: 1
+country_code: ES
+# No official Spanish source has been wired in yet, so global layer defaults
+# (which point at Chilean MINSAL/DEIS and CONAF data, see
+# config/layers/healthcare.yaml, config/layers/wildfire.yaml) must be disabled
+# explicitly outside CL -- same override pattern as config/countries/ar.yaml,
+# config/countries/co.yaml, config/countries/mx.yaml and config/countries/pe.yaml.
+#
+# This is not hypothetical. On 2026-08-10, with this file missing, healthcare for
+# pais_vasco_provincias downloaded the Chilean DEIS registry and then aborted in
+# compute_counts. A missing country file is a silent no-op in settings.py, which
+# is why the omission went unnoticed.
+overrides:
+  healthcare:
+    official_source:
+      enabled: false
+  wildfire:
+    official:
+      enabled: false

@@ -1,0 +1,44 @@
+schema_version: 1
+id: santiago_native
+location: cl/santiago
+mode: native
+
+# Santiago publishes an aggregate comunas study (santiago_communes) as its
+# primary, picker-visible entry. This native-resolution study is hidden from
+# the city picker — same reasoning as caba_native for Buenos Aires — and
+# stays queryable by study_id + coordinates via the
+# scripts/query_exposome.py CLI (--study santiago_native --lon ... --lat
+# ...). It is NOT independently routable in the webapp itself — see
+# cdmx_native.yaml for the full reasoning (same applies here). Note: unlike
+# caba_native, this study's web bundle has not been published yet
+# (webapp/public/data/v1/cl/santiago/ only has santiago_communes/ today).
+hidden: true
+
+# AOI is the dissolve of the 52 official commune polygons already used by
+# santiago_communes (spatial_units.geojson) into a single Gran Santiago
+# polygon — reuses validated boundaries instead of geocoding a new
+# metropolitan limit. See docs/resolution_manifest.md Hallazgo 3.
+aoi:
+  path: data/reference/cl/santiago/santiago_native/aoi.geojson
+  source: Dissolve of santiago_communes' 52 official commune polygons (validated legacy geometry + INE Censo 2017 CUT crosswalk)
+  license: same as santiago_communes' spatial reference — see data/reference/cl/santiago/santiago_communes/README.md
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+layers:
+  - air_quality_pm25
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - air_quality_satellite
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

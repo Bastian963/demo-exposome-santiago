@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "study_id": "valle_aburra_municipios",
+  "spatial_id": "unit_id (DIVIPOLA, '05'+ID_MPIO)",
+  "source_geometry": "data/raw/co/valle_aburra/amva_municipios/2026/valle_aburra_municipios.geojson",
+  "source_geometry_sha256": "1041e399cdafd7346119073f643738ffc7c5b50e9372dba5abf5b5abf7ce19d7",
+  "unit_count": 10,
+  "total_bounds": [
+    -75.71962783702011,
+    5.979142551230506,
+    -75.22122518996792,
+    6.511903854936273
+  ]
+}

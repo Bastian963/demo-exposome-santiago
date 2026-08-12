@@ -1,0 +1,67 @@
+schema_version: 1
+
+# Portable minimum shared by every current non-Santiago city. The batch loader
+# resolves aliases (pm25 -> air_quality_pm25) and refuses to start when either
+# the aggregate or native companion omits one of these layers.
+portable_layers:
+  - air_quality_pm25
+  - air_quality_satellite
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare
+
+# Cohort-priority order. Provider work remains sequential so one overnight run
+# does not multiply GEE/Overpass pressure. Use --city to select one or more.
+cities:
+  - id: santiago
+    aggregate_study: santiago_communes
+    native_study: santiago_native
+  - id: lima
+    aggregate_study: lima_distritos
+    native_study: lima_native
+  - id: bogota
+    aggregate_study: bogota_localidades
+    native_study: bogota_native
+  - id: valle_aburra
+    aggregate_study: valle_aburra_municipios
+    native_study: valle_aburra_native
+  - id: medellin
+    aggregate_study: medellin_comunas
+    native_study: medellin_native
+  - id: cdmx
+    aggregate_study: cdmx_alcaldias
+    native_study: cdmx_native
+  - id: sao_paulo
+    aggregate_study: sao_paulo_distritos
+    native_study: sao_paulo_native
+  - id: buenos_aires_amba
+    aggregate_study: buenos_aires_amba
+    native_study: buenos_aires_amba_native
+  - id: buenos_aires_comunas
+    aggregate_study: buenos_aires_comunas
+    native_study: caba_native
+    # CABA does not enable the multisource-green layer; every enabled annual
+    # method is still discovered and collected by the temporal phase.
+    portable_layers:
+      - air_quality_pm25
+      - air_quality_satellite
+      - alan
+      - greenspace_coverage
+      - precipitation
+      - climate_heat
+      - wind
+      - wildfire
+      - greenspace_access
+      - walkability
+      - social_infrastructure
+      - food_environment
+      - healthcare

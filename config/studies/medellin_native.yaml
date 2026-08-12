@@ -1,0 +1,11 @@
+schema_version: 1
+id: medellin_native
+location: co/medellin
+mode: native
+hidden: true
+aoi:
+  path: data/reference/co/medellin/medellin_comunas/spatial_units.geojson
+  source: Dissolve of the Medellín comunas/corregimientos reference
+  license: same as medellin_comunas
+period: {start_date: "2015-01-01", end_date: "2024-12-31"}
+layers: [air_quality_pm25, alan, greenspace_coverage, greenspace_multisource, precipitation, climate_heat, wind, wildfire, air_quality_satellite, greenspace_access, walkability, social_infrastructure, food_environment, healthcare]

@@ -1,0 +1,188 @@
+schema_version: 1
+study: santiago_communes
+protocol: docs/hospitalization_annual_v2_protocol.md
+protocol_version: "2.0"
+seed: 20260722
+scope:
+  product: offline_data_analysis
+  webapp: false
+  exposome_master: false
+  automated_publish: false
+
+annual_artifact_contract:
+  supported_schema_versions: [1, 2]
+  require_sha256: true
+  require_schema_v2_for_spatial_detail: true
+
+paths:
+  temporal_root: data/processed/cl/santiago/santiago_communes/temporal_exposomes
+  outcomes: data/processed/cl/santiago/santiago_communes/neuro_hospitalizations/santiago_neuro_hospitalizations_annual_expected.csv.gz
+  master: data/processed/cl/santiago/santiago_communes/master.csv
+  geometry: data/reference/cl/santiago/santiago_communes/spatial_units.geojson
+  output_dir: data/processed/cl/santiago/santiago_communes/analysis/hospitalizations/annual_v2
+
+windows:
+  primary_outcome_years: [2015, 2016, 2017, 2018, 2019]
+  covid_sensitivity_years: [2015, 2016, 2017, 2018, 2019, 2020]
+  burden_reference_years: [2016, 2017, 2018, 2019]
+  timings: [same_year, lag1]
+
+outcomes:
+  primary:
+    - cardiovascular
+    - respiratory
+    - respiratory_copd
+    - cerebrovascular
+    - mental_all
+  exploratory:
+    - all_cause
+    - dementia
+    - alzheimer
+    - parkinsonism
+    - substance
+    - psychosis
+    - mood
+    - anxiety_stress
+    - respiratory_pneumonia
+    - respiratory_acute_lower
+  negative_control:
+    - injury_poisoning
+
+# direction: +1 means a larger value is oriented as more harmful; -1 means
+# protective/supportive and is sign-reversed before building joint scores.
+exposures:
+  - id: pm25
+    layer: pm25
+    column: pm25_pop_weighted
+    direction: 1
+    expected_years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]
+    core_mixture: true
+    bayesian_primary: true
+  - id: no2
+    layer: air_quality_satellite
+    column: no2_surface_ug_m3
+    direction: 1
+    expected_years: [2019, 2020, 2021, 2022, 2023, 2024]
+    core_mixture: false
+    bayesian_primary: false
+    limited_overlap: true
+  - id: alan
+    layer: alan
+    column: alan_radiance_pop_weighted
+    direction: 1
+    expected_years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+    core_mixture: true
+    bayesian_primary: true
+  - id: heat
+    layer: climate_heat
+    column: hot_days_30c
+    direction: 1
+    expected_years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+    core_mixture: true
+    bayesian_primary: true
+  - id: green
+    layer: greenspace_multisource
+    column: green_total_pct
+    direction: -1
+    expected_years: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+    core_mixture: true
+    bayesian_primary: true
+  - id: precipitation
+    layer: precipitation
+    column: precip_cdd_days
+    direction: 1
+    expected_years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+    core_mixture: true
+    bayesian_primary: true
+  - id: wind
+    layer: wind
+    column: wind_speed_mean
+    direction: -1
+    expected_years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+    core_mixture: true
+    bayesian_primary: true
+  - id: wildfire
+    layer: wildfire
+    column: fire_burned_pct
+    direction: 1
+    expected_years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+    core_mixture: true
+    bayesian_primary: true
+  - id: heavy_metals
+    layer: heavy_metals
+    column: hm_index
+    direction: 1
+    expected_years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]
+    core_mixture: true
+    bayesian_primary: true
+
+method_sensitivities:
+  - id: heat_openmeteo
+    replaces: heat
+    layer: climate_openmeteo
+    column: hot_days_30c
+    direction: 1
+    expected_years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  - id: green_landsat
+    replaces: green
+    layer: greenspace_coverage
+    column: green_cover_pct_ndvi
+    direction: -1
+    expected_years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+
+socioeconomic:
+  primary_column: nse_index_pca
+  sensitivity_column: nse_index
+  quintile_column: nse_quintil
+  orientation: -1
+
+joint_exposome:
+  winsor_quantiles: [0.01, 0.99]
+  minimum_complete_components: 8
+  horn_permutations: 1000
+  horn_percentile: 0.95
+  elastic_net_l1_ratios: [0.1, 0.5, 0.9, 1.0]
+  elastic_net_alphas: [0.001, 0.01, 0.1, 1.0]
+  grouped_cv_folds: 5
+  stability_resamples: 500
+
+screening:
+  minimum_communes: 45
+  minimum_years: 3
+  bootstrap_samples: 2000
+  bootstrap_confidence: 0.95
+  moran_permutations: 999
+  leave_one_commune_out: true
+  fdr_method: fdr_bh
+
+bym2:
+  chains: 4
+  tune: 2000
+  draws: 2000
+  target_accept: 0.95
+  retry_tune: 4000
+  retry_draws: 4000
+  retry_target_accept: 0.99
+  coefficient_sd: 0.5
+  log_alpha_mean: 2.995732273553991
+  log_alpha_sd: 1.5
+  spatial_sigma_tail_probability_above_one: 0.01
+  rho_prior: [0.5, 0.5]
+  rho_prior_sensitivity: [1.0, 1.0]
+  pareto_k_reloo_threshold: 0.7
+  exact_reloo: true
+  diagnostics:
+    max_rhat: 1.01
+    min_ess_bulk: 400
+    min_ess_tail: 400
+    min_bfmi: 0.30
+    max_divergences: 0
+
+evidence:
+  alpha: 0.05
+  rope_rr: [0.95, 1.05]
+  minimum_direction_probability: 0.975
+  require_hdi_excludes_one: true
+  require_negative_control_clear: true
+  require_residual_moran_clear: true
+  labels: [supported, suggestive, unstable, null, not_estimable]

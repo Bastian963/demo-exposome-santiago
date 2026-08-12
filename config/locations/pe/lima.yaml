@@ -1,0 +1,107 @@
+schema_version: 1
+id: lima
+name: Lima
+country: Peru
+country_code: PE
+country_code3: PER
+timezone: America/Lima
+
+# Lima Metropolitana (Provincia de Lima, 43 distritos) + the Provincia
+# Constitucional del Callao (7 distritos) are two separate top-level
+# administrative entities in Peru, but the cohort lives across both and they
+# form one contiguous metro area -- same reasoning buenos_aires_amba used to
+# merge CABA + partido-level jurisdictions under one region_query list.
+#
+# A single combined "Lima, Peru" query was NOT used here: CDMX and AMBA both
+# hit an Overpass ConnectionError/timeout with one combined query over that
+# many localities (see src/exposome/greenspace_access.py fetch_green_areas
+# docstring), so this goes straight to the per-distrito list pattern from
+# the start instead of waiting to hit the same failure.
+#
+# Names come from data/reference/pe/lima/lima_distritos/spatial_units.geojson
+# (IGN/IDEP "Limite Distrital", FUENTE=INEI), title-cased from the source's
+# ALL-CAPS spelling. The source has NO accented vowels anywhere (only Ñ
+# survives, e.g. "BREÑA") -- confirmed by scanning every district name for
+# non-ASCII characters before writing this list, not assumed. Accents were
+# NOT guessed back in (e.g. "San Martin de Porres" not "San Martín...",
+# "Jesus Maria" not "Jesús María") to avoid introducing unverified spelling;
+# Nominatim's Spanish search is generally accent-insensitive. Like CDMX's
+# list, these 50 entries have NOT been individually verified with
+# ox.geocode_to_gdf (that call hits Nominatim, out of scope for an offline
+# config edit) -- the per-locality retry/cache design in
+# greenspace_access.py means any entry that fails to geocode fails alone, by
+# name, in the run log.
+#
+# One deliberate rename: UBIGEO 150101's official NOMBDIST is just "LIMA"
+# (Cercado de Lima), which as a bare Nominatim query would very likely
+# resolve to the whole metropolitan area/department node instead of the
+# small central district polygon -- same class of problem AMBA solved with
+# "Partido de Esteban Echeverría". Used the district's common alternate name
+# "Cercado de Lima" instead, which is what OSM/Nominatim typically indexes
+# this specific administrative boundary as.
+region_query:
+  - "Bellavista, Callao, Peru"
+  - "Callao, Callao, Peru"
+  - "Carmen de la Legua Reynoso, Callao, Peru"
+  - "La Perla, Callao, Peru"
+  - "La Punta, Callao, Peru"
+  - "Mi Peru, Callao, Peru"
+  - "Ventanilla, Callao, Peru"
+  - "Ancon, Lima, Peru"
+  - "Ate, Lima, Peru"
+  - "Barranco, Lima, Peru"
+  - "Breña, Lima, Peru"
+  - "Carabayllo, Lima, Peru"
+  - "Chaclacayo, Lima, Peru"
+  - "Chorrillos, Lima, Peru"
+  - "Cieneguilla, Lima, Peru"
+  - "Comas, Lima, Peru"
+  - "El Agustino, Lima, Peru"
+  - "Independencia, Lima, Peru"
+  - "Jesus Maria, Lima, Peru"
+  - "La Molina, Lima, Peru"
+  - "La Victoria, Lima, Peru"
+  - "Cercado de Lima, Lima, Peru"
+  - "Lince, Lima, Peru"
+  - "Los Olivos, Lima, Peru"
+  - "Lurigancho, Lima, Peru"
+  - "Lurin, Lima, Peru"
+  - "Magdalena del Mar, Lima, Peru"
+  - "Miraflores, Lima, Peru"
+  - "Pachacamac, Lima, Peru"
+  - "Pucusana, Lima, Peru"
+  - "Pueblo Libre, Lima, Peru"
+  - "Puente Piedra, Lima, Peru"
+  - "Punta Hermosa, Lima, Peru"
+  - "Punta Negra, Lima, Peru"
+  - "Rimac, Lima, Peru"
+  - "San Bartolo, Lima, Peru"
+  - "San Borja, Lima, Peru"
+  - "San Isidro, Lima, Peru"
+  - "San Juan de Lurigancho, Lima, Peru"
+  - "San Juan de Miraflores, Lima, Peru"
+  - "San Luis, Lima, Peru"
+  - "San Martin de Porres, Lima, Peru"
+  - "San Miguel, Lima, Peru"
+  - "Santa Anita, Lima, Peru"
+  - "Santa Maria del Mar, Lima, Peru"
+  - "Santa Rosa, Lima, Peru"
+  - "Santiago de Surco, Lima, Peru"
+  - "Surquillo, Lima, Peru"
+  - "Villa El Salvador, Lima, Peru"
+  - "Villa Maria del Triunfo, Lima, Peru"
+
+# total_bounds of the 50-distrito reference
+# (scripts/migrations/build_lima_distritos_reference.py,
+# data/reference/pe/lima/lima_distritos/metadata.json) plus a ~0.1 deg
+# margin -- same convention as config/locations/mx/cdmx.yaml and
+# config/locations/ar/buenos_aires_amba.yaml.
+bbox:
+  west: -77.30
+  south: -12.62
+  east: -76.52
+  north: -11.47
+
+crs:
+  geographic: EPSG:4326
+  metric: auto

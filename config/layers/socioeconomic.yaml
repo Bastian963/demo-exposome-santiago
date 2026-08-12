@@ -1,0 +1,24 @@
+schema_version: 1
+id: socioeconomic
+settings:
+  casen_year: 2022
+  region_code: 13
+  poverty_year: 2022
+  sources:
+    casen_ingresos: https://raw.githubusercontent.com/bastianolea/pobreza_chile/main/casen/datos_procesados/casen_2022_ingresos.csv
+    crime: https://github.com/bastianolea/delincuencia_chile/raw/main/datos/procesados/cead_delincuencia_chile.parquet
+    paes: https://github.com/bastianolea/puntajes_prueba_paes/raw/main/datos/puntajes_paes_comuna_2024.csv
+    fonasa: https://raw.githubusercontent.com/bastianolea/fonasa_beneficiarios/master/datos/fonasa_beneficiarios_tramo_edad_sexo.csv
+    sinim: https://github.com/bastianolea/sinim_info_municipal/raw/main/datos/sinim_2019-2023.parquet
+  census_materiality: true
+  index:
+    method: zscore_equal + pca_svd
+    components:
+    - ingreso
+    - escolaridad
+    - pobreza_pct
+    - pobreza_multi_pct
+    - viv_materialidad_deficitaria_pct
+    - hacinamiento_phh
+  validation:
+    sources: []

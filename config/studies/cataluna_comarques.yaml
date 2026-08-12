@@ -1,0 +1,143 @@
+schema_version: 1
+id: cataluna_comarques
+location: es/cataluna
+
+# Not cohort-driven, unlike every other study in this repo: the 2026-07
+# cohort delivery (data/raw/zipcodes/2026-07/participant_locations.csv) has
+# 0 genuine Spain residents -- the only 2 rows with Country=ESPAÑA are data
+# artifacts ("ESPAÑA,ESPAÑA,ESPAÑA" and "LIMA,LIMA,ESPAÑA", the latter
+# clearly a mislabeled Lima, Peru participant). Added by direct request,
+# not because of docs/multicity_status.md's cohort-priority ranking --
+# deliberately not added to that table, which is explicitly the
+# cohort-residence checklist.
+hidden: false
+
+spatial:
+  path: data/reference/es/cataluna/cataluna_comarques/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: comarca
+  expected_units: 43
+  source: ICGC (Institut Cartogràfic i Geològic de Catalunya) divisions administratives, comarques_5000 layer (geoserveis.icgc.cat WFS) - see data/raw/icgc/divisions_administratives/2026/README.md
+  license: CC BY 4.0 (ICGC)
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+# Companion native study. Without this, `exposome detail` has no source rasters
+# and the 43 comarques end up defining the painted value instead of only masking
+# it. The published catalog read `production / complete / 0 required` for this
+# study on 2026-08-11, but only because it had been published with `noise_spain`
+# alone -- with no raster layer published the gate had nothing to require. See
+# the 2026-08-11 audit in docs/resolution_manifest.md.
+detail:
+  native_study: cataluna_native
+
+# Full portable layer set (14), same subset as santiago_communes/
+# buenos_aires_comunas/cdmx_alcaldias/lima_distritos/san_juan_departamentos:
+# global rasters (GEE, single-call, already skip-if-cached) + OSM layers
+# (already tqdm and per-locality/per-tag checkpointed). No country-specific
+# layers apply: the four AR-only layers (community_safety,
+# community_violence, suicide_mortality, road_traffic_mortality) and the
+# CL-only socioeconomic are excluded by config/layers.yaml's countries
+# filter regardless of location.
+#
+# precipitation_spi is deliberately NOT enabled yet: it requires
+# layer_inputs.precipitation_spi.chirps_daily_csv pointing at precipitation's
+# own output CSV, which only exists after precipitation has actually run once
+# for this study (see santiago_communes.yaml/san_juan_departamentos.yaml for
+# the same pattern). Whole-study preflight checks every layer upfront and
+# aborts the entire run if one is missing_input
+# (src/exposome/layers.py:918-925), so adding it now would block all 14
+# other layers too. Add it back in a follow-up pass once
+# data/processed/es/cataluna/cataluna_comarques/precipitation/cataluna_comarques_precipitation_chirps_daily_2015_2024.csv
+# exists.
+# `noise_spain` se reactivó el 2026-08-10: los cinco ZIP truncados de la
+# entrega (Baix Llobregat II, Vallès Occidental II, Lleida, Barakaldo, Bilbao)
+# fueron re-descargados de SICA y el snapshot completo de 16 archivos quedó
+# congelado con CRC, integridad SQLite y capa Lden verificados en
+# data/raw/miteco/sica-mer-agglomerations/4f-2022/source_manifest.json
+# (secuencia en docs/planning/spain_noise_integration.md).
+# `layers:` ES EL CONTRATO DE RELEASE, no una lista de deseos. Dos gates lo
+# hacen literal:
+#   - releases.py:30-34 carga un bundle por cada capa habilitada, así que
+#     habilitar una capa sin materializar rompe materialize/verify/publish;
+#   - layers.py:486 marca `unavailable` cualquier capa pedida con --layers que
+#     no esté aquí, o sea que --layers NO puede saltarse esta lista;
+#   - temporal_exposomes.py:181 cruza contra enabled_layers, así que las series
+#     anuales sólo existen para lo que esté habilitado aquí.
+# Regla operativa: una capa se habilita cuando está materializada o cuando se
+# lanza su corrida. Si no alcanza a terminar, se comenta y se publica sin ella.
+#
+# Habilitado 2026-08-10 (deadline 2026-08-12): las 5 ya materializadas más las
+# 4 GEE que murieron con el volumen FUSE el 2026-08-10 11:28 y walkability, que
+# es el polo largo (~14 h por Overpass; ver más abajo por qué no usa extracto).
+layers:
+  - noise_spain
+  - pm25
+  - air_quality_satellite
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  # walkability DESHABILITADA 2026-08-10 18:30 -- release de 14 capas.
+  # Ningún mirror de Overpass sirve: overpass-api.de da HTTP 000; kumi.systems
+  # contesta /api/status pero las consultas mueren con
+  # `Dispatcher_Client::request_read_and_idx::timeout`; overpass.osm.ch es suizo
+  # y devuelve total:0 para bboxes españoles; y overpass.openstreetmap.fr
+  # responde 403 "only available to white-listed usages" con CUALQUIER
+  # User-Agent (probado con el de osmnx y con uno descriptivo propio), o sea que
+  # es whitelist por IP y no hay arreglo desde acá.
+  #
+  # Tiene que salir del `layers:`, no basta con no correrla: la corrida completa
+  # final va sin --layers, la intentaría, fallaría, y sin corrida completa no hay
+  # master ni release manifest (pipeline.py:119).
+  #
+  # No cuesta series anuales: walkability es un snapshot del callejero
+  # (temporal_exposomes.py:37) y no genera ninguna. Los targets siguen en 83.
+  #
+  # Para recuperarla sin Overpass hay que construir el grafo desde el .pbf local
+  # (pyrosm o pyosmium, ninguno instalado hoy). Las métricas no cambiarían de
+  # definición -- salen todas de ox.basic_stats sobre el grafo, walkability.py:106
+  # -- pero el filtro de red de pyrosm no es idéntico al `walk` de osmnx, y eso
+  # cae justo sobre walk_intersection_density y walk_streets_per_node. Hay que
+  # validarlo contra Overpass antes de usarlo, y hoy Overpass no está.
+  # - walkability
+  # Capas de tags OSM: leen el extracto local congelado, no Overpass.
+  - greenspace_access
+  - social_infrastructure
+  - food_environment
+  - healthcare
+layer_inputs:
+  noise_spain:
+    source_manifest: data/raw/miteco/sica-mer-agglomerations/4f-2022/source_manifest.json
+
+# Extracto OSM local congelado (Geofabrik, corte 2026-08-09). Sustituye la
+# consulta troceada contra Overpass en las capas basadas en tags: son 1.786
+# tiles a 2,31 min = 69 h por Overpass contra 99 s leyendo el archivo, con
+# contención del 100% verificada contra los tiles que Overpass sí alcanzó a
+# cachear. Procedencia y SHA-256 en
+# data/raw/geofabrik/cataluna/260809/source_manifest.json; método y
+# limitaciones en docs/osm_local_extract.md.
+#
+# Va en layer_overrides y no en layer_inputs a propósito: así llega al cfg que
+# reciben los runners (que toman --city, no --study) y además entra en
+# layer_execution_identity vía layer_settings, de modo que declararlo o
+# cambiar el corte invalida el --resume de esas capas por sí solo.
+#
+# walkability NO lo usa: construye un grafo de calles con ox.graph_from_polygon,
+# no features por tag, y osmnx no lee .pbf directo.
+layer_overrides:
+  greenspace:
+    access:
+      osm_extract: data/raw/geofabrik/cataluna/260809/cataluna.osm.pbf
+  food_environment:
+    osm_extract: data/raw/geofabrik/cataluna/260809/cataluna.osm.pbf
+  healthcare:
+    osm_extract: data/raw/geofabrik/cataluna/260809/cataluna.osm.pbf
+  social_infrastructure:
+    osm_extract: data/raw/geofabrik/cataluna/260809/cataluna.osm.pbf

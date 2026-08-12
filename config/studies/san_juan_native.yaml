@@ -1,0 +1,49 @@
+schema_version: 1
+id: san_juan_native
+location: ar/san_juan
+mode: native
+
+# san_juan_departamentos is the primary, picker-visible aggregate study for San
+# Juan. This native-resolution study is hidden from the city picker (same
+# reasoning as santiago_native/cdmx_native) and stays queryable by study_id +
+# coordinates via scripts/query_exposome.py.
+hidden: true
+
+# Declared before san_juan_departamentos has ever run, on purpose. The 2026-08-11
+# audit (docs/resolution_manifest.md) found that a study without this block
+# publishes with flat administrative units and nothing catches it until someone
+# looks at the map -- which for País Vasco meant discovering a full native
+# collection run one day before a delivery. San Juan was the third study with
+# the same gap; declaring it now means the native rasters get collected in the
+# same pass as everything else instead of as an emergency afterwards.
+#
+# AOI is the dissolve of the 19 official departamento polygons already used by
+# san_juan_departamentos. Rebuild it with
+#   python3 scripts/migrations/build_native_aoi.py \
+#     --study san_juan_departamentos --native-study san_juan_native
+# Measured: 88553.9 km2, exactly the sum of the 19 departamentos. That is -1.22%
+# against the province's official 89651 km2; the gap is IGN's generalization of
+# the source polygons, not the dissolve, which is why it matches the sum exactly.
+#
+# Scope note: this covers the whole province (19 departamentos), not just Gran
+# San Juan -- same decision as the aggregate study, see
+# config/studies/san_juan_departamentos.yaml.
+aoi:
+  path: data/reference/ar/san_juan/san_juan_native/aoi.geojson
+  source: Dissolve of san_juan_departamentos' 19 official departamento polygons (IGN Argentina)
+  license: same as san_juan_departamentos' spatial reference -- see data/reference/ar/san_juan/san_juan_departamentos/README.md
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+# Same narrow set as pais_vasco_native / cataluna_native: only the layers that
+# feed a missing raster indicator through spatial_plan.py's _DIRECT_RECIPES.
+layers:
+  - air_quality_pm25
+  - air_quality_satellite
+  - alan
+  - wind
+  - greenspace_multisource
+  - climate_heat
+  - precipitation

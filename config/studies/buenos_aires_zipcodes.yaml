@@ -1,0 +1,29 @@
+schema_version: 1
+id: buenos_aires_zipcodes
+location: ar/buenos_aires
+
+spatial:
+  path: data/reference/ar/buenos_aires/buenos_aires_zipcodes/spatial_units.geojson
+  id_column: postal_code
+  name_column: postal_code
+  unit_type: postal_code
+  source: user_provided
+  license: document_before_execution
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+layers:
+  - pm25
+  - alan
+  - greenspace_coverage
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

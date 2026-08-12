@@ -1,0 +1,37 @@
+schema_version: 1
+id: alan
+settings:
+  temporal:
+    status: annual_downloadable
+    adapter: alan
+    available_start_year: 2014
+    available_end_year: 2024
+    source: VIIRS DNB monthly VCMSLCFG
+    indicators:
+    - exposome_id: alan
+      value_column: alan_radiance_mean
+      label: ALAN
+      unit: nW/cm²/sr
+      detail:
+        kind: native_raster
+        band: 1
+        native_resolution_m: 463.83
+        source_label: VIIRS DNB monthly VCMSLCFG
+        metric_label: ALAN
+        unit: nW/cm²/sr
+        required_for_production: true
+  year: 2024
+  start_date: '2024-01-01'
+  end_date: '2025-01-01'
+  collection:
+    id: NOAA/VIIRS/DNB/MONTHLY_V1/VCMSLCFG
+    band: avg_rad
+    cf_band: cf_cvg
+    # VIIRS VCMSLCFG nominal GEE pixel size is 463.83 m.
+    scale_meters: 463.83
+  population:
+    id: WorldPop/GP/100m/pop
+    band: population
+    country: CHL
+    year: 2020
+    scale_meters: 100

@@ -1,0 +1,21 @@
+schema_version: 1
+id: food_environment
+settings:
+  classification:
+    healthy:
+    - shop: supermarket
+    - shop: greengrocer
+    - amenity: marketplace
+    unhealthy:
+    - amenity: fast_food
+    - shop: convenience
+  dedupe_radius_m: 25
+  grid_spacing_m: 1000
+  no_supermarket_dist_m: 50000
+  index:
+    method: zscore_composite_0_100
+    positive_metrics:
+    - food_mrfei
+    - food_healthy_density
+    negative_metrics:
+    - food_mean_dist_supermarket_m

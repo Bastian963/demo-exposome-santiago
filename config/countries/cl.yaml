@@ -1,0 +1,15 @@
+schema_version: 1
+country_code: CL
+# Chile is the only country with official national sub-sources wired in, so it is
+# the only one that opts INTO them. The corresponding blocks in
+# config/layers/healthcare.yaml and config/layers/wildfire.yaml default to
+# `false` precisely so that a country without an override file fails closed
+# rather than inheriting Chilean data (see config/countries/es.yaml for the
+# incident that motivated this).
+overrides:
+  healthcare:
+    official_source:
+      enabled: true
+  wildfire:
+    official:
+      enabled: true

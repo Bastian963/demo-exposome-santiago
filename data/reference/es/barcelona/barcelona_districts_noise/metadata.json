@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "study_id": "barcelona_districts_noise",
+  "spatial_id": "unit_id (Codi_Districte)",
+  "spatial_name": "unit_name (nom_districte)",
+  "source_geometry": "data/raw/ajuntament-barcelona/districtes-municipals/2026-08/districtes.json",
+  "source_geometry_sha256": "af77999dcfcc336a22ff51c25bb3d4e76c6435eeffee4280307469d347682e12",
+  "source_url": "https://opendata-ajuntament.barcelona.cat/data/dataset/808daafa-d9ce-48c0-925a-fa5afdb1ed41/resource/5f8974a7-7937-4b50-acbc-89204d570df9/download",
+  "source_manifest": "data/raw/ajuntament-barcelona/districtes-municipals/2026-08/source_manifest.json",
+  "unit_count": 10,
+  "crs": "EPSG:4326",
+  "total_bounds": [
+    2.0523329052318346,
+    41.31703852334042,
+    2.2280449959042756,
+    41.46829759144661
+  ],
+  "district_overlap_m2": 11.41666330397129
+}

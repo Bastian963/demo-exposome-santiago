@@ -1,0 +1,33 @@
+schema_version: 1
+id: buenos_aires_amba_native
+location: ar/buenos_aires_amba
+mode: native
+hidden: true
+
+# The source geometry is the canonical 55-unit AMBA reference. Native AOI
+# loading dissolves these polygons before querying a provider, so administrative
+# boundaries cannot set a raster grid phase or change pixel values.
+aoi:
+  path: data/reference/ar/buenos_aires_amba/buenos_aires_amba/spatial_units.geojson
+  source: Dissolve of the visible 55-unit AMBA study reference
+  license: CC-BY-2.5-AR (GCBA) / CC-BY (IGN Argentina)
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+layers:
+  - air_quality_pm25
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - air_quality_satellite
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

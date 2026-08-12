@@ -1,0 +1,149 @@
+schema_version: 1
+id: sao_paulo
+name: São Paulo
+country: Brazil
+country_code: BR
+country_code3: BRA
+timezone: America/Sao_Paulo
+
+# Scope is the municipio de Sao Paulo (96 distritos), not the wider Regiao
+# Metropolitana de Sao Paulo (~39 municipios) -- same city-vs-metro split as
+# Medellin (medellin_comunas) vs Valle de Aburra (valle_aburra_municipios).
+#
+# bbox = total_bounds of the 96-distrito reference
+# (data/reference/br/sao_paulo/sao_paulo_distritos/metadata.json,
+# scripts/migrations/build_sao_paulo_distritos_reference.py) plus a ~0.1 deg
+# margin -- same convention as config/locations/co/bogota.yaml,
+# config/locations/mx/cdmx.yaml and config/locations/pe/lima.yaml.
+bbox:
+  west: -46.93
+  south: -24.11
+  east: -46.27
+  north: -23.26
+
+crs:
+  geographic: EPSG:4326
+  metric: auto
+
+# Per-distrito Overpass region_query, same per-locality pattern as
+# config/locations/pe/lima.yaml (50 entries) and config/locations/mx/cdmx.yaml
+# (16 entries) -- a single combined "Sao Paulo, Brazil" query times out over
+# this many localities (see src/exposome/greenspace_access.py
+# fetch_green_areas docstring). Generated programmatically from
+# data/reference/br/sao_paulo/sao_paulo_distritos/spatial_units.geojson's
+# own nm_distrito_municipal spelling, title-cased from the source's ALL-CAPS
+# and accent-stripped spelling (same data-quality artifact as Bogota/Lima's
+# sources -- accents were NOT guessed back in, for the same reason: Nominatim's
+# Spanish/Portuguese search is generally accent-insensitive). This list has
+# NOT been individually verified with ox.geocode_to_gdf (offline config edit,
+# out of scope) -- the per-locality retry/cache design in greenspace_access.py
+# means any entry that fails to geocode fails alone, by name, in the run log.
+#
+# Highest-risk entry: "Se" (98 distritos' historic center; the accented
+# original "Se" is short for "Se" i.e. "See/Cathedral" -- a 2-letter/short
+# generic word with real ambiguity risk in Nominatim, flagged here rather
+# than guessing an unverified alternate query string).
+#
+# At 96 entries this is nearly double CDMX's largest prior region_query list
+# (16) and Lima's (50) -- healthcare.py passes the *whole* region_query list
+# to a single ox.features_from_place() call per OSM tag (5 tags), unlike
+# greenspace_access.py's per-entry loop; this may need its own timeout/
+# resilience pass once this study actually runs (out of scope for this
+# config-only onboarding pass).
+region_query:
+  - "Agua Rasa, Sao Paulo, Brazil"
+  - "Alto De Pinheiros, Sao Paulo, Brazil"
+  - "Anhanguera, Sao Paulo, Brazil"
+  - "Aricanduva, Sao Paulo, Brazil"
+  - "Artur Alvim, Sao Paulo, Brazil"
+  - "Barra Funda, Sao Paulo, Brazil"
+  - "Bela Vista, Sao Paulo, Brazil"
+  - "Belem, Sao Paulo, Brazil"
+  - "Bom Retiro, Sao Paulo, Brazil"
+  - "Bras, Sao Paulo, Brazil"
+  - "Brasilandia, Sao Paulo, Brazil"
+  - "Butanta, Sao Paulo, Brazil"
+  - "Cachoeirinha, Sao Paulo, Brazil"
+  - "Cambuci, Sao Paulo, Brazil"
+  - "Campo Belo, Sao Paulo, Brazil"
+  - "Campo Grande, Sao Paulo, Brazil"
+  - "Campo Limpo, Sao Paulo, Brazil"
+  - "Cangaiba, Sao Paulo, Brazil"
+  - "Capao Redondo, Sao Paulo, Brazil"
+  - "Carrao, Sao Paulo, Brazil"
+  - "Casa Verde, Sao Paulo, Brazil"
+  - "Cidade Ademar, Sao Paulo, Brazil"
+  - "Cidade Dutra, Sao Paulo, Brazil"
+  - "Cidade Lider, Sao Paulo, Brazil"
+  - "Cidade Tiradentes, Sao Paulo, Brazil"
+  - "Consolacao, Sao Paulo, Brazil"
+  - "Cursino, Sao Paulo, Brazil"
+  - "Ermelino Matarazzo, Sao Paulo, Brazil"
+  - "Freguesia Do O, Sao Paulo, Brazil"
+  - "Grajau, Sao Paulo, Brazil"
+  - "Guaianases, Sao Paulo, Brazil"
+  - "Iguatemi, Sao Paulo, Brazil"
+  - "Ipiranga, Sao Paulo, Brazil"
+  - "Itaim Bibi, Sao Paulo, Brazil"
+  - "Itaim Paulista, Sao Paulo, Brazil"
+  - "Itaquera, Sao Paulo, Brazil"
+  - "Jabaquara, Sao Paulo, Brazil"
+  - "Jacana, Sao Paulo, Brazil"
+  - "Jaguara, Sao Paulo, Brazil"
+  - "Jaguare, Sao Paulo, Brazil"
+  - "Jaragua, Sao Paulo, Brazil"
+  - "Jardim Angela, Sao Paulo, Brazil"
+  - "Jardim Helena, Sao Paulo, Brazil"
+  - "Jardim Paulista, Sao Paulo, Brazil"
+  - "Jardim Sao Luis, Sao Paulo, Brazil"
+  - "Jose Bonifacio, Sao Paulo, Brazil"
+  - "Lajeado, Sao Paulo, Brazil"
+  - "Lapa, Sao Paulo, Brazil"
+  - "Liberdade, Sao Paulo, Brazil"
+  - "Limao, Sao Paulo, Brazil"
+  - "Mandaqui, Sao Paulo, Brazil"
+  - "Marsilac, Sao Paulo, Brazil"
+  - "Moema, Sao Paulo, Brazil"
+  - "Mooca, Sao Paulo, Brazil"
+  - "Morumbi, Sao Paulo, Brazil"
+  - "Parelheiros, Sao Paulo, Brazil"
+  - "Pari, Sao Paulo, Brazil"
+  - "Parque Do Carmo, Sao Paulo, Brazil"
+  - "Pedreira, Sao Paulo, Brazil"
+  - "Penha, Sao Paulo, Brazil"
+  - "Perdizes, Sao Paulo, Brazil"
+  - "Perus, Sao Paulo, Brazil"
+  - "Pinheiros, Sao Paulo, Brazil"
+  - "Pirituba, Sao Paulo, Brazil"
+  - "Ponte Rasa, Sao Paulo, Brazil"
+  - "Raposo Tavares, Sao Paulo, Brazil"
+  - "Republica, Sao Paulo, Brazil"
+  - "Rio Pequeno, Sao Paulo, Brazil"
+  - "Sacoma, Sao Paulo, Brazil"
+  - "Santa Cecilia, Sao Paulo, Brazil"
+  - "Santana, Sao Paulo, Brazil"
+  - "Santo Amaro, Sao Paulo, Brazil"
+  - "Sao Domingos, Sao Paulo, Brazil"
+  - "Sao Lucas, Sao Paulo, Brazil"
+  - "Sao Mateus, Sao Paulo, Brazil"
+  - "Sao Miguel, Sao Paulo, Brazil"
+  - "Sao Rafael, Sao Paulo, Brazil"
+  - "Sapopemba, Sao Paulo, Brazil"
+  - "Saude, Sao Paulo, Brazil"
+  - "Se, Sao Paulo, Brazil"
+  - "Socorro, Sao Paulo, Brazil"
+  - "Tatuape, Sao Paulo, Brazil"
+  - "Tremembe, Sao Paulo, Brazil"
+  - "Tucuruvi, Sao Paulo, Brazil"
+  - "Vila Andrade, Sao Paulo, Brazil"
+  - "Vila Curuca, Sao Paulo, Brazil"
+  - "Vila Formosa, Sao Paulo, Brazil"
+  - "Vila Guilherme, Sao Paulo, Brazil"
+  - "Vila Jacui, Sao Paulo, Brazil"
+  - "Vila Leopoldina, Sao Paulo, Brazil"
+  - "Vila Maria, Sao Paulo, Brazil"
+  - "Vila Mariana, Sao Paulo, Brazil"
+  - "Vila Matilde, Sao Paulo, Brazil"
+  - "Vila Medeiros, Sao Paulo, Brazil"
+  - "Vila Prudente, Sao Paulo, Brazil"
+  - "Vila Sonia, Sao Paulo, Brazil"

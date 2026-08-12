@@ -1,0 +1,61 @@
+schema_version: 1
+id: sao_paulo_distritos
+location: br/sao_paulo
+
+# Validation study for Brazil, same role bogota_localidades/lima_distritos/
+# cdmx_alcaldias played for CO/PE/MX: prove the portable pipeline on a sixth
+# country before any larger-scale (RMSP metro) or native study is attempted.
+# Picker visibility is enabled; the generated catalog still marks it
+# unavailable until a validated bundle is published. Sao Paulo is the #7
+# priority city by cohort residence (143 participants, 3.7%
+# -- see docs/multicity_status.md); scope is the municipio de Sao Paulo (96
+# distritos), not the ~39-municipio Regiao Metropolitana -- same city-vs-metro
+# split as medellin_comunas vs valle_aburra_municipios.
+#
+hidden: false
+
+spatial:
+  path: data/reference/br/sao_paulo/sao_paulo_distritos/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: distrito
+  expected_units: 96
+  source: GeoSampa (Prefeitura de Sao Paulo, Secretaria Municipal de Desenvolvimento Urbano) "distrito_municipal" layer, via public GeoServer WFS (wfs.geosampa.prefeitura.sp.gov.br) -- see scripts/migrations/build_sao_paulo_distritos_reference.py for the exact query URL
+  license: "GeoSampa open-data terms (Lei de Acesso a Informacao / Decreto Municipal de Dados Abertos) -- cite Prefeitura de Sao Paulo / GeoSampa"
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+detail:
+  native_study: sao_paulo_native
+
+# Full portable layer set (14), same as bogota_localidades/medellin_comunas/
+# valle_aburra_municipios: global rasters (GEE, single-call, already
+# skip-if-cached) + OSM localities (already tqdm + per-locality/per-tag
+# checkpointed, per-distrito region_query from the start -- see
+# config/locations/br/sao_paulo.yaml, including the "Se" disambiguation
+# risk flagged there). No CL/AR/MX/PE/CO-only layers -- excluded by
+# config/layers.yaml's countries filter. Brazil has no country-specific
+# layers wired in yet at all, so this is the full available set with
+# nothing extra to research for this onboarding pass.
+#
+# precipitation_spi is deliberately NOT enabled yet, same two-phase
+# dependency as every other new-country study here (requires precipitation's
+# own output CSV to exist first -- see bogota_localidades.yaml/
+# medellin_comunas.yaml for the full explanation).
+layers:
+  - pm25
+  - air_quality_satellite
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

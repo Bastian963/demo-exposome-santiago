@@ -1,0 +1,64 @@
+schema_version: 1
+id: santiago_communes
+location: cl/santiago
+
+spatial:
+  path: data/reference/cl/santiago/santiago_communes/spatial_units.geojson
+  id_column: spatial_id
+  name_column: spatial_name
+  unit_type: commune
+  expected_units: 52
+  source: validated legacy geometry + INE Censo 2017 CUT crosswalk
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+# Spatial-detail products are collected over the dissolved metropolitan AOI,
+# then published into this visible aggregate study. Commune polygons only mask
+# and summarize those products.
+detail:
+  native_study: santiago_native
+
+# Explicit non-layer inputs for derived products. These are local, reproducible
+# intermediates; they never fall back to flat `data/processed/` filenames.
+layer_inputs:
+  sleep_context:
+    master_csv: data/processed/cl/santiago/santiago_communes/master.csv
+    master_geojson: data/processed/cl/santiago/santiago_communes/master.geojson
+  precipitation_spi:
+    chirps_daily_csv: data/processed/cl/santiago/santiago_communes/precipitation/santiago_communes_precipitation_chirps_daily_2015_2024.csv
+  climate_openmeteo:
+    daily_csv: data/interim/cl/santiago/santiago_communes/climate_openmeteo_daily_2024_2024.csv
+
+layers:
+  - socioeconomic
+  - air_quality
+  - pm25
+  - heavy_metals
+  - air_quality_satellite
+  - alan
+  - sleep_context
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - precipitation_spi
+  - climate_heat
+  - climate_openmeteo
+  - wind
+  - wildfire
+  - noise
+  - greenspace_access
+  - walkability
+  - public_transport
+  - social_infrastructure
+  - food_environment
+  - healthcare
+  - demography
+  - food_insecurity
+  - pobreza_sae
+  # These outputs are not merged into the exposome master, but belong to the
+  # same reproducible Santiago release and must be checksum-verified.
+  - greenspace_cv
+  - neuro_mortality
+  - neuro_hospitalizations

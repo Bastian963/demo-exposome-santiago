@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "study_id": "medellin_comunas",
+  "spatial_id": "unit_id (codigo)",
+  "source_geometry": "data/raw/co/medellin/dap_comunas_corregimientos/2026/medellin_comunas_corregimientos.geojson",
+  "source_geometry_sha256": "eab384d6a23847d81b078383dbbd33b8feee75a14124140ccd4881076497ee94",
+  "unit_count": 21,
+  "total_bounds": [
+    -75.71931327850479,
+    6.162904089589089,
+    -75.47185150043757,
+    6.374872060554197
+  ]
+}

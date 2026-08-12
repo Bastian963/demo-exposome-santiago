@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "study_id": "cdmx_alcaldias",
+  "spatial_id": "unit_id (cdmx_<cve_mun>)",
+  "source_geometry": "data/raw/mx/cdmx/inegi_marco_geoestadistico/2022/mun22gw.kmz",
+  "source_geometry_sha256": "159383fc0118228282545f4314e82d610880bade29248e542242fe3d25341ac4",
+  "unit_count": 16,
+  "total_bounds": [
+    -99.36492420018584,
+    19.048236660147033,
+    -98.94030282041221,
+    19.592757279789552
+  ]
+}

@@ -1,0 +1,74 @@
+schema_version: 1
+id: buenos_aires_amba
+# Buenos Aires comunas (buenos_aires_comunas) and the native study
+# (caba_native) are both hidden from the picker so the city shows once, at
+# full AMBA extent (55 units: 15 CABA comunas + 40 province partidos).
+name: Buenos Aires
+country: Argentina
+country_code: AR
+country_code3: ARG
+timezone: America/Argentina/Buenos_Aires
+
+# Region query list: CABA + the 40 AMBA partidos of Buenos Aires province
+# (see config/studies/buenos_aires_amba.yaml for the pinned partido list).
+# Used by OSM place-based layers (greenspace_access, healthcare) instead of
+# a single bbox query, since AMBA has no single OSM place relation.
+# 5 entries need a "Partido de X" prefix (Esteban Echeverría, Tres de
+# Febrero, Campana, General Rodríguez, Zárate): bare "X, Buenos Aires,
+# Argentina" geocodes ambiguously via Nominatim (returns a point/city
+# node sharing the partido's name, not the partido polygon) -- verified
+# with ox.geocode_to_gdf per entry.
+region_query:
+  - "Ciudad Autónoma de Buenos Aires, Argentina"
+  - "Almirante Brown, Buenos Aires, Argentina"
+  - "Avellaneda, Buenos Aires, Argentina"
+  - "Berazategui, Buenos Aires, Argentina"
+  - "Partido de Esteban Echeverría, Buenos Aires, Argentina"
+  - "Ezeiza, Buenos Aires, Argentina"
+  - "Florencio Varela, Buenos Aires, Argentina"
+  - "General San Martín, Buenos Aires, Argentina"
+  - "Hurlingham, Buenos Aires, Argentina"
+  - "Ituzaingó, Buenos Aires, Argentina"
+  - "José C. Paz, Buenos Aires, Argentina"
+  - "La Matanza, Buenos Aires, Argentina"
+  - "Lanús, Buenos Aires, Argentina"
+  - "Lomas de Zamora, Buenos Aires, Argentina"
+  - "Malvinas Argentinas, Buenos Aires, Argentina"
+  - "Merlo, Buenos Aires, Argentina"
+  - "Moreno, Buenos Aires, Argentina"
+  - "Morón, Buenos Aires, Argentina"
+  - "Quilmes, Buenos Aires, Argentina"
+  - "San Fernando, Buenos Aires, Argentina"
+  - "San Isidro, Buenos Aires, Argentina"
+  - "San Miguel, Buenos Aires, Argentina"
+  - "Tigre, Buenos Aires, Argentina"
+  - "Partido de Tres de Febrero, Buenos Aires, Argentina"
+  - "Vicente López, Buenos Aires, Argentina"
+  - "Berisso, Buenos Aires, Argentina"
+  - "Brandsen, Buenos Aires, Argentina"
+  - "Partido de Campana, Buenos Aires, Argentina"
+  - "Cañuelas, Buenos Aires, Argentina"
+  - "Ensenada, Buenos Aires, Argentina"
+  - "Escobar, Buenos Aires, Argentina"
+  - "Exaltación de la Cruz, Buenos Aires, Argentina"
+  - "General Las Heras, Buenos Aires, Argentina"
+  - "Partido de General Rodríguez, Buenos Aires, Argentina"
+  - "La Plata, Buenos Aires, Argentina"
+  - "Luján, Buenos Aires, Argentina"
+  - "Marcos Paz, Buenos Aires, Argentina"
+  - "Pilar, Buenos Aires, Argentina"
+  - "Presidente Perón, Buenos Aires, Argentina"
+  - "San Vicente, Buenos Aires, Argentina"
+  - "Partido de Zárate, Buenos Aires, Argentina"
+
+# total_bounds of the 55-unit reference (build_buenos_aires_amba_reference.py)
+# plus a ~0.1 deg margin.
+bbox:
+  west: -59.48
+  south: -35.52
+  east: -57.61
+  north: -33.71
+
+crs:
+  geographic: EPSG:4326
+  metric: auto

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "study_id": "lima_distritos",
+  "spatial_id": "unit_id (UBIGEO)",
+  "source_geometry": "data/raw/pe/lima/ign_idep_limites_distritales/2026/limite_distrital_lima_callao.geojson",
+  "source_geometry_sha256": "c6432e9abd3f9147397576b4a83daea90f8c5d79245e275404de0c577da061bc",
+  "unit_count": 50,
+  "unit_count_lima": 43,
+  "unit_count_callao": 7,
+  "total_bounds": [
+    -77.19880252699994,
+    -12.519931604999954,
+    -76.62082436099996,
+    -11.57240696599996
+  ]
+}

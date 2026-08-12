@@ -1,0 +1,49 @@
+schema_version: 1
+id: neuro_mortality
+settings:
+  region_code: 13
+  years:
+  - 2018
+  - 2019
+  - 2020
+  - 2021
+  - 2022
+  source:
+    path: data/raw/deis/defunciones/DEFUNCIONES_FUENTE_DEIS_1990_2023_CIFRAS_OFICIALES.csv
+    format: csv
+    sep: ;
+    encoding: latin1
+    region_filter: Metropolitana
+    columns:
+      year: AÑO
+      commune_code: COD_COMUNA
+      commune_name: COMUNA
+      region_name: NOMBRE_REGION
+      cause: DIAG1
+      age: EDAD_CANT
+      age_type: EDAD_TIPO
+  comparison:
+    outcomes:
+    - dementia
+    - alzheimer
+    - cerebrovascular
+    - parkinsonism
+    - cardiovascular
+    - respiratory
+    - respiratory_pneumonia
+    - respiratory_acute_lower
+    - respiratory_copd
+    exposures:
+    - pm25_pop_weighted
+    - no2_surface_ug_m3
+    - heat_exposure_index
+    - sleep_context_index
+    - noise_combined_pct
+    - green_cover_pct_ndvi
+    - social_index
+    - walk_index
+    - transit_index
+    - food_index
+    covariates:
+    - nse_index
+    - demo_pct_pop_65_plus

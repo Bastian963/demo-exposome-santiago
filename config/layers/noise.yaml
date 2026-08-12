@@ -1,0 +1,15 @@
+schema_version: 1
+id: noise
+settings:
+  source: MMA 2024 — Minuta Mapa de Ruido Gran Santiago Urbano 2023
+  year: 2023
+  population_reference: INE ACON 2022
+  n_communes_gsu: 35
+  gsu_population_total: 6910822
+  oecd_thresholds_dba:
+    day: 65
+    night: 55
+  period_day: 07:00–23:00
+  period_night: 23:00–07:00
+  road_km_modelled: 13590
+  area_km2_modelled: 792

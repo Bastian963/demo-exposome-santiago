@@ -1,0 +1,74 @@
+schema_version: 1
+id: bogota
+name: Bogota
+country: Colombia
+country_code: CO
+country_code3: COL
+timezone: America/Bogota
+
+# Bogota D.C. is a single administrative entity (Distrito Capital), unlike
+# Lima (Provincia de Lima + Callao) or Buenos Aires (CABA + AMBA partidos) --
+# no multi-jurisdiction merge needed here, just its 20 localidades.
+#
+# A single combined "Bogota, Colombia" query was NOT used for region_query:
+# CDMX and AMBA both hit an Overpass ConnectionError/timeout with one
+# combined query over that many localities (see
+# src/exposome/greenspace_access.py fetch_green_areas docstring), so this
+# goes straight to the per-localidad list pattern from the start instead of
+# waiting to hit the same failure.
+#
+# Names come from data/reference/co/bogota/bogota_localidades/spatial_units.geojson
+# (SDP's "Localidad" layer, accessed via CAR Cundinamarca's visor -- see
+# scripts/migrations/build_bogota_localidades_reference.py's docstring for
+# why IDECA's own host wasn't reachable), title-cased from the source's
+# ALL-CAPS spelling. Same data-quality artifact as Lima's IGN/IDEP source:
+# acute accents are stripped in the source (e.g. "FONTIBON" for the
+# officially-accented "Fontibón", "SAN CRISTOBAL" for "San Cristóbal") while
+# Ñ survives ("ANTONIO NARIÑO"). Accents were NOT guessed back in here
+# either, for the same reason as Lima -- Nominatim's Spanish search is
+# generally accent-insensitive. This list has NOT been individually
+# verified with ox.geocode_to_gdf (offline config edit, out of scope) -- the
+# per-locality retry/cache design in greenspace_access.py means any entry
+# that fails to geocode fails alone, by name, in the run log.
+#
+# Usme (215 km2) and Sumapaz (780 km2) are the expensive rural units. The
+# greenspace-access runner resolves both against the authoritative locality
+# polygons below, queries their bboxes as 16/64 small Overpass tiles, clips
+# back to the polygons, and checkpoints each tile. It does not geocode the
+# ambiguous wider "Sumapaz" paramo by place name.
+region_query:
+  - "Usaquen, Bogota, Colombia"
+  - "Chapinero, Bogota, Colombia"
+  - "Santa Fe, Bogota, Colombia"
+  - "San Cristobal, Bogota, Colombia"
+  - "Usme, Bogota, Colombia"
+  - "Tunjuelito, Bogota, Colombia"
+  - "Bosa, Bogota, Colombia"
+  - "Kennedy, Bogota, Colombia"
+  - "Fontibon, Bogota, Colombia"
+  - "Engativa, Bogota, Colombia"
+  - "Suba, Bogota, Colombia"
+  - "Barrios Unidos, Bogota, Colombia"
+  - "Teusaquillo, Bogota, Colombia"
+  - "Los Martires, Bogota, Colombia"
+  - "Antonio Nariño, Bogota, Colombia"
+  - "Puente Aranda, Bogota, Colombia"
+  - "Candelaria, Bogota, Colombia"
+  - "Rafael Uribe Uribe, Bogota, Colombia"
+  - "Ciudad Bolivar, Bogota, Colombia"
+  - "Sumapaz, Bogota, Colombia"
+
+# total_bounds of the 20-localidad reference
+# (scripts/migrations/build_bogota_localidades_reference.py,
+# data/reference/co/bogota/bogota_localidades/metadata.json) plus a ~0.1 deg
+# margin -- same convention as config/locations/mx/cdmx.yaml,
+# config/locations/pe/lima.yaml and config/locations/ar/buenos_aires_amba.yaml.
+bbox:
+  west: -74.55
+  south: 3.63
+  east: -73.89
+  north: 4.94
+
+crs:
+  geographic: EPSG:4326
+  metric: auto

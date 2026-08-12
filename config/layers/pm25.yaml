@@ -1,0 +1,40 @@
+schema_version: 1
+id: pm25
+settings:
+  temporal:
+    status: annual_downloadable
+    adapter: pm25
+    available_start_year: 2000
+    available_end_year: 2022
+    source: ACAG V6.GL.02 annual PM2.5
+    indicators:
+    - exposome_id: pm25
+      value_column: pm25_mean
+      label: PM2.5
+      unit: µg/m³
+      detail:
+        kind: native_raster
+        band: 1
+        native_resolution_m: 1113
+        source_label: ACAG V6.GL.02
+        metric_label: PM2.5
+        unit: µg/m³
+        required_for_production: true
+  years:
+  - 2015
+  - 2016
+  - 2017
+  - 2018
+  - 2019
+  - 2020
+  - 2021
+  - 2022
+  start_date: '2015-01-01'
+  end_date: '2023-01-01'
+  collection:
+    id: projects/sat-io/open-datasets/GLOBAL-SATELLITE-PM25/ANNUAL
+    band: auto
+    scale_meters: 1113
+    scale_factor: 1.0
+  validation:
+    sinca_annual_csv: data/raw/stations_sinca/sinca_pm25_annual.csv

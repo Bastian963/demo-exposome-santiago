@@ -1,0 +1,20 @@
+schema_version: 1
+id: public_transport
+settings:
+  osm_tags:
+    bus_stop:
+      highway: bus_stop
+    metro:
+      railway:
+      - station
+      - halt
+      - subway_entrance
+  grid_spacing_m: 1000
+  metro_no_data_dist_m: 50000
+  index:
+    method: zscore_composite_0_100
+    positive_metrics:
+    - bus_density
+    - metro_density
+    negative_metrics:
+    - mean_dist_bus_m

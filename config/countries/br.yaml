@@ -1,0 +1,16 @@
+schema_version: 1
+country_code: BR
+# No official Brazilian source has been wired in yet, so global layer defaults
+# (which point at Chilean CKAN/CONAF data, see config/layers/healthcare.yaml,
+# config/layers/wildfire.yaml) must be disabled explicitly outside CL -- same
+# override pattern as config/countries/ar.yaml, config/countries/mx.yaml,
+# config/countries/pe.yaml and config/countries/co.yaml.
+# Without this, a Brazil study would silently fetch Chilean facility/fire
+# data as if it were local.
+overrides:
+  healthcare:
+    official_source:
+      enabled: false
+  wildfire:
+    official:
+      enabled: false

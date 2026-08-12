@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "study_id": "cataluna_comarques",
+  "spatial_id": "unit_id (cat_<CODICOMAR>)",
+  "source": "data/raw/icgc/divisions_administratives/2026/comarques.geojson",
+  "source_sha256": "af5d530da76197b22a9cb1358a5c4a008025338112fbc666f3c458f1b30d80c7",
+  "unit_count": 43,
+  "total_bounds": [
+    0.1590808200000001,
+    40.52293692999999,
+    3.33248929,
+    42.86141887
+  ],
+  "simplify_tolerance_m": 10.0,
+  "simplify_crs": "EPSG:32631",
+  "simplify_note": "Douglas-Peucker in the local UTM CRS, applied to the ICGC 1:5,000 comarques so zonal statistics stop carrying survey-grade boundary cartography. No product raster is coarsened."
+}

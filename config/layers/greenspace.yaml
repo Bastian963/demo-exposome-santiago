@@ -1,0 +1,135 @@
+schema_version: 1
+id: greenspace
+settings:
+  temporal:
+    products:
+    - layer_id: greenspace_coverage
+      status: annual_downloadable
+      adapter: greenspace_coverage
+      available_start_year: 2013
+      available_end_year: 2024
+      source: Landsat 8/9 Collection 2 Level 2
+    - layer_id: greenspace_multisource
+      status: annual_downloadable
+      adapter: greenspace_multisource
+      available_start_year: 2016
+      available_end_year: 2024
+      source: Dynamic World V1; canopy component remains static
+      indicators:
+      - exposome_id: green
+        value_column: green_total_pct
+        label: Verde
+        unit: "%"
+        detail:
+          kind: analysis_grid
+          source_label: Dynamic World V1
+          metric_label: Cobertura verde
+          unit: "%"
+          analysis_resolution_m: 1000
+          source_resolution_m: 10
+          required_for_production: true
+  satellite:
+    # Landsat-8/9 Collection 2 Level 2 is the coarse (30 m) NDVI/EVI cross-check.
+    # The primary greenness layer is now Dynamic World 10 m (see dynamic_world
+    # below); Landsat is retained for continuity and independent validation.
+    collection: LANDSAT/LC08/C02/T1_L2 + LANDSAT/LC09/C02/T1_L2
+    years:
+    - 2024
+    # Southern Hemisphere spring-summer: Oct-Mar, peak greenness, fewer clouds
+    season_months:
+    - 10
+    - 11
+    - 12
+    - 1
+    - 2
+    - 3
+    ndvi_threshold: 0.2
+    evi_threshold: 0.15
+    scale_meters: 30
+  # Primary greenness: Dynamic World V1 (10 m near-real-time LULC via GEE).
+  # Total vegetated cover (incl. lawns/informal green) measured as argmax
+  # fractional cover of a peak-season median-probability composite.
+  dynamic_world:
+    collection: GOOGLE/DYNAMICWORLD/V1
+    years:
+    - 2024
+    season_months:
+    - 10
+    - 11
+    - 12
+    - 1
+    - 2
+    - 3
+    green_classes:
+    - trees
+    - grass
+    - shrub_and_scrub
+    # native_scale is used for the fine sub-commune grid (small cells). The
+    # commune-level zonal reduce uses 30 m: reducing 85 seasonal images at 10 m
+    # over the giant Andean communes (San Jose de Maipo ~5000 km2) times out
+    # GEE's interactive budget, and a commune MEAN is unbiased under 30 m
+    # subsampling.
+    native_scale_meters: 10
+    commune_scale_meters: 30
+    # Sub-commune 1 km grid: sample at 30 m. A 1 km cell holds ~1000 samples at
+    # 30 m, so the cell MEAN is identical to a 10 m mean, while 30 m keeps the
+    # whole-RM Dynamic World composite tractable (10 m per-cell reduces stall in
+    # GEE retry/backoff on the giant Andean communes).
+    fine_scale_meters: 30
+  # Street-tree canopy: Meta/WRI Global Canopy Height (1 m) via GEE. Band
+  # `cover_code` is canopy height in integer metres (0 == no canopy). Reliable
+  # only aggregated (>=30 m); sampled at 30 m, which directly honors that caveat.
+  canopy:
+    collection: projects/meta-forest-monitoring-okw37/assets/CanopyHeight
+    band: cover_code
+    # 3 m distinguishes tree canopy from 1-2 m shrubs/hedges (and is above the
+    # product's ~2.8 m MAE noise floor). At >=1 m even dense downtown reads ~27%
+    # "canopy" (re-detecting the same shrubs Dynamic World already sees); at >=3 m
+    # canopy stays a DISTINCT street-tree signal that still exceeds DW-green in the
+    # dense urban core (Santiago Centro: DW 0.9% vs canopy 7.8%).
+    min_height_m: 3
+    sample_scale_meters: 30
+  access:
+    # OSMnx recursively retries Overpass 429/504 responses. Keep the outer
+    # retry finite and checkpoint every bbox tile so an interrupted rural
+    # locality resumes at the missing tile instead of restarting the region.
+    # 2026-07-27: requests_timeout_s isn't just the client socket timeout --
+    # osmnx embeds it verbatim as the Overpass query's own "[out:json]
+    # [timeout:N]" clause (osmnx/_overpass.py:_make_overpass_settings), so it
+    # is also the SERVER's self-abort budget. A few of Bogota's Usme/Sumapaz
+    # tiles have genuinely complex geometry (rural natural-reserve polygons)
+    # that the server can't finish evaluating in 90s; it self-timeouts (->
+    # 429/504), osmnx sleeps 55s and recursively retries with no bound of its
+    # own, and our outer attempt_timeout_s deadline was cutting that loop off
+    # before a real answer ever came back. Bumped both: requests_timeout_s so
+    # the server gets real room to finish, attempt_timeout_s so the outer
+    # deadline comfortably covers one full request-timeout-plus-retry cycle
+    # instead of firing mid-loop.
+    requests_timeout_s: 180
+    attempt_timeout_s: 300
+    overpass_attempts: 1
+    osm_tags:
+      leisure:
+      - park
+      - garden
+      - recreation_ground
+      - dog_park
+      landuse:
+      - village_green
+      - recreation_ground
+    buffers_m:
+    - 300
+    - 500
+    - 1000
+    use_network: false
+    network_type: walk
+  cv:
+    source: esri_world_imagery
+    url: https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
+    zoom: 17
+    tile_size: 256
+    method: exg
+    samples_per_commune: 5
+    min_blob_px: 10
+    exg_min_threshold: 0.05
+    sam_model: vit_h

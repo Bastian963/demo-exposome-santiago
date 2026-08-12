@@ -1,0 +1,42 @@
+schema_version: 1
+required_gates:
+  - scientific_output
+  - metadata
+  - resume_identity
+  - multi_study
+  - offline_contract_test
+layers:
+  community_safety: {state: adapter, gates: {}}
+  community_violence: {state: adapter, gates: {}}
+  suicide_mortality: {state: adapter, gates: {}}
+  road_traffic_mortality: {state: adapter, gates: {}}
+  socioeconomic: {state: adapter, gates: {}}
+  air_quality: {state: adapter, gates: {}}
+  air_quality_pm25: {state: adapter, gates: {}}
+  heavy_metals: {state: adapter, gates: {}}
+  air_quality_satellite: {state: adapter, gates: {}}
+  wind: {state: adapter, gates: {}}
+  alan: {state: adapter, gates: {}}
+  sleep_context: {state: adapter, gates: {}}
+  greenspace_access: {state: adapter, gates: {}}
+  greenspace_coverage: {state: adapter, gates: {}}
+  greenspace_multisource: {state: adapter, gates: {}}
+  healthcare: {state: adapter, gates: {}}
+  demography: {state: adapter, gates: {}}
+  climate_heat: {state: adapter, gates: {}}
+  climate_lst_ecostress: {state: adapter, gates: {}}
+  precipitation: {state: adapter, gates: {}}
+  precipitation_spi: {state: adapter, gates: {}}
+  climate_openmeteo: {state: adapter, gates: {}}
+  wildfire: {state: adapter, gates: {}}
+  noise: {state: adapter, gates: {}}
+  noise_spain: {state: adapter, gates: {}}
+  walkability: {state: adapter, gates: {}}
+  public_transport: {state: adapter, gates: {}}
+  social_infrastructure: {state: adapter, gates: {}}
+  food_environment: {state: adapter, gates: {}}
+  food_insecurity: {state: adapter, gates: {}}
+  pobreza_sae: {state: adapter, gates: {}}
+  greenspace_cv: {state: adapter, gates: {}}
+  neuro_mortality: {state: adapter, gates: {}}
+  neuro_hospitalizations: {state: adapter, gates: {}}

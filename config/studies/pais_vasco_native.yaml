@@ -1,0 +1,66 @@
+schema_version: 1
+id: pais_vasco_native
+location: es/pais_vasco
+mode: native
+
+# pais_vasco_provincias is the primary, picker-visible aggregate study for the
+# Basque Country. This native-resolution study is hidden from the city picker
+# (same reasoning as santiago_native/cdmx_native) and stays queryable by
+# study_id + coordinates via the scripts/query_exposome.py CLI
+# (--study pais_vasco_native --lon ... --lat ...). It is NOT independently
+# routable in the webapp itself -- the frontend only resolves cities by slug
+# (webapp/src/utils/url-state.js) against catalog.cities, which excludes every
+# hidden:true study by construction (src/exposome/publishing.py build_catalog).
+hidden: true
+
+# Why this study exists at all: without it, pais_vasco_provincias publishes
+# with 1 of 14 spatial indicators complete and GEMMA paints 3 flat provinces --
+# the administrative unit ends up *defining* the value instead of only masking
+# it, which docs/resolution_manifest.md explicitly forbids. `exposome detail`
+# is local post-processing over native rasters; it has nothing to convert until
+# this study has run. See the 2026-08-11 audit in docs/resolution_manifest.md.
+#
+# AOI is the dissolve of the 3 official NUTS3 province polygons already used by
+# pais_vasco_provincias (spatial_units.geojson) into a single Basque Country
+# geometry -- reuses validated boundaries instead of geocoding a new regional
+# limit. Same method used for santiago_native and cdmx_native. Rebuild it with
+#   python3 scripts/migrations/build_native_aoi.py \
+#     --study pais_vasco_provincias --native-study pais_vasco_native
+# Measured: 7225.2 km2 across 3 parts with 2 interior holes, matching the sum
+# of the 3 provinces exactly and the official 7234 km2 to within GISCO's
+# generalization. The holes (Condado de Trevino) and the detached parts are
+# preserved on purpose: filling them would extend every raster over land the
+# study does not cover.
+aoi:
+  path: data/reference/es/pais_vasco/pais_vasco_native/aoi.geojson
+  source: Dissolve of pais_vasco_provincias' 3 official NUTS3 province polygons (Eurostat GISCO NUTS level 3, 2024)
+  license: same as pais_vasco_provincias' spatial reference -- see data/reference/es/pais_vasco/pais_vasco_provincias/README.md
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+# Deliberately narrower than cdmx_native's 14. Only the layers that feed a
+# missing raster indicator through spatial_plan.py's _DIRECT_RECIPES are here:
+#   air_quality_pm25      -> pm25
+#   air_quality_satellite -> no2
+#   alan                  -> alan
+#   wind                  -> wind
+#   greenspace_multisource-> canopy
+#   climate_heat          -> heat_summer_tmax, heat_hot_days, heat_tropical_nights
+#   precipitation         -> rain_annual, rain_dry_spell, rain_heavy
+#
+# greenspace_coverage is NOT here: no indicator sources its detail from the
+# native product. The `green` indicator comes from the separate 10 m export in
+# scripts/export_webapp_green_subcomuna.py, and `canopy` comes from
+# greenspace_multisource. The OSM layers (walkability, healthcare,
+# social_infrastructure, food_environment, greenspace_access) are aggregate-only
+# indicators -- adding them here would cost provider time and produce no COG.
+layers:
+  - air_quality_pm25
+  - air_quality_satellite
+  - alan
+  - wind
+  - greenspace_multisource
+  - climate_heat
+  - precipitation

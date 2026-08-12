@@ -1,0 +1,56 @@
+schema_version: 1
+id: valle_aburra_municipios
+location: co/valle_aburra
+
+# Metro-scale study spanning the 10 municipios of the Area Metropolitana
+# del Valle de Aburra -- same role buenos_aires_amba plays alongside
+# buenos_aires_comunas: independent and parallel to medellin_comunas (the
+# city-only, sub-municipal study), not a derivation of either. This is the
+# study that actually matches how the cohort's own residence data is
+# grouped: 508 participants (13.1%, the #3 priority metro) are labelled
+# "Valle de Aburra (Medellin)" metro-wide in
+# docs/multicity_status.md, not Medellin-city-only. Picker visibility is
+# enabled; the generated catalog still marks it unavailable until a validated
+# bundle is published.
+hidden: false
+
+spatial:
+  path: data/reference/co/valle_aburra/valle_aburra_municipios/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: municipio
+  expected_units: 10
+  source: Area Metropolitana del Valle de Aburra (AMVA) -- capa "Division Politica" / "Valle de Aburra", via ArcGIS REST (sim.metropol.gov.co)
+  license: "Not confirmed -- the AMVA ArcGIS service carries only a copyright notice (\"(c) 2017 Area Metropolitana del Valle de Aburra\"), not a reuse license; AMVA's own open-data portal did not return license metadata for this dataset when checked. Same unconfirmed-license honesty standard as Bogota's CAR Cundinamarca mirror -- cite AMVA"
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+detail:
+  native_study: valle_aburra_native
+
+# Full portable layer set (14), same as the other Colombian studies
+# (bogota_localidades, medellin_comunas). No CL/AR/MX/PE-only layers --
+# excluded by config/layers.yaml's countries filter. Colombia still has no
+# country-specific layers wired in.
+#
+# precipitation_spi is deliberately NOT enabled yet -- same two-phase
+# dependency as every other study here (requires precipitation's own
+# output CSV to exist first; see medellin_comunas.yaml for the full
+# explanation).
+layers:
+  - pm25
+  - air_quality_satellite
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

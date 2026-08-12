@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "study_id": "pais_vasco_provincias",
+  "spatial_id": "unit_id (pv_<NUTS_ID>)",
+  "source": "data/raw/gisco/nuts/2024/nuts3_pais_vasco.geojson",
+  "source_sha256": "e2012a75985abaa1deee6d401fc192485e212bc2311bb9781ed8ffb33f3c8233",
+  "unit_count": 3,
+  "total_bounds": [
+    -3.450237867999931,
+    42.47296147700007,
+    -1.728903005999939,
+    43.455903971000055
+  ]
+}

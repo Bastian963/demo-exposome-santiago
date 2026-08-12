@@ -1,0 +1,87 @@
+schema_version: 1
+id: bogota_localidades
+location: co/bogota
+
+# Validation study for Colombia, same role lima_distritos/cdmx_alcaldias/
+# buenos_aires_comunas played for PE/MX/AR: prove the portable pipeline on a
+# fifth country before any larger-scale or native study is attempted. It is
+# catalogable now, but the generated catalog still excludes it until a
+# validated bundle has actually been published. Bogota is the #2 priority
+# city by cohort residence (587 participants, 15.2% -- see
+# docs/multicity_status.md).
+hidden: false
+
+spatial:
+  path: data/reference/co/bogota/bogota_localidades/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: localidad
+  expected_units: 20
+  source: Secretaria Distrital de Planeacion (SDP) "Localidad" layer, accessed via CAR Cundinamarca's visor (IDECA/UAECD Catastro Bogota's own ArcGIS REST host was unreachable -- see data/raw/co/bogota/ideca_localidades/2026/README.md)
+  license: "CC BY 4.0 at the source (SDP/IDECA) - CAR's own license terms for this specific mirror were not separately confirmed - cite SDP/IDECA"
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+detail:
+  native_study: bogota_native
+
+# Documented, permanent per-layer/year gap. Without this, exposome publish
+# aborts inside _write_temporal_assets() because greenspace_multisource's
+# `green` indicator is required_for_production and Los Martires/2019 has no
+# valid Dynamic World pixels -- see
+# docs/greenspace_multisource_methodology.md#limitations. The gap is
+# deterministic (reproduced twice against cached zonal stats) and permanent,
+# not a bug to keep retrying. Declaring it here keeps the publish/spatial-audit
+# gates honest for every other study: an undeclared missing year still aborts
+# publication. The exception does not raise Bogota's publication_tier back to
+# production -- resolution-coverage still reports `green` as missing and the
+# app hides the annual selector for that indicator (ADR 0008).
+temporal_exceptions:
+  - layer_id: greenspace_multisource
+    indicator: green
+    years: [2019]
+    reason: >-
+      Dynamic World (composite Oct-Mar) devuelve cero pixeles validos para la
+      localidad Los Martires en 2019; green/tree/grass vuelven NaN de forma
+      determinista. Confirmado contra los zonal stats cacheados, reproducido
+      dos veces. Las otras 19 localidades y los otros 8 anios estan completos.
+      Hueco permanente aceptado: no se interpola ni se reintenta.
+    doc: docs/greenspace_multisource_methodology.md#limitations
+
+# Full portable layer set (14), same as santiago_communes/buenos_aires_comunas/
+# cdmx_alcaldias/lima_distritos' subset: global rasters (GEE, single-call,
+# already skip-if-cached) + OSM localities (already tqdm + per-locality/per-tag
+# checkpointed, and per-localidad region_query from the start -- see
+# config/locations/co/bogota.yaml). No CL/AR/MX/PE-only layers -- those stay
+# excluded by config/layers.yaml's countries filter. Colombia has no
+# country-specific layers wired in yet at all (unlike Chile/Argentina), so
+# this is the full available set with nothing extra to research for this
+# onboarding pass.
+#
+# precipitation_spi is deliberately NOT enabled yet: it requires
+# layer_inputs.precipitation_spi.chirps_daily_csv pointing at precipitation's
+# own output CSV, which only exists after precipitation has actually run once
+# for this study (see santiago_communes.yaml/cdmx_alcaldias.yaml/
+# lima_distritos.yaml for the same pattern). Whole-study preflight checks
+# every layer upfront and aborts the entire run if one is missing_input
+# (src/exposome/layers.py:918-925), so adding it now would block all 14
+# other layers too. Add it back in a follow-up pass once
+# data/processed/co/bogota/bogota_localidades/precipitation/bogota_localidades_precipitation_chirps_daily_2015_2024.csv
+# exists.
+layers:
+  - pm25
+  - air_quality_satellite
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

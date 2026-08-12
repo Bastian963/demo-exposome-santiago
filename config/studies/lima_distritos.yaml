@@ -1,0 +1,65 @@
+schema_version: 1
+id: lima_distritos
+location: pe/lima
+
+# Validation study for Peru, same role buenos_aires_comunas/cdmx_alcaldias
+# played for Argentina/Mexico: prove the portable pipeline on a fourth
+# country before any larger-scale or native study is attempted. Publication is
+# gated by provider-provenance validation. Lima is the #1
+# priority city by cohort residence (645 participants, 16.6% -- see
+# docs/multicity_status.md).
+hidden: false
+
+spatial:
+  path: data/reference/pe/lima/lima_distritos/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: distrito
+  expected_units: 50
+  source: IGN/IDEP "Limite Distrital" (Infraestructura de Datos Espaciales del Peru; geometry attributed FUENTE=INEI in the live service) - https://www.idep.gob.pe/geoportal/rest/services/DATOS_GEOESPACIALES/LIMITESTT/MapServer/3
+  # License text could not be confirmed by direct fetch (idep.gob.pe blocked
+  # automated access with 403/418) -- a secondary source (the same dataset
+  # republished on datosabiertos.gob.pe) reports Open Data Commons
+  # Attribution License (ODC-BY), but this needs a human to confirm in
+  # a browser before treating it as settled. Cite IGN/INEI regardless.
+  license: "Likely ODC-BY (unconfirmed) - cite IGN/INEI - see data/raw/pe/lima/ign_idep_limites_distritales/2026/ for the raw download"
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+detail:
+  native_study: lima_native
+
+# Full portable layer set (14), same as santiago_communes/buenos_aires_comunas/
+# cdmx_alcaldias' subset: global rasters (GEE, single-call, already
+# skip-if-cached) + OSM localities (already tqdm + per-locality/per-tag
+# checkpointed, and per-distrito region_query from the start -- see
+# config/locations/pe/lima.yaml). No CL/AR/MX-only layers -- those stay
+# excluded by config/layers.yaml's countries filter.
+#
+# precipitation_spi is deliberately NOT enabled yet: it requires
+# layer_inputs.precipitation_spi.chirps_daily_csv pointing at precipitation's
+# own output CSV, which only exists after precipitation has actually run once
+# for this study (see santiago_communes.yaml/cdmx_alcaldias.yaml for the same
+# pattern). Whole-study preflight checks every layer upfront and aborts the
+# entire run if one is missing_input (src/exposome/layers.py:918-925), so
+# adding it now would block all 14 other layers too. Add it back in a
+# follow-up pass once
+# data/processed/pe/lima/lima_distritos/precipitation/lima_distritos_precipitation_chirps_daily_2015_2024.csv
+# exists.
+layers:
+  - pm25
+  - air_quality_satellite
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

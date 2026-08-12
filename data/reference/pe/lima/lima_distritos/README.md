@@ -1,0 +1,3 @@
+# Lima + Callao distritos spatial reference
+
+`spatial_units.geojson` holds the 50 distritos of Provincia de Lima (43) and the Provincia Constitucional del Callao (7), filtered from IGN/IDEP's 'Limite Distrital' layer (Infraestructura de Datos Espaciales del Peru; geometry attributed FUENTE=INEI in the live ArcGIS REST service). `unit_id` is the 6-digit UBIGEO code (Peru's national administrative-unit identifier, equivalent role to Chile's CUT / Mexico's INEGI clave); `unit_name` is the source's own `NOMBDIST` spelling, source-faithful (not re-accented or stripped) -- same convention as the CDMX and Buenos Aires references. `province` distinguishes LIMA-province distritos from CALLAO ones for any downstream analysis that needs to split them.

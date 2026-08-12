@@ -1,0 +1,22 @@
+schema_version: 1
+id: air_quality_satellite
+settings:
+  temporal:
+    status: annual_downloadable
+    adapter: air_quality_satellite
+    available_start_year: 2019
+    available_end_year: 2024
+    source: Sentinel-5P OFFL + MODIS MAIAC + ERA5
+    indicators:
+    - exposome_id: no2
+      value_column: no2_surface_ug_m3
+      label: NO₂
+      unit: µg/m³
+      detail:
+        kind: native_raster
+        band: 1
+        native_resolution_m: 1113
+        source_label: Sentinel-5P TROPOMI L3
+        metric_label: NO₂ columna troposférica
+        unit: mol/m²
+        required_for_production: true

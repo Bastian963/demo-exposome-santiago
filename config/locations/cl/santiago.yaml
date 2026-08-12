@@ -1,0 +1,17 @@
+schema_version: 1
+id: santiago
+name: Santiago
+country: Chile
+country_code: CL
+country_code3: CHL
+timezone: America/Santiago
+
+bbox:
+  west: -71.8
+  south: -34.5
+  east: -69.8
+  north: -32.9
+
+crs:
+  geographic: EPSG:4326
+  metric: auto

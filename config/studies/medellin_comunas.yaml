@@ -1,0 +1,65 @@
+schema_version: 1
+id: medellin_comunas
+location: co/medellin
+
+# City-only, sub-municipal study for Medellin -- same role
+# buenos_aires_comunas plays alongside buenos_aires_amba: independent and
+# parallel to valle_aburra_municipios (the metro-scale study), not derived
+# from it. Publication is gated by provider-provenance validation. Valle de
+# Aburra (Medellin) is the #3 priority metro by cohort
+# residence (508 participants, 13.1% -- see docs/multicity_status.md), but
+# the cohort groups them metro-wide, so this comuna-level study is the
+# finer-detail complement to valle_aburra_municipios, not the primary
+# cohort-matching study.
+hidden: false
+
+spatial:
+  path: data/reference/co/medellin/medellin_comunas/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: comuna_corregimiento
+  expected_units: 21
+  source: Departamento Administrativo de Planeacion (DAP), Alcaldia de Medellin -- capa "Comunas y Corregimientos" (LimiteComunasCorregimientos_2014), via ArcGIS REST (servidormapas)
+  license: "CC BY-SA-equivalent per the paired ISO19115 metadata record (Alcaldia de Medellin - DAP, uuid 5af8b936-8a61-4c41-bdd4-9cbcfba29da9) -- cite DAP/Alcaldia de Medellin"
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+detail:
+  native_study: medellin_native
+
+# Full portable layer set (14), same as santiago_communes/buenos_aires_comunas/
+# cdmx_alcaldias/lima_distritos/bogota_localidades' subset: global rasters
+# (GEE, single-call, already skip-if-cached) + OSM localities (already
+# tqdm + per-locality/per-tag checkpointed, and per-comuna/corregimiento
+# region_query from the start -- see config/locations/co/medellin.yaml).
+# No CL/AR/MX/PE-only layers -- those stay excluded by config/layers.yaml's
+# countries filter. Colombia still has no country-specific layers wired in
+# (unlike Chile/Argentina) -- this is the same full available set already
+# used for bogota_localidades, nothing extra to research for this
+# onboarding pass.
+#
+# precipitation_spi is deliberately NOT enabled yet: it requires
+# layer_inputs.precipitation_spi.chirps_daily_csv pointing at precipitation's
+# own output CSV, which only exists after precipitation has actually run
+# once for this study (see bogota_localidades.yaml/lima_distritos.yaml for
+# the same pattern). Whole-study preflight checks every layer upfront and
+# aborts the entire run if one is missing_input
+# (src/exposome/layers.py:918-925), so adding it now would block all 14
+# other layers too.
+layers:
+  - pm25
+  - air_quality_satellite
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare

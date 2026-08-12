@@ -1,0 +1,33 @@
+schema_version: 1
+study: santiago_communes
+protocol_version: "2.1-control-extension"
+protocol: docs/hospitalization_annual_v2_1_controls_protocol.md
+seed: 20260810
+
+baseline:
+  config: config/analyses/hospitalization_annual_v2.yaml
+  output_dir: data/processed/cl/santiago/santiago_communes/analysis/hospitalizations/annual_v2
+  expected_fingerprint: 452459e12737f8c4ce135155c0551707e53d1701ae6c31ecef9cd1fd7f28bc38
+
+paths:
+  output_dir: data/processed/cl/santiago/santiago_communes/analysis/hospitalizations/annual_v2_controls_v2_1
+
+negative_control:
+  outcome: injury_poisoning
+  window: primary
+  timings: [same_year, lag1]
+  exposures:
+    - pm25
+    - alan
+    - heat
+    - green
+    - precipitation
+    - wind
+    - wildfire
+    - heavy_metals
+
+evidence:
+  alpha: 0.05
+  rope_rr: [0.95, 1.05]
+  minimum_direction_probability: 0.975
+
