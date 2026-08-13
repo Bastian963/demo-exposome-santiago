@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import math
+import os
 from numbers import Real
 from typing import Any
 
@@ -23,15 +24,21 @@ import pandas as pd
 # explicit geemap param and max_requests rides **kwargs into geedim.download.
 EE_DOWNLOAD_NUM_THREADS = 1
 EE_DOWNLOAD_MAX_REQUESTS = 1
+DEFAULT_GEE_PROJECT = "exposome-api"
+GEE_PROJECT_ENV = "EXPOSOME_GEE_PROJECT"
 
 
-def init_gee(project: str = "exposome-api") -> None:
-    """Initialise Earth Engine with the given project."""
-    try:
-        ee.Initialize(project=project)
-    except Exception:
-        # Fallback: try without explicit project (uses default credentials)
-        ee.Initialize()
+def get_gee_project(project: str | None = None) -> str:
+    """Resolve the explicit or node-local Earth Engine quota project."""
+    if project is not None and project.strip():
+        return project.strip()
+    configured = os.environ.get(GEE_PROJECT_ENV, "").strip()
+    return configured or DEFAULT_GEE_PROJECT
+
+
+def init_gee(project: str | None = None) -> None:
+    """Initialise Earth Engine with an explicit, auditable quota project."""
+    ee.Initialize(project=get_gee_project(project))
 
 
 def gdf_to_feature_collection(gdf: gpd.GeoDataFrame) -> ee.FeatureCollection:

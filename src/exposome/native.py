@@ -584,15 +584,15 @@ def export_gee_native_layer(context: Any, layer_id: str) -> tuple[Path, ...]:
     import ee
     import geemap
     from . import config as legacy_config
+    from . import gee as gee_helpers
 
     spec = NATIVE_LAYER_SPECS[layer_id]
     aoi = load_native_aoi(context)
     roi = aoi_geometry(aoi)
     cfg = legacy_config.load_config(context.study.id)
-    # Use the explicit project initialization here.  The legacy helper has a
-    # fallback to default credentials that can leave the client uninitialized
-    # when token refresh is unavailable, even though this project is valid.
-    ee.Initialize(project="exposome-api")
+    # Resolve the quota project through the same node-local configuration used
+    # by aggregated GEE layers. Credentials remain outside the repository.
+    gee_helpers.init_gee()
     ee_roi = ee.Geometry(mapping(roi))
     out_dir = native_output_dir(context, layer_id)
     out_dir.mkdir(parents=True, exist_ok=True)

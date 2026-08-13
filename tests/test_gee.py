@@ -40,5 +40,25 @@ class GdfToFeatureCollectionTest(unittest.TestCase):
         self.assertEqual(captured[0][1], {"name": "unit"})
 
 
+class GeeProjectTest(unittest.TestCase):
+    def test_node_environment_selects_quota_project(self) -> None:
+        with (
+            patch.dict("os.environ", {gee.GEE_PROJECT_ENV: "brainlat"}),
+            patch.object(gee.ee, "Initialize") as initialize,
+        ):
+            gee.init_gee()
+
+        initialize.assert_called_once_with(project="brainlat")
+
+    def test_explicit_project_overrides_node_environment(self) -> None:
+        with (
+            patch.dict("os.environ", {gee.GEE_PROJECT_ENV: "brainlat"}),
+            patch.object(gee.ee, "Initialize") as initialize,
+        ):
+            gee.init_gee("another-project")
+
+        initialize.assert_called_once_with(project="another-project")
+
+
 if __name__ == "__main__":
     unittest.main()

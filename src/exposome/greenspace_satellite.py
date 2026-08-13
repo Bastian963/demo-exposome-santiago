@@ -227,7 +227,7 @@ def _write_coverage_metadata(
                 "LANDSAT/LC09/C02/T1_L2",
             ],
             "resolution_m": scale,
-            "gee_project": "exposome-api",
+            "gee_project": gee.get_gee_project(),
         },
         "collection": "LANDSAT/LC08/C02/T1_L2 + LANDSAT/LC09/C02/T1_L2",
         "years": sat_cfg["years"],

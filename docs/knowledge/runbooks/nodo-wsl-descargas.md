@@ -103,13 +103,21 @@ printf '%s\n' '/data/reference/co/santa_marta/santa_marta_urban/' '/data/referen
 
 ## Credenciales humanas
 
-Google Earth Engine usa el proyecto `exposome-api`. Una persona autentica una
-sola vez desde Ubuntu:
+Google Earth Engine separa la identidad autenticada del proyecto que consume la
+cuota. El nodo compartido usa su proyecto dedicado `brainlat`, seleccionado por
+una variable local que no se versiona. Los demás nodos conservan
+`exposome-api` como valor predeterminado:
 
 ```bash
-.venv/bin/earthengine authenticate
-.venv/bin/python -c "import ee; ee.Initialize(project='exposome-api'); print('GEE OK')"
+export EXPOSOME_GEE_PROJECT=brainlat
+.venv/bin/earthengine authenticate --auth_mode=notebook
+.venv/bin/python -c "import ee,os; ee.Initialize(project=os.environ['EXPOSOME_GEE_PROJECT']); print('GEE OK')"
 ```
+
+Para que las nuevas sesiones de Bash y `tmux` hereden la selección, guarda una
+sola línea `export EXPOSOME_GEE_PROJECT=brainlat` en `~/.bashrc`. La variable
+contiene únicamente el ID público del proyecto; el token OAuth permanece en
+`~/.config/earthengine/credentials`, fuera del repositorio y del handoff.
 
 ECOSTRESS no usa GEE. Requiere una cuenta NASA Earthdata y autenticación
 interactiva humana:

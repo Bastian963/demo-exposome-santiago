@@ -219,7 +219,7 @@ def _write_multisource_metadata(
                 canopy_cfg["collection"],
             ],
             "resolution_m": {"dynamic_world_native": 10, "canopy_native": 1},
-            "gee_project": "exposome-api",
+            "gee_project": gee.get_gee_project(),
         },
         "dynamic_world": {
             "collection": dw_cfg["collection"],
