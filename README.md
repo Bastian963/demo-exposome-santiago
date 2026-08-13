@@ -52,6 +52,14 @@ La política de datos y artefactos está en [`data/README.md`](data/README.md), 
 los gates para retirar los adaptadores históricos en
 [`docs/architecture/v3_retirement_gates.md`](docs/architecture/v3_retirement_gates.md).
 
+Las recolecciones largas también pueden ejecutarse en nodos auxiliares sin
+convertirlos en repositorios paralelos. El primer nodo es WSL `BrainLat`,
+asignado a Santa Marta, Cartagena y Pasto. Su
+[runbook operativo](docs/knowledge/runbooks/nodo-wsl-descargas.md) y la
+[arquitectura de handoff](docs/architecture/distributed-collection-nodes.md)
+definen qué permanece local, qué se entrega y cómo se verificará antes de una
+integración futura.
+
 Para Buenos Aires, el flujo nativo y la consulta posterior por coordenadas están
 documentados en
 [`docs/caba_native_execution_plan.md`](docs/caba_native_execution_plan.md).

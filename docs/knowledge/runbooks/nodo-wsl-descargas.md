@@ -5,6 +5,24 @@ de BrainLat. El código, el entorno Python, los checkpoints y los resultados
 viven dentro de una distribución WSL 2 dedicada. No se reutilizan Anaconda,
 Python ni Docker de Windows.
 
+Este nodo es staging operativo, no una fuente de verdad paralela. La propiedad,
+entrega y aceptación futura de sus datos se rige por la
+[arquitectura de nodos distribuidos](../../architecture/distributed-collection-nodes.md)
+y [ADR 0013](../../adr/0013-distributed-collection-node-handoff.md).
+
+## Identidad del nodo
+
+| Campo | Valor |
+|---|---|
+| ID lógico | `brainlat-wsl-amd-iii` |
+| Host observado | `AMD-III` |
+| Distribución | WSL 2 `BrainLat`, Ubuntu 24.04 |
+| Rama | `runner/multicity-2026-08-12` |
+| Estudios | Santa Marta, Cartagena y Pasto; agregado y nativo |
+
+El estado vivo no se escribe en esta tabla. Se consulta en `tmux`, los outputs y
+los resúmenes de corrida.
+
 ## Disposición esperada
 
 La distribución se registra como `BrainLat` y su disco virtual reside en
@@ -41,8 +59,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 source "$HOME/.local/bin/env"
 mkdir -p "$HOME/projects"
 cd "$HOME/projects"
-git clone --branch runner/multicity-2026-08-12 --single-branch \
-  https://github.com/Bastian963/demo-exposome-santiago.git Brainlat-runner
+git clone --branch runner/multicity-2026-08-12 --single-branch https://github.com/Bastian963/demo-exposome-santiago.git Brainlat-runner
 cd Brainlat-runner
 uv sync --all-extras
 ```
@@ -56,8 +73,7 @@ Verifica la instalación sin contactar proveedores:
 ```bash
 .venv/bin/python --version
 .venv/bin/exposome --help
-PYTHONPYCACHEPREFIX=/tmp .venv/bin/python -m unittest \
-  tests.test_multicity_overnight tests.test_settings tests.test_studies
+PYTHONPYCACHEPREFIX=/tmp .venv/bin/python -m unittest tests.test_multicity_overnight tests.test_settings tests.test_studies
 .venv/bin/python scripts/run_multicity_overnight.py --city lima --dry-run
 ```
 
@@ -77,15 +93,12 @@ guarda un snapshot inmutable y manifestado bajo `data/raw/dane/`, y genera el
 GeoJSON normalizado bajo `data/reference/co/`. Si se interrumpe, ejecuta el
 mismo comando: verificará y omitirá las ciudades ya guardadas.
 
-Como esas referencias se generan sólo en el nodo y no son código, se pueden
-ocultar del estado Git local sin borrarlas:
+Mientras se revisan, esas referencias son staging local y se pueden ocultar del
+estado Git sin borrarlas. Deben incluirse en el handoff y, una vez aceptadas,
+versionarse centralmente como referencias espaciales pequeñas:
 
 ```bash
-printf '%s\n' \
-  '/data/reference/co/santa_marta/santa_marta_urban/' \
-  '/data/reference/co/cartagena/cartagena_urban/' \
-  '/data/reference/co/pasto/pasto_urban/' \
-  >> .git/info/exclude
+printf '%s\n' '/data/reference/co/santa_marta/santa_marta_urban/' '/data/reference/co/cartagena/cartagena_urban/' '/data/reference/co/pasto/pasto_urban/' >> .git/info/exclude
 ```
 
 ## Credenciales humanas
@@ -118,8 +131,7 @@ comprueba espacio, estado Git y el plan offline:
 cd "$HOME/projects/Brainlat-runner"
 df -h /
 git status --short
-.venv/bin/python scripts/run_multicity_overnight.py \
-  --city santa_marta --city cartagena --city pasto --dry-run
+.venv/bin/python scripts/run_multicity_overnight.py --city santa_marta --city cartagena --city pasto --dry-run
 ```
 
 El dry-run no descarga ni escribe productos. Cuando el plan sea correcto, abre
@@ -128,8 +140,7 @@ una sesión persistente:
 ```bash
 tmux new -s brainlat
 cd "$HOME/projects/Brainlat-runner"
-.venv/bin/python scripts/run_multicity_overnight.py \
-  --city santa_marta --city cartagena --city pasto --max-hours 10
+.venv/bin/python scripts/run_multicity_overnight.py --city santa_marta --city cartagena --city pasto --max-hours 10
 ```
 
 Desacopla `tmux` con `Ctrl-b` y luego `d`. Para volver:
@@ -141,6 +152,21 @@ tmux attach -t brainlat
 El computador debe permanecer conectado a corriente y Windows no debe entrar
 en suspensión. Como es un equipo compartido, cualquier cambio global de energía
 se coordina antes con su propietario.
+
+### Convención de comandos para este nodo
+
+Entrega al operador un solo comando por mensaje, en una única línea física, sin
+continuaciones `\`. Así se evita que copiar y pegar introduzca un Enter en medio
+de una URL, ruta o argumento.
+
+Si GEE aún no está disponible, las cuatro capas OSM independientes se pueden
+dejar secuencialmente en un `tmux` dedicado. Este comando cubre los seis Studies
+y continúa con el siguiente aunque una invocación falle; `--resume` reutiliza
+los checkpoints:
+
+```bash
+for s in {santa_marta,cartagena,pasto}_{urban,native}; do .venv/bin/exposome run --study "$s" --layers greenspace_access,walkability,food_environment,healthcare --resume --no-build-master; done
+```
 
 ## Reanudación y orden de archivos
 
@@ -166,9 +192,30 @@ mover archivos:
 du -sh cache data/raw data/processed 2>/dev/null
 ```
 
+No borres raw, referencias ni processed después de terminar. Permanecen en el
+nodo hasta que un handoff sea verificado, aceptado y respaldado centralmente.
+`cache/` tampoco se limpia mientras pueda ser necesario reanudar.
+
+## Integración futura
+
+No copies el repositorio completo ni sincronices mientras Python esté
+escribiendo. La entrega futura se congelará bajo
+`handoff/brainlat-wsl-amd-iii/<run_id>/` e incluirá:
+
+- snapshots raw con `source_manifest.json`;
+- referencias DANE de los seis Studies;
+- bundles y releases procesadas con manifests;
+- resúmenes e incidentes de las corridas.
+
+Quedan fuera `.git`, `.venv`, `.netrc`, tokens y el caché ordinario. El workspace
+central verificará tamaños y SHA-256 en staging antes de promover paths. Un path
+existente con hash distinto bloqueará la importación; nunca se sobrescribirá.
+
 ## Actualización del runner
 
-No edites código en el nodo de descarga. Cuando haya una revisión publicada:
+No edites código en el nodo de descarga. No ejecutes `git pull` ni `uv sync`
+mientras exista una recolección activa. Cuando no haya procesos Python y se
+publique una revisión:
 
 ```bash
 cd "$HOME/projects/Brainlat-runner"

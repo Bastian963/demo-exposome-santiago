@@ -20,6 +20,7 @@
 ## Trabajo cotidiano
 
 - [Jornada de trabajo](runbooks/jornada-de-trabajo.md)
+- [Nodo WSL de recolección](runbooks/nodo-wsl-descargas.md)
 - [Publicar y verificar resolución espacial](runbooks/publicar-resolucion-espacial.md)
 - [Revisar una capa](runbooks/revisar-una-capa.md)
 - [Procesar una reunión](runbooks/procesar-una-reunion.md)

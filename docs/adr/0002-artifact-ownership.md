@@ -13,3 +13,5 @@ checksums and provenance manifests.
 - Git history is not rewritten; large historical outputs are removed from the
   index only after fixture and parity coverage exists.
 - A remote artifact store can later implement the same manifest contract.
+- External collection nodes hand artifacts off through the verified staging and
+  acceptance contract in [ADR 0013](0013-distributed-collection-node-handoff.md).
