@@ -111,6 +111,36 @@ escapar de la raíz del paquete.
 No se publican bundles web directamente desde el handoff. La publicación parte
 de una Study release aceptada y verificada en el workspace de integración.
 
+El procedimiento concreto para promover una ciudad hasta una candidata de
+GEMMA está en el
+[runbook de integración WSL → GEMMA](../knowledge/runbooks/integrar-nodo-wsl-en-gemma.md).
+
+## Estrategia de incorporación a GEMMA
+
+La unidad de promoción es una ciudad con su Study agregado y su compañero
+nativo. Santa Marta funciona como piloto; Cartagena y Pasto se incorporan sólo
+después de validar el mismo circuito de aceptación. Esto permite mostrar valor
+temprano sin declarar completa toda la cohorte colombiana.
+
+La frontera de producción permanece en el workspace central:
+
+```text
+nodo: recolectar + checkpoint + handoff
+central: aceptar + promover + materializar + preview + auditar + publicar
+GEMMA: consumir sólo bundles publicados y catalogados
+```
+
+Los payloads compartidos entre ciudades se pueden deduplicar por SHA-256 en el
+almacén central, pero cada handoff debe declarar la dependencia exacta. La
+deduplicación física nunca elimina procedencia lógica.
+
+La promoción también exige paridad científica con las ciudades existentes. El
+Study nativo conserva el máximo soporte real de cada proveedor y el agregado
+publica detalle sólo si el contrato espacial v3 lo verifica. No se igualan
+resoluciones mediante sobremuestreo, no se asignan metros ficticios a OSM y no
+se reutilizan datos de otra ciudad para completar una capa ausente. La matriz y
+los gates concretos están en el runbook WSL → GEMMA.
+
 ## Fallos y recuperación
 
 - Una interrupción durante el empaquetado invalida ese handoff; se crea otro
@@ -123,8 +153,10 @@ de una Study release aceptada y verificada en el workspace de integración.
 - Si el backend central no está disponible, el nodo conserva raw, referencias,
   processed y checkpoints. No se usa GitHub como respaldo improvisado.
 
-## Implementación futura
+## Implementación pendiente
 
-Las futuras herramientas export/import deberán generar y validar este formato,
-trabajar primero en staging, soportar dry-run y no aceptar opciones de
-sobrescritura ciega. Elegir el backend de transporte no modifica este contrato.
+Las herramientas export/import todavía no existen como interfaz estable. Deben
+generar y validar este formato, trabajar primero en staging, soportar dry-run,
+rechazar secretos, paths inseguros y symlinks, y no ofrecer sobrescritura ciega.
+El importador debe emitir un informe antes de promover atómicamente. Elegir el
+backend de transporte no modifica este contrato.

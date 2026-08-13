@@ -52,6 +52,11 @@ inmutable que preserva raw, referencias, bundles y procedencia; la arquitectura
 está en
 [`docs/architecture/distributed-collection-nodes.md`](../docs/architecture/distributed-collection-nodes.md).
 
+La promoción desde el primer nodo WSL hasta una publicación de GEMMA se hace
+por ciudad y siempre pasa por staging, verificación, preview y auditoría. El
+procedimiento está en el
+[runbook WSL → GEMMA](../docs/knowledge/runbooks/integrar-nodo-wsl-en-gemma.md).
+
 La elección de backend —disco, red, S3, DVC u otro— permanece fuera del
 contrato. Debe materializar exactamente los paths canónicos y respetar los
 manifests antes de ejecutar el mismo verificador.

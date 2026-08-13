@@ -58,7 +58,9 @@ asignado a Santa Marta, Cartagena y Pasto. Su
 [runbook operativo](docs/knowledge/runbooks/nodo-wsl-descargas.md) y la
 [arquitectura de handoff](docs/architecture/distributed-collection-nodes.md)
 definen qué permanece local, qué se entrega y cómo se verificará antes de una
-integración futura.
+integración futura. La promoción por ciudad hasta preview y producción de GEMMA
+se detalla en el
+[runbook de integración](docs/knowledge/runbooks/integrar-nodo-wsl-en-gemma.md).
 
 Para Buenos Aires, el flujo nativo y la consulta posterior por coordenadas están
 documentados en

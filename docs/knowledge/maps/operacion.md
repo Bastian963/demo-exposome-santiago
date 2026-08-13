@@ -4,6 +4,7 @@
 - [Ejecutar un estudio](../runbooks/ejecutar-un-estudio.md)
 - [Recolección overnight](../runbooks/recoleccion-overnight.md)
 - [Nodo WSL de recolección](../runbooks/nodo-wsl-descargas.md)
+- [Integrar el nodo WSL en GEMMA](../runbooks/integrar-nodo-wsl-en-gemma.md)
 - [Incidentes multiciudad](../runbooks/incidentes-multiciudad.md)
 - [Publicar y verificar resolución espacial](../runbooks/publicar-resolucion-espacial.md)
 - [Revisar una capa](../runbooks/revisar-una-capa.md)

@@ -219,6 +219,17 @@ Quedan fuera `.git`, `.venv`, `.netrc`, tokens y el caché ordinario. El workspa
 central verificará tamaños y SHA-256 en staging antes de promover paths. Un path
 existente con hash distinto bloqueará la importación; nunca se sobrescribirá.
 
+La incorporación se realiza por ciudad, comenzando por Santa Marta como piloto.
+El nodo no publica GEMMA ni sirve archivos al navegador. El flujo completo de
+congelado, transporte, aceptación, preview, validación y publicación está en
+[Integrar entregas del nodo WSL en GEMMA](integrar-nodo-wsl-en-gemma.md).
+
+La exportación/importación automatizada del handoff todavía está pendiente. No
+improvises un `cp`, `rsync` o archivo comprimido hacia las rutas canónicas de
+`data/`: primero se recibe fuera de `data/`, se verifican todos los hashes y
+recién después se promueve. Hasta contar con las herramientas, la primera
+entrega manual requiere revisión humana de cada asset inventariado.
+
 ## Actualización del runner
 
 No edites código en el nodo de descarga. No ejecutes `git pull` ni `uv sync`
