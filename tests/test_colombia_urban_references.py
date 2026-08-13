@@ -102,6 +102,9 @@ class ColombiaUrbanReferenceTests(unittest.TestCase):
             {"santa_marta": "47001", "cartagena": "13001", "pasto": "52001"},
         )
 
+    def test_all_official_fallbacks_use_feature_server_geometry(self) -> None:
+        self.assertTrue(all("/FeatureServer/305/query" in url for url in module.SERVICE_URLS))
+
     def test_payload_rejects_wrong_municipality(self) -> None:
         spec = module.CITY_BY_SLUG["santa_marta"]
         payload = _feature_collection(spec)
@@ -125,7 +128,10 @@ class ColombiaUrbanReferenceTests(unittest.TestCase):
         object_id = module._select_object_id(_discovery_response(spec), spec)
 
         self.assertEqual(object_id, "7418")
-        self.assertEqual(module._feature_query_params(object_id)["objectIds"], "7418")
+        params = module._feature_query_params(object_id)
+        self.assertEqual(params["objectIds"], "7418")
+        self.assertEqual(params["returnGeometry"], "true")
+        self.assertEqual(params["returnTrueCurves"], "false")
 
     def test_payload_accepts_nearby_non_cabecera_features(self) -> None:
         spec = module.CITY_BY_SLUG["santa_marta"]

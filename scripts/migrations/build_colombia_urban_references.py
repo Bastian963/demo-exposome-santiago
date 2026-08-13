@@ -43,7 +43,7 @@ SERVICE_URLS = (
     ),
     (
         "https://portalgis.dane.gov.co/mparcgis/rest/services/MGN2024/"
-        "Serv_CapasMGN_2024/MapServer/305/query"
+        "Serv_CapasMGN_2024/FeatureServer/305/query"
     ),
 )
 SOURCE_VERSION = "2024"
@@ -129,6 +129,9 @@ def _feature_query_params(object_id: str) -> dict[str, str]:
         "objectIds": object_id,
         "outFields": OUT_FIELDS,
         "returnGeometry": "true",
+        "returnZ": "false",
+        "returnM": "false",
+        "returnTrueCurves": "false",
         "outSR": "4326",
         "f": "geojson",
     }
