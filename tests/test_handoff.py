@@ -5,8 +5,16 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
-from exposome.handoff import HANDOFF_SCHEMA_VERSION, MANIFEST_NAME, import_handoff, validate_handoff
+from exposome.handoff import (
+    HANDOFF_SCHEMA_VERSION,
+    MANIFEST_NAME,
+    export_handoff,
+    import_handoff,
+    validate_handoff,
+)
 
 
 def _sha(value: bytes) -> str:
@@ -116,6 +124,41 @@ class HandoffTests(unittest.TestCase):
             report = import_handoff(handoff=handoff, repo_root=repo, staging_root=root / "staging", promote=True)
             self.assertEqual(report["accepted"], [])
             self.assertFalse((repo / "operations/summary.md").exists())
+
+    def test_export_freezes_verified_closure_with_default_utc_run_id(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "repo"
+            output = Path(tmp) / "handoffs"
+            asset = root / "data/processed/co/example/example_urban/release.txt"
+            study_config = root / "config/studies/example_urban.yaml"
+            location_config = root / "config/locations/co/example.yaml"
+            spatial = root / "data/reference/co/example/example_urban/spatial_units.geojson"
+            for path, value in ((asset, "release"), (study_config, "id: example_urban\n"), (location_config, "id: example\n"), (spatial, "{}")):
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(value, encoding="utf-8")
+            context = SimpleNamespace(
+                repo_root=root,
+                study=SimpleNamespace(id="example_urban", config_path=study_config, spatial_path=spatial, aoi_path=None),
+                location=SimpleNamespace(config_path=location_config),
+            )
+
+            def fake_run(command, **_kwargs):
+                stdout = "a" * 40 if "rev-parse" in command else "runner/multicity-2026-08-12"
+                return SimpleNamespace(stdout=stdout + "\n")
+
+            with (
+                patch("exposome.handoff.load_study", return_value=context),
+                patch("exposome.handoff._release_records", return_value=[(asset, "release_manifest")]),
+                patch("exposome.handoff.canonical_enabled_layers", return_value=("wind",)),
+                patch("exposome.handoff.subprocess.run", side_effect=fake_run),
+            ):
+                destination = export_handoff(
+                    node_id="node", studies=["example_urban"], output_root=output, repo_root=root,
+                )
+            manifest = validate_handoff(destination)
+            self.assertRegex(manifest["handoff_id"], r"^node/\d{8}T\d{6}Z-[a-f0-9]{8}$")
+            self.assertEqual(manifest["studies"][0]["configurations"]["study"]["path"], "config/studies/example_urban.yaml")
+            self.assertTrue((destination / "data/processed/co/example/example_urban/release.txt").is_file())
 
 
 if __name__ == "__main__":
