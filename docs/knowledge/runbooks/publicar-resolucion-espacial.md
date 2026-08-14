@@ -258,6 +258,9 @@ En navegador verifica al menos:
 | Todas las capas OSM parecían grillas de 1 km | fuente vectorial confundida con soporte analítico | contratos vector/admin específicos por capa |
 | Calor de Lima perdió distritos costeros | polígonos sin intersección con centros ERA5-Land | fallback al píxel más cercano acotado a una celda nativa y registrado |
 | Viento decía ERA5 aunque la config pedía ERA5-Land | metadata histórica no bloqueaba publicación | `aggregate_provenance_issues` |
+| Viento de Santa Marta falló con `wind_u_mean` | reducción directa no devolvió centros de píxel ERA5-Land en borde costero | píxeles nativos + intersección por área; fallback observado <= una celda |
+| Calor de Cartagena no obtuvo ERA5-Land mensual | la consulta no alcanzaba píxeles cuyos centros quedaban fuera del AOI | anillo de una celda nativa y namespace de caché nuevo |
+| Salud de Santa Marta no tenía `n_access_grid` | caché parcial OSM y categoría explícita ausente | caché identificado por AOI/tags/buffer; sin proxy ni sentinel si falta salud/hospital/primaria |
 | `verify`/`publish` rechaza `release_manifest.json` después de un `run --layers` | una recuperación parcial actualiza capas pero, por diseño, no reemplaza el master ni la release completa; los estudios históricos además pueden conservar manifest v1 | ejecutar el cierre local del plan: migrador v1/v2 explícito, perfiles, `exposome materialize`, `verify` y recién `publish` |
 | `Image.reduceResolution` rechaza canopy sin proyección | el mosaico Meta/WRI perdió la proyección predeterminada de sus teselas | conservar la proyección de una tesela fuente con `setDefaultProjection()` antes de calcular la fracción a 30 m |
 | CHIRPS nativo falla al mezclar años bisiestos | Earth Engine tipa CDD como `Short<0,365>` o `Short<0,366>` según el año | convertir los componentes anuales a `Float` antes de calcular la media 2015--2024 |

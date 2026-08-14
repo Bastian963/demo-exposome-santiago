@@ -82,6 +82,10 @@ settings:
       - dentist
       - laboratory
   grid_spacing_m: 1000
+  # Facilities inside the study boundary determine counts.  A wider but
+  # explicit candidate area is used only for nearest-facility distances, so a
+  # municipal border does not turn a real neighbouring clinic into "no data".
+  distance_search_buffer_m: 25000
   output_base: santiago_healthcare_access
   network:
     enabled: false

@@ -232,7 +232,8 @@ def load_daily(
         cache = cache_dir / f"climate_heat_grid_daily_{year}.csv"
         return _load_openmeteo_daily(points, cache), "point"
     if source == "era5land":
-        cache = cache_dir / f"{city}_era5land_grid_{year}.csv"
+        from .fetch_era5land import era5land_cache_path
+        cache = era5land_cache_path(cache_dir, city, year)
         return _load_era5land_daily(cache), "pixel"
     raise ValueError(f"Unknown climate source: {source!r} (expected 'era5land')")
 

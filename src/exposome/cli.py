@@ -10,6 +10,7 @@ import sys
 import typer
 
 from . import publishing
+from .handoff import export_handoff, import_handoff
 from .layers import LayerExecutionError
 from .pipeline import materialize_study_release, run_study
 from .spatial_detail import build_study_detail
@@ -31,6 +32,49 @@ def _parse_layers(value: str | None) -> tuple[str, ...] | None:
     if len(layers) != len(set(layers)):
         raise typer.BadParameter("--layers contains duplicate ids")
     return layers
+
+
+@app.command("handoff-export")
+def handoff_export(
+    node_id: str = typer.Option(..., "--node-id"),
+    study: list[str] = typer.Option(..., "--study"),
+    output: str = typer.Option(..., "--output"),
+    operations: str | None = typer.Option(None, "--operations"),
+    run_id: str | None = typer.Option(None, "--run-id"),
+    dry_run: bool = typer.Option(False, "--dry-run"),
+) -> None:
+    """Freeze complete Study releases for transfer from a collection node."""
+    root = Path(__file__).resolve().parents[2]
+    try:
+        result = export_handoff(
+            node_id=node_id, studies=study, output_root=output, repo_root=root,
+            operations=operations, run_id=run_id, dry_run=dry_run,
+        )
+    except Exception as exc:
+        typer.echo(f"Handoff export failed: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    if dry_run:
+        typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
+    else:
+        typer.echo(f"handoff: {result}")
+
+
+@app.command("handoff-import")
+def handoff_import(
+    handoff: str = typer.Option(..., "--handoff"),
+    staging: str = typer.Option(..., "--staging"),
+    promote: bool = typer.Option(False, "--promote"),
+) -> None:
+    """Validate a handoff in staging; promotion is explicit and non-overwriting."""
+    root = Path(__file__).resolve().parents[2]
+    try:
+        result = import_handoff(
+            handoff=handoff, repo_root=root, staging_root=staging, promote=promote,
+        )
+    except Exception as exc:
+        typer.echo(f"Handoff import failed: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
 
 
 @app.command("run")

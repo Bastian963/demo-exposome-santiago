@@ -13,6 +13,7 @@ from exposome.climate.fetch_era5land import (
     _cache_has_required_values,
     _complete_cached_months,
     _parse_features,
+    era5land_cache_path,
 )
 
 
@@ -114,6 +115,13 @@ class ClimateGridFetchTest(unittest.TestCase):
 
 
 class Era5LandCacheTest(unittest.TestCase):
+    def test_native_edge_ring_uses_a_new_cache_namespace(self) -> None:
+        path = era5land_cache_path(Path("cache"), "cartagena_urban", 2024)
+        self.assertEqual(
+            path.name,
+            "cartagena_urban_era5land_grid_2024_native-edge-ring-v2.csv",
+        )
+
     def test_partial_month_requires_every_day_and_consistent_pixels(self) -> None:
         rows = []
         for day in range(1, 32):

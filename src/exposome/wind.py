@@ -43,10 +43,112 @@ import ee
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+from shapely.geometry import box
 from tqdm import tqdm
 
 from . import boundaries, config, gee
 from .cache import CacheIdentity, CacheRecord, CacheStore, spatial_fingerprint
+
+
+def _native_pixel_samples(
+    image: ee.Image,
+    regions_fc: ee.FeatureCollection,
+    *,
+    scale: float,
+    value_columns: list[str],
+) -> pd.DataFrame:
+    """Read native grid cells that can intersect the requested AOI.
+
+    Earth Engine only returns pixels whose centres are inside ``region``.  A
+    coastal or very small administrative unit can intersect a valid ERA5-Land
+    cell while containing none of its centres.  Querying one native cell beyond
+    the AOI bounds supplies the edge ring; aggregation below still uses only
+    the true polygon intersection and never invents a finer grid.
+    """
+    samples = image.select(value_columns).sample(
+        region=regions_fc.geometry().bounds().buffer(scale),
+        scale=scale,
+        projection=image.projection(),
+        geometries=True,
+        tileScale=4,
+    )
+    rows: list[dict[str, Any]] = []
+    for feature in samples.getInfo().get("features", []):
+        coordinates = feature.get("geometry", {}).get("coordinates", [])
+        if len(coordinates) < 2:
+            continue
+        props = feature.get("properties", {})
+        row = {"lon": float(coordinates[0]), "lat": float(coordinates[1])}
+        row.update({column: props.get(column) for column in value_columns})
+        rows.append(row)
+    frame = pd.DataFrame(rows)
+    if frame.empty or frame[value_columns].isna().any().any():
+        raise ValueError("ERA5-Land returned no complete native wind pixels")
+    return frame
+
+
+def _aggregate_native_pixels(
+    samples: pd.DataFrame,
+    units: gpd.GeoDataFrame,
+    cfg: dict[str, Any],
+    *,
+    value_columns: list[str],
+) -> pd.DataFrame:
+    """Area-weight native ERA5-Land pixel values to study units.
+
+    A nearest observed pixel may be used only for a unit with no intersecting
+    land pixel and only within one native cell.  This is the same bounded
+    coastal fallback used by the ERA5-Land heat pipeline.
+    """
+    metric_crs = cfg["crs"]["metric"]
+    scale = float(cfg["wind"]["scale_meters"])
+    points = gpd.GeoDataFrame(
+        samples.copy(), geometry=gpd.points_from_xy(samples["lon"], samples["lat"]), crs="EPSG:4326"
+    ).to_crs(metric_crs)
+    points["pixel_id"] = points.geometry.map(lambda point: f"{point.x:.3f}:{point.y:.3f}")
+    half = scale / 2.0
+    pixels = gpd.GeoDataFrame(
+        points[["pixel_id", *value_columns]].copy(),
+        geometry=[box(point.x - half, point.y - half, point.x + half, point.y + half) for point in points.geometry],
+        crs=metric_crs,
+    )
+    unit_columns = [column for column in ("name", "area_km2") if column in units.columns]
+    if "name" not in unit_columns:
+        raise ValueError("Wind aggregation requires a name column on spatial units")
+    unit_metric = units[unit_columns + ["geometry"]].to_crs(metric_crs).copy()
+    intersections = gpd.overlay(
+        pixels[["pixel_id", *value_columns, "geometry"]],
+        unit_metric[["name", "geometry"]],
+        how="intersection",
+        keep_geom_type=True,
+    )
+    rows: list[dict[str, Any]] = []
+    for name, group in intersections.groupby("name", dropna=False):
+        weights = group.geometry.area
+        rows.append({
+            "name": name,
+            **{column: float(np.average(group[column], weights=weights)) for column in value_columns},
+            "n_native_wind_pixels": int(group["pixel_id"].nunique()),
+            "used_nearest_wind_fallback": False,
+            "nearest_wind_m": 0.0,
+        })
+    result = unit_metric[["name", "geometry"]].merge(pd.DataFrame(rows), on="name", how="left")
+    missing = result[value_columns].isna().any(axis=1)
+    for index in result.index[missing]:
+        distances = points.geometry.distance(result.at[index, "geometry"])
+        nearest_index = distances.idxmin()
+        nearest_distance = float(distances.loc[nearest_index])
+        if nearest_distance > scale:
+            raise ValueError(
+                f"Nearest ERA5-Land wind pixel for {result.at[index, 'name']} is "
+                f"{nearest_distance:.0f} m away, beyond one native grid spacing ({scale:.0f} m)"
+            )
+        for column in value_columns:
+            result.at[index, column] = points.at[nearest_index, column]
+        result.at[index, "n_native_wind_pixels"] = 0
+        result.at[index, "used_nearest_wind_fallback"] = True
+        result.at[index, "nearest_wind_m"] = nearest_distance
+    return result.drop(columns="geometry")
 
 
 def wind_cache_namespace(collection_id: str) -> str:
@@ -60,6 +162,7 @@ def wind_cache_namespace(collection_id: str) -> str:
 def fetch_wind_speed(
     cfg: dict[str, Any],
     regions_fc: ee.FeatureCollection,
+    units: gpd.GeoDataFrame | None = None,
     start: str | None = None,
     end: str | None = None,
 ) -> pd.DataFrame:
@@ -75,6 +178,19 @@ def fetch_wind_speed(
         .select(["u_component_of_wind_10m", "v_component_of_wind_10m"])
     )
     mean_img = col.mean()
+
+    if units is not None:
+        samples = _native_pixel_samples(
+            mean_img, regions_fc, scale=scale,
+            value_columns=["u_component_of_wind_10m", "v_component_of_wind_10m"],
+        ).rename(columns={
+            "u_component_of_wind_10m": "wind_u_mean",
+            "v_component_of_wind_10m": "wind_v_mean",
+        })
+        aggregated = _aggregate_native_pixels(
+            samples, units, cfg, value_columns=["wind_u_mean", "wind_v_mean"],
+        )
+        return aggregated[["name", "wind_u_mean", "wind_v_mean"]]
 
     u_stats = gee.image_to_stats(
         mean_img.select("u_component_of_wind_10m"),
@@ -99,6 +215,7 @@ def fetch_wind_speed(
 def fetch_wind_calm_pct(
     cfg: dict[str, Any],
     regions_fc: ee.FeatureCollection,
+    units: gpd.GeoDataFrame | None = None,
     start: str | None = None,
     end: str | None = None,
     threshold_m_s: float = 2.0,
@@ -142,6 +259,21 @@ def fetch_wind_calm_pct(
     calm_mean = col.select("calm").mean()
     speed_max = col.select("wind_speed").reduce(ee.Reducer.percentile([99]))
 
+    speed_mean = col.select("wind_speed").mean()
+    if units is not None:
+        combined = calm_mean.rename("wind_calm_pct").addBands(
+            speed_max.rename("wind_speed_max_p99")
+        ).addBands(speed_mean.rename("wind_speed_mean"))
+        samples = _native_pixel_samples(
+            combined, regions_fc, scale=scale,
+            value_columns=["wind_calm_pct", "wind_speed_max_p99", "wind_speed_mean"],
+        )
+        aggregated = _aggregate_native_pixels(
+            samples, units, cfg,
+            value_columns=["wind_speed_mean", "wind_speed_max_p99", "wind_calm_pct"],
+        )
+        return aggregated[["name", "wind_speed_mean", "wind_speed_max_p99", "wind_calm_pct"]]
+
     calm_stats = gee.image_to_stats(
         calm_mean, regions_fc, band="calm", scale=scale, reducer="mean",
     )
@@ -149,7 +281,7 @@ def fetch_wind_calm_pct(
         speed_max, regions_fc, band="wind_speed_p99", scale=scale, reducer="mean",
     )
     speed_mean_stats = gee.image_to_stats(
-        col.select("wind_speed").mean(),
+        speed_mean,
         regions_fc, band="wind_speed", scale=scale, reducer="mean",
     )
 
@@ -199,6 +331,7 @@ def fetch_wind_seasonal(
     cfg: dict[str, Any],
     regions_fc: ee.FeatureCollection,
     season: str,
+    units: gpd.GeoDataFrame | None = None,
     start: str | None = None,
     end: str | None = None,
     threshold_m_s: float = 2.0,
@@ -241,24 +374,42 @@ def fetch_wind_seasonal(
 
     col = col.map(add_speed).map(add_calm)
 
+    mean_u = col.select("u_component_of_wind_10m").mean()
+    mean_v = col.select("v_component_of_wind_10m").mean()
+    speed_mean = col.select("wind_speed").mean()
+    speed_p99 = col.select("wind_speed").reduce(ee.Reducer.percentile([99]))
+    calm_mean = col.select("calm").mean()
+    if units is not None:
+        columns = [
+            f"wind_u_mean_{season}", f"wind_v_mean_{season}",
+            f"wind_speed_mean_{season}", f"wind_speed_max_p99_{season}",
+            f"wind_calm_pct_{season}",
+        ]
+        combined = mean_u.rename(columns[0]).addBands(mean_v.rename(columns[1])).addBands(
+            speed_mean.rename(columns[2])
+        ).addBands(speed_p99.rename(columns[3])).addBands(calm_mean.rename(columns[4]))
+        samples = _native_pixel_samples(combined, regions_fc, scale=scale, value_columns=columns)
+        aggregated = _aggregate_native_pixels(samples, units, cfg, value_columns=columns)
+        return aggregated[["name", *columns]]
+
     u_stats = gee.image_to_stats(
-        col.select("u_component_of_wind_10m").mean(),
+        mean_u,
         regions_fc, band="u_component_of_wind_10m", scale=scale, reducer="mean",
     )
     v_stats = gee.image_to_stats(
-        col.select("v_component_of_wind_10m").mean(),
+        mean_v,
         regions_fc, band="v_component_of_wind_10m", scale=scale, reducer="mean",
     )
     speed_mean_stats = gee.image_to_stats(
-        col.select("wind_speed").mean(),
+        speed_mean,
         regions_fc, band="wind_speed", scale=scale, reducer="mean",
     )
     speed_p99_stats = gee.image_to_stats(
-        col.select("wind_speed").reduce(ee.Reducer.percentile([99])),
+        speed_p99,
         regions_fc, band="wind_speed_p99", scale=scale, reducer="mean",
     )
     calm_stats = gee.image_to_stats(
-        col.select("calm").mean(),
+        calm_mean,
         regions_fc, band="calm", scale=scale, reducer="mean",
     )
 
@@ -329,7 +480,8 @@ def build_wind_layer(
         "collection": wind_cfg["id"],
         "bands": ["u_component_of_wind_10m", "v_component_of_wind_10m"],
         "scale_meters": wind_cfg["scale_meters"],
-        "reducer": "administrative_mean",
+        "reducer": "native_pixel_intersection_area_weighted",
+        "query_buffer_native_cells": 1,
     }
     identities = {
         "uv": CacheIdentity(
@@ -337,7 +489,7 @@ def build_wind_layer(
             "annual_uv",
             {**common, "start": wind_cfg["start_date"], "end_exclusive": wind_cfg["end_date"]},
             spatial_key,
-            "2",
+            "3",
         ),
         "speed": CacheIdentity(
             "wind",
@@ -351,7 +503,7 @@ def build_wind_layer(
                 "threshold_calm_m_s": threshold,
             },
             spatial_key,
-            "2",
+            "3",
         ),
     }
     for season in ("winter", "summer"):
@@ -369,7 +521,7 @@ def build_wind_layer(
                 "threshold_calm_m_s": threshold,
             },
             spatial_key,
-            "2",
+            "3",
         )
     stores = {name: CacheStore(cache_dir, identity) for name, identity in identities.items()}
     records: dict[str, CacheRecord] = {
@@ -413,7 +565,7 @@ def build_wind_layer(
     else:
         tqdm.write(f"  [wind_uv] cache miss ({records['uv'].reason}); fetching from GEE …")
         assert regions_fc is not None
-        df_uv = fetch_wind_speed(cfg, regions_fc)
+        df_uv = fetch_wind_speed(cfg, regions_fc, units=gdf_comm)
         records["uv"] = stores["uv"].write_csv_atomic(str(year), df_uv)
     progress.update(1)
 
@@ -427,7 +579,7 @@ def build_wind_layer(
             f"  [wind_speed] cache miss ({records['speed'].reason}); fetching from GEE …"
         )
         assert regions_fc is not None
-        df_speed = fetch_wind_calm_pct(cfg, regions_fc, threshold_m_s=threshold)
+        df_speed = fetch_wind_calm_pct(cfg, regions_fc, units=gdf_comm, threshold_m_s=threshold)
         records["speed"] = stores["speed"].write_csv_atomic(str(year), df_speed)
     progress.update(1)
 
@@ -445,7 +597,7 @@ def build_wind_layer(
             )
             assert regions_fc is not None
             seasonal_dfs[season] = fetch_wind_seasonal(
-                cfg, regions_fc, season=season, threshold_m_s=threshold,
+                cfg, regions_fc, season=season, units=gdf_comm, threshold_m_s=threshold,
             )
             records[season] = stores[season].write_csv_atomic(
                 str(year), seasonal_dfs[season]
@@ -460,7 +612,9 @@ def build_wind_layer(
     for season, sdf in seasonal_dfs.items():
         df = df.merge(sdf, on="name", how="left")
 
-    # 5. Fallback for missing values (annual + seasonal).
+    # 5. Validate native-pixel coverage.  A regional mean is not a valid
+    # substitute for an unobserved coastal/isolated unit; the only permitted
+    # fallback occurred above and is bounded to one native cell.
     annual_cols = (
         "wind_u_mean", "wind_v_mean", "wind_speed_mean",
         "wind_speed_max_p99", "wind_calm_pct",
@@ -473,14 +627,12 @@ def build_wind_layer(
             "wind_speed_max_p99_", "wind_calm_pct_",
         ))
     ]
-    for col in annual_cols + tuple(seasonal_cols):
-        if col in df.columns and df[col].isna().any():
-            regional = df[col].mean()
-            missing = df.loc[df[col].isna(), "name"].tolist()
-            df[col] = df[col].fillna(regional)
-            print(
-                f"Warning: filled {col} for {len(missing)} communes with regional mean {regional:.3f}"
-            )
+    missing_values = [
+        column for column in annual_cols + tuple(seasonal_cols)
+        if column not in df.columns or df[column].isna().any()
+    ]
+    if missing_values:
+        raise ValueError("ERA5-Land wind coverage missing required values: " + ", ".join(missing_values))
 
     # 6. Prevailing directions (annual + seasonal).
     df = _add_prevailing_direction(df)
@@ -524,6 +676,7 @@ def build_wind_layer(
         },
         "resolution_m": cfg["wind"]["scale_meters"],
         "scale_meters": cfg["wind"]["scale_meters"],
+        "aggregation_support": "native ERA5-Land pixels intersected with study units; bounded nearest-pixel fallback only",
         "threshold_calm_m_s": threshold,
         "season_definitions": {
             "winter": "Jun-Aug (southern hemisphere)",

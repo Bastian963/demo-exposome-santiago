@@ -224,11 +224,11 @@ El nodo no publica GEMMA ni sirve archivos al navegador. El flujo completo de
 congelado, transporte, aceptación, preview, validación y publicación está en
 [Integrar entregas del nodo WSL en GEMMA](integrar-nodo-wsl-en-gemma.md).
 
-La exportación/importación automatizada del handoff todavía está pendiente. No
-improvises un `cp`, `rsync` o archivo comprimido hacia las rutas canónicas de
-`data/`: primero se recibe fuera de `data/`, se verifican todos los hashes y
-recién después se promueve. Hasta contar con las herramientas, la primera
-entrega manual requiere revisión humana de cada asset inventariado.
+La exportación/importación automatizada usa `exposome handoff-export` y
+`exposome handoff-import`. No improvises un `cp`, `rsync` o archivo comprimido
+hacia rutas canónicas de `data/`: primero se recibe fuera de `data/`, se
+verifican hashes y fingerprints de configuración, y recién `--promote` copia
+assets no conflictivos.
 
 ## Actualización del runner
 

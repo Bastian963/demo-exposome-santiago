@@ -13,6 +13,7 @@ it does not account for the street network or topography.
 from __future__ import annotations
 
 import json
+import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -71,6 +72,23 @@ def _download_osm_tag(
         raise ConnectionError(f"Failed to download OSM tag '{tag_key}'") from err
 
 
+def _coalesce_osm_tag_duplicates(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """Merge repeated OSM elements without discarding another query's tags."""
+    duplicate_columns = [column for column in ("element", "id") if column in gdf.columns]
+    if not duplicate_columns:
+        return gdf
+    rows: list[pd.Series] = []
+    for _, group in gdf.groupby(duplicate_columns, dropna=False, sort=False):
+        row = group.iloc[0].copy()
+        for column in ("name", "amenity", "healthcare"):
+            if column in group.columns:
+                values = group[column].dropna()
+                if not values.empty:
+                    row[column] = values.iloc[0]
+        rows.append(row)
+    return gpd.GeoDataFrame(rows, columns=gdf.columns, crs=gdf.crs).reset_index(drop=True)
+
+
 def fetch_healthcare_osm(
     cfg: dict[str, Any],
     cache_path: Path | None = None,
@@ -86,11 +104,6 @@ def fetch_healthcare_osm(
     end), so interrupting a multi-tag run only loses the tag in flight; a
     re-run with the same ``cache_path`` skips every tag already fetched.
     """
-    if cache_path and cache_path.exists():
-        gdf = gpd.read_file(cache_path)
-        if len(gdf) > 0:
-            return gdf
-
     region = cfg["region_query"]
     tags = cfg["healthcare"]["osm_tags"]
     geo_crs = cfg["crs"]["geographic"]
@@ -102,10 +115,41 @@ def fetch_healthcare_osm(
     # not affect counts or nearest-distance metrics.
     study_geometry = None
     study_bbox = None
+    search_geometry = None
+    distance_search_buffer_m = int(cfg["healthcare"].get("distance_search_buffer_m", 25_000))
     if isinstance(cfg.get("spatial_units"), dict):
         units = boundaries.get_communes(cfg).to_crs(geo_crs)
         study_geometry = units.geometry.union_all()
-        study_bbox = tuple(study_geometry.bounds)
+        metric_geometry = units.to_crs(cfg["crs"]["metric"]).geometry.union_all()
+        search_geometry = gpd.GeoSeries([metric_geometry.buffer(distance_search_buffer_m)], crs=cfg["crs"]["metric"]).to_crs(geo_crs).iloc[0]
+        study_bbox = tuple(search_geometry.bounds)
+
+    # The former cache had no identity and could contain just one successful
+    # tag after a transient Overpass outage.  Keep it untouched, but never let
+    # it masquerade as a complete inventory for a different AOI/buffer.
+    cache_identity = {
+        "schema_version": 2,
+        "tags": tags,
+        "distance_search_buffer_m": distance_search_buffer_m,
+        "study_geometry_sha256": hashlib.sha256(
+            (study_geometry.wkb if study_geometry is not None else str(region).encode())
+        ).hexdigest(),
+    }
+    effective_cache = None
+    cache_manifest = None
+    if cache_path:
+        cache_path = Path(cache_path)
+        effective_cache = cache_path.with_name(f"{cache_path.stem}_v2{cache_path.suffix}")
+        cache_manifest = effective_cache.with_suffix(".source.json")
+        if effective_cache.exists() and cache_manifest.exists():
+            try:
+                recorded = json.loads(cache_manifest.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                recorded = None
+            if recorded == cache_identity:
+                gdf = gpd.read_file(effective_cache)
+                if len(gdf) > 0:
+                    return gdf
 
     # Increase timeout for large region queries.
     ox.settings.requests_timeout = 300
@@ -129,17 +173,17 @@ def fetch_healthcare_osm(
             gdf_extract = (
                 gdf_extract.to_crs(geo_crs) if gdf_extract.crs else gdf_extract.set_crs(geo_crs)
             )
-            if study_geometry is not None:
+            if search_geometry is not None:
                 gdf_extract = gdf_extract[
-                    gdf_extract.geometry.intersects(study_geometry)
+                    gdf_extract.geometry.intersects(search_geometry)
                 ].copy()
             pieces.append(gdf_extract)
 
     tag_items = [] if extract else list(tags.items())
     for tag_key, values in tqdm(tag_items, desc="healthcare OSM tags", unit="tag"):
         tag_cache = (
-            cache_path.with_name(f"{cache_path.stem}_{tag_key}{cache_path.suffix}")
-            if cache_path
+            effective_cache.with_name(f"{effective_cache.stem}_{tag_key}{effective_cache.suffix}")
+            if effective_cache
             else None
         )
         if tag_cache and tag_cache.exists():
@@ -149,9 +193,9 @@ def fetch_healthcare_osm(
             tqdm.write(f"  [{tag_key}] downloading from OSM …")
             gdf_tag = _download_osm_tag(region, tag_key, values, bbox=study_bbox)
             if len(gdf_tag) > 0:
-                if study_geometry is not None:
+                if search_geometry is not None:
                     gdf_tag = gdf_tag.to_crs(geo_crs) if gdf_tag.crs else gdf_tag.set_crs(geo_crs)
-                    gdf_tag = gdf_tag[gdf_tag.geometry.intersects(study_geometry)].copy()
+                    gdf_tag = gdf_tag[gdf_tag.geometry.intersects(search_geometry)].copy()
                 if not isinstance(gdf_tag.index, pd.RangeIndex):
                     gdf_tag = gdf_tag.reset_index()
             if tag_cache:
@@ -178,9 +222,7 @@ def fetch_healthcare_osm(
         )
     else:
         gdf = gpd.GeoDataFrame(pd.concat(pieces, ignore_index=True), crs=pieces[0].crs)
-        dup_cols = [c for c in ("element", "id") if c in gdf.columns]
-        if dup_cols:
-            gdf = gdf.drop_duplicates(subset=dup_cols, keep="first")
+        gdf = _coalesce_osm_tag_duplicates(gdf)
 
     gdf = gdf[gdf.geometry.notna()].copy().reset_index(drop=True)
 
@@ -189,10 +231,12 @@ def fetch_healthcare_osm(
     available = [c for c in keep_cols if c in gdf.columns]
     gdf = gdf[available].copy()
 
-    if cache_path:
-        cache_path.parent.mkdir(parents=True, exist_ok=True)
+    if effective_cache:
+        effective_cache.parent.mkdir(parents=True, exist_ok=True)
         gdf_wgs = gdf.to_crs(cfg["crs"]["geographic"]) if gdf.crs else gdf
-        gdf_wgs.to_file(cache_path, driver="GeoJSON")
+        gdf_wgs.to_file(effective_cache, driver="GeoJSON")
+        assert cache_manifest is not None
+        cache_manifest.write_text(json.dumps(cache_identity, indent=2, sort_keys=True), encoding="utf-8")
 
     return gdf
 
@@ -606,7 +650,11 @@ def nearest_distance_summary(
         Use ``scipy.spatial.cKDTree`` instead of ``gpd.sjoin_nearest``.
     """
     if facilities.empty:
-        out = grid.groupby("name").size().rename("n_access_grid").reset_index()
+        out = grid.groupby("name").size().reset_index(name="_grid_rows")
+        if include_count:
+            out = out.rename(columns={"_grid_rows": "n_access_grid"})
+        else:
+            out = out.drop(columns="_grid_rows")
         for col in [f"mean_{prefix}_m", f"median_{prefix}_m", f"p90_{prefix}_m"]:
             out[col] = np.nan
         return out
@@ -724,6 +772,22 @@ def build_healthcare_layer(
     all_facilities = facilities_metric[facilities_metric["is_all_health"]].copy()
     hospital_facilities = facilities_metric[facilities_metric["is_hospital"]].copy()
     primary_care_facilities = facilities_metric[facilities_metric["is_primary_care"]].copy()
+
+    # Counts remain exact-AOI, while access may use the configured external
+    # candidate buffer.  Do not fabricate an access metric when the provider
+    # did not supply an explicit category.
+    required_categories = {
+        "health": all_facilities,
+        "hospital": hospital_facilities,
+        "primary_care": primary_care_facilities,
+    }
+    missing_categories = [name for name, frame in required_categories.items() if frame.empty]
+    if missing_categories:
+        raise ValueError(
+            "Healthcare provider coverage lacks explicit facilities for: "
+            + ", ".join(missing_categories)
+            + ". Refusing to synthesize a proxy or sentinel distance."
+        )
 
     dist_health = nearest_distance_summary(
         access_grid,
@@ -935,6 +999,7 @@ def build_healthcare_layer(
         "source": "OpenStreetMap via osmnx + MINSAL/DEIS official registry" if use_official else "OpenStreetMap via osmnx",
         "method": "Euclidean nearest-facility distance on intra-communal grid",
         "grid_spacing_m": grid_spacing,
+        "distance_search_buffer_m": int(cfg["healthcare"].get("distance_search_buffer_m", 25_000)),
         "metric_crs": metric_crs,
         "use_official_source": use_official,
         "osm_tags": cfg["healthcare"]["osm_tags"],

@@ -8,11 +8,13 @@ from artifact_test_case import MaterializedArtifactTestCase
 from pathlib import Path
 
 import pandas as pd
+import geopandas as gpd
+from shapely.geometry import box
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from exposome.wind import wind_cache_namespace  # noqa: E402
+from exposome.wind import _aggregate_native_pixels, wind_cache_namespace  # noqa: E402
 
 DATA_DIR = REPO_ROOT / "data" / "processed"
 MASTER_CSV = DATA_DIR / "santiago_exposome_master.csv"
@@ -49,6 +51,24 @@ class WindCacheNamespaceTest(unittest.TestCase):
             wind_cache_namespace("ECMWF/ERA5_LAND/HOURLY"),
             wind_cache_namespace("ECMWF/ERA5/HOURLY"),
         )
+
+    def test_native_pixel_intersection_keeps_tiny_coastal_unit(self) -> None:
+        centre = gpd.GeoSeries.from_xy([-70.0], [-33.0], crs="EPSG:4326").to_crs("EPSG:32719").iloc[0]
+        units = gpd.GeoDataFrame(
+            {"name": ["tiny"]},
+            geometry=[box(centre.x - 100, centre.y - 100, centre.x + 100, centre.y + 100)],
+            crs="EPSG:32719",
+        ).to_crs("EPSG:4326")
+        cfg = {"crs": {"metric": "EPSG:32719"}, "wind": {"scale_meters": 11_132}}
+        out = _aggregate_native_pixels(
+            pd.DataFrame({"lon": [-70.0], "lat": [-33.0], "wind_u_mean": [1.5], "wind_v_mean": [-2.0]}),
+            units,
+            cfg,
+            value_columns=["wind_u_mean", "wind_v_mean"],
+        )
+        self.assertEqual(float(out.loc[0, "wind_u_mean"]), 1.5)
+        self.assertEqual(int(out.loc[0, "n_native_wind_pixels"]), 1)
+        self.assertFalse(bool(out.loc[0, "used_nearest_wind_fallback"]))
 
 
 class WindLayerTest(MaterializedArtifactTestCase):

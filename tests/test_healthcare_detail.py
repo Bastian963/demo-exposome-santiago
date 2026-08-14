@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from exposome.healthcare import (  # noqa: E402
+    _coalesce_osm_tag_duplicates,
     _write_healthcare_detail_grid,
     nearest_distance_summary,
 )
@@ -89,6 +90,39 @@ class HealthcareDetailTests(unittest.TestCase):
             use_ckdtree=True,
         )
         self.assertEqual(float(summary.loc[0, "median_nearest_health_m"]), 0.0)
+
+    def test_empty_optional_category_never_emits_duplicate_grid_count(self) -> None:
+        grid = gpd.GeoDataFrame(
+            {"name": ["A"], "cell_id": ["0:0"], "area_weight_m2": [1.0]},
+            geometry=[Point(0, 0)],
+            crs="EPSG:3857",
+        )
+        empty = gpd.GeoDataFrame(geometry=[], crs="EPSG:3857")
+        summary = nearest_distance_summary(
+            grid,
+            empty,
+            distance_col="nearest_primary_care_m",
+            prefix="nearest_primary_care",
+            include_count=False,
+        )
+        self.assertNotIn("n_access_grid", summary.columns)
+        self.assertTrue(summary["mean_nearest_primary_care_m"].isna().all())
+
+    def test_duplicate_osm_queries_keep_complementary_tags(self) -> None:
+        rows = gpd.GeoDataFrame(
+            {
+                "element": ["node", "node"],
+                "id": [10, 10],
+                "amenity": ["hospital", None],
+                "healthcare": [None, "clinic"],
+            },
+            geometry=[Point(-70, -33), Point(-70, -33)],
+            crs="EPSG:4326",
+        )
+        merged = _coalesce_osm_tag_duplicates(rows)
+        self.assertEqual(len(merged), 1)
+        self.assertEqual(merged.iloc[0]["amenity"], "hospital")
+        self.assertEqual(merged.iloc[0]["healthcare"], "clinic")
 
 
 if __name__ == "__main__":

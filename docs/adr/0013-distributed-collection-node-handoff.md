@@ -84,8 +84,9 @@ confirmados.
 
 - El transporte queda desacoplado del contrato científico.
 - Una entrega parcial conserva progreso válido sin aparentar completitud.
-- La integración futura requiere herramientas export/import, pero su interfaz
-  deberá implementar este contrato y no inventar otra jerarquía.
+- `exposome handoff-export` e `exposome handoff-import` implementan este
+  contrato: el export congela sólo releases verificadas y el import valida en
+  staging, compara hashes/configuración y exige `--promote` explícito.
 - El nodo WSL actual se documenta en el
   [runbook operativo](../knowledge/runbooks/nodo-wsl-descargas.md).
 

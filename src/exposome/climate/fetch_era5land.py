@@ -17,6 +17,7 @@ from tqdm import tqdm
 from .. import boundaries, config, gee
 
 ERA5LAND_DAILY = "ECMWF/ERA5_LAND/DAILY_AGGR"
+ERA5LAND_NATIVE_SAMPLE_VERSION = "native-edge-ring-v2"
 
 DEFAULT_BANDS = [
     "temperature_2m",
@@ -30,6 +31,16 @@ DEFAULT_BANDS = [
 BAND_NAME_MAP = {
     "temperature_2m": "temperature_2m_mean",
 }
+
+
+def era5land_cache_path(cache_dir: Path, city: str, year: int) -> Path:
+    """Return the versioned cache for native ERA5-Land pixel samples.
+
+    Earlier caches sampled only the exact AOI bbox and could omit coastal edge
+    pixels.  A distinct name preserves those operation files for inspection
+    while preventing an old spatial support from being silently reused.
+    """
+    return Path(cache_dir) / f"{city}_era5land_grid_{year}_{ERA5LAND_NATIVE_SAMPLE_VERSION}.csv"
 
 
 def _kelvin_to_celsius(k: float) -> float:
@@ -176,10 +187,12 @@ def fetch_era5land_month_server_side(
     def extract(img: ee.Image) -> ee.FeatureCollection:
         date_str = img.date().format("YYYY-MM-dd")
         stats = img.sample(
-            # Sample the AOI bounds, not only pixels whose centre falls inside
-            # the dissolved boundary.  The later polygon intersection needs
-            # the full edge-pixel ring so tiny boundary units are not missed.
-            region=regions_fc.geometry().bounds(),
+            # Image.sample retains pixel centres.  Include one native-cell
+            # buffer around the AOI bbox so a coastal/tiny unit can receive a
+            # pixel whose footprint intersects it even when its centre lies
+            # just outside.  Later aggregation intersects the actual native
+            # footprints, so this does not expand the analysis support.
+            region=regions_fc.geometry().bounds().buffer(scale),
             scale=scale,
             projection=img.projection(),
             geometries=True,
@@ -344,7 +357,7 @@ def fetch_era5land_years(
 
     all_years = []
     for year in tqdm(years, desc=f"era5land [{city}]", unit="year"):
-        year_cache = cache_dir / f"{city}_era5land_grid_{year}.csv"
+        year_cache = era5land_cache_path(cache_dir, city, year)
         if year_cache.exists():
             tqdm.write(f"  [{year}] loading from cache …")
         else:
@@ -385,7 +398,7 @@ def ensure_era5land_daily(
     only in an approved data-collection execution.
     """
     cache_dir = Path(cache_dir)
-    cache_path = cache_dir / f"{city}_era5land_grid_{year}.csv"
+    cache_path = era5land_cache_path(cache_dir, city, year)
     if cache_path.is_file():
         try:
             cached = pd.read_csv(cache_path)

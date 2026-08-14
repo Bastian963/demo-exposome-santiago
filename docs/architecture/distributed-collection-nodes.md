@@ -153,10 +153,10 @@ los gates concretos están en el runbook WSL → GEMMA.
 - Si el backend central no está disponible, el nodo conserva raw, referencias,
   processed y checkpoints. No se usa GitHub como respaldo improvisado.
 
-## Implementación pendiente
+## Interfaz implementada
 
-Las herramientas export/import todavía no existen como interfaz estable. Deben
-generar y validar este formato, trabajar primero en staging, soportar dry-run,
-rechazar secretos, paths inseguros y symlinks, y no ofrecer sobrescritura ciega.
-El importador debe emitir un informe antes de promover atómicamente. Elegir el
-backend de transporte no modifica este contrato.
+`exposome handoff-export` exige releases verificadas y congela la clausura de
+assets durables con SHA-256. `exposome handoff-import` valida rutas, symlinks,
+hashes y fingerprints de configuración antes de staging; `--promote` nunca
+sobrescribe una colisión. Los resúmenes operativos se conservan como evidencia
+en staging, no como parte del árbol central de productos.
