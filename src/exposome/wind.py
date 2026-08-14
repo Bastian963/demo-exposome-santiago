@@ -123,16 +123,26 @@ def _aggregate_native_pixels(
         keep_geom_type=True,
     )
     rows: list[dict[str, Any]] = []
-    for name, group in intersections.groupby("name", dropna=False):
-        weights = group.geometry.area
-        rows.append({
-            "name": name,
-            **{column: float(np.average(group[column], weights=weights)) for column in value_columns},
-            "n_native_wind_pixels": int(group["pixel_id"].nunique()),
-            "used_nearest_wind_fallback": False,
-            "nearest_wind_m": 0.0,
-        })
-    result = unit_metric[["name", "geometry"]].merge(pd.DataFrame(rows), on="name", how="left")
+    # GeoPandas may return a column-less GeoDataFrame for a completely empty
+    # overlay.  That is expected for small coastal units with no sampled pixel
+    # footprint: preserve the unit rows so the bounded nearest-pixel fallback
+    # below can make the explicit, auditable decision.
+    if not intersections.empty and "name" in intersections.columns:
+        for name, group in intersections.groupby("name", dropna=False):
+            weights = group.geometry.area
+            rows.append({
+                "name": name,
+                **{column: float(np.average(group[column], weights=weights)) for column in value_columns},
+                "n_native_wind_pixels": int(group["pixel_id"].nunique()),
+                "used_nearest_wind_fallback": False,
+                "nearest_wind_m": 0.0,
+            })
+    aggregate_columns = [
+        "name", *value_columns, "n_native_wind_pixels",
+        "used_nearest_wind_fallback", "nearest_wind_m",
+    ]
+    aggregates = pd.DataFrame(rows, columns=aggregate_columns)
+    result = unit_metric[["name", "geometry"]].merge(aggregates, on="name", how="left")
     missing = result[value_columns].isna().any(axis=1)
     for index in result.index[missing]:
         distances = points.geometry.distance(result.at[index, "geometry"])

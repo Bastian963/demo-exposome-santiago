@@ -70,6 +70,27 @@ class WindCacheNamespaceTest(unittest.TestCase):
         self.assertEqual(int(out.loc[0, "n_native_wind_pixels"]), 1)
         self.assertFalse(bool(out.loc[0, "used_nearest_wind_fallback"]))
 
+    def test_empty_native_intersection_uses_bounded_nearest_pixel(self) -> None:
+        centre = gpd.GeoSeries.from_xy([-70.0], [-33.0], crs="EPSG:4326").to_crs("EPSG:32719").iloc[0]
+        # This small unit is outside the native pixel footprint but remains
+        # within one ERA5-Land grid spacing of its observed centre.
+        units = gpd.GeoDataFrame(
+            {"name": ["coastal"]},
+            geometry=[box(centre.x + 6_900, centre.y - 100, centre.x + 7_100, centre.y + 100)],
+            crs="EPSG:32719",
+        ).to_crs("EPSG:4326")
+        cfg = {"crs": {"metric": "EPSG:32719"}, "wind": {"scale_meters": 11_132}}
+        out = _aggregate_native_pixels(
+            pd.DataFrame({"lon": [-70.0], "lat": [-33.0], "wind_u_mean": [1.5], "wind_v_mean": [-2.0]}),
+            units,
+            cfg,
+            value_columns=["wind_u_mean", "wind_v_mean"],
+        )
+        self.assertEqual(float(out.loc[0, "wind_u_mean"]), 1.5)
+        self.assertEqual(int(out.loc[0, "n_native_wind_pixels"]), 0)
+        self.assertTrue(bool(out.loc[0, "used_nearest_wind_fallback"]))
+        self.assertGreater(float(out.loc[0, "nearest_wind_m"]), 0.0)
+
 
 class WindLayerTest(MaterializedArtifactTestCase):
     @classmethod
