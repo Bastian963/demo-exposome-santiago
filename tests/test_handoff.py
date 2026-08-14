@@ -67,6 +67,14 @@ class HandoffTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Unsafe handoff path"):
                 validate_handoff(root)
 
+    def test_utc_run_identifier_is_accepted(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            handoff = self._handoff(Path(tmp) / "handoff")
+            payload = json.loads((handoff / MANIFEST_NAME).read_text(encoding="utf-8"))
+            payload["handoff_id"] = "node/20260813T165626Z-6bd13eb"
+            (handoff / MANIFEST_NAME).write_text(json.dumps(payload), encoding="utf-8")
+            validate_handoff(handoff)
+
     def test_content_collision_blocks_promotion(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

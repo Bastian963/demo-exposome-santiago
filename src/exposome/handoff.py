@@ -17,6 +17,7 @@ from .studies import load_study
 HANDOFF_SCHEMA_VERSION = 1
 MANIFEST_NAME = "handoff_manifest.json"
 _SAFE_ID = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
+_SAFE_RUN_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
 _DENIED_PARTS = {".git", ".venv", "cache", "tmp", ".netrc"}
 
 
@@ -108,8 +109,8 @@ def export_handoff(
     if not re.fullmatch(r"[0-9a-f]{40}", commit):
         raise RuntimeError("Cannot determine producer Git commit")
     run_id = run_id or datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + commit[:8]
-    if not _SAFE_ID.fullmatch(run_id):
-        raise ValueError("run_id must be a lowercase slug")
+    if not _SAFE_RUN_ID.fullmatch(run_id):
+        raise ValueError("run_id must contain only letters, digits, underscores and dashes")
 
     selected: list[dict[str, Any]] = []
     assets: dict[str, dict[str, Any]] = {}
@@ -186,7 +187,12 @@ def validate_handoff(handoff: str | Path) -> dict[str, Any]:
     if manifest.get("schema_version") != HANDOFF_SCHEMA_VERSION:
         raise ValueError("Unsupported handoff schema_version")
     handoff_id = str(manifest.get("handoff_id", ""))
-    if len(handoff_id.split("/")) != 2 or not all(_SAFE_ID.fullmatch(part) for part in handoff_id.split("/")):
+    handoff_parts = handoff_id.split("/")
+    if (
+        len(handoff_parts) != 2
+        or not _SAFE_ID.fullmatch(handoff_parts[0])
+        or not _SAFE_RUN_ID.fullmatch(handoff_parts[1])
+    ):
         raise ValueError("Invalid handoff_id")
     artifacts = manifest.get("artifacts")
     if not isinstance(artifacts, list) or not artifacts:
