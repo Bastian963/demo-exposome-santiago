@@ -59,3 +59,17 @@ layers:
   - social_infrastructure
   - food_environment
   - healthcare
+
+# Frozen Geofabrik Sudeste snapshot, shared with Belo Horizonte when its study
+# is introduced.  It replaces only tag queries; walkability still needs a
+# street graph and keeps its own backend.
+layer_overrides:
+  greenspace:
+    access:
+      osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
+  food_environment:
+    osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
+  healthcare:
+    osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
+  social_infrastructure:
+    osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
