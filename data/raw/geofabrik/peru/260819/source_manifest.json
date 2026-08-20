@@ -1,0 +1,19 @@
+{
+  "assets": [
+    {
+      "bytes": 255338132,
+      "media_type": "application/octet-stream",
+      "path": "peru.osm.pbf",
+      "resource_id": "peru",
+      "sha256": "d844fc384d51500e098334b6cba0156cb9e3a4c3e5c971b449af80e2262d081f",
+      "url": "https://download.geofabrik.de/south-america/peru.html",
+      "year": null
+    }
+  ],
+  "created_utc": "2026-08-20T21:36:02.985775+00:00",
+  "dataset": "osm-regional-extract",
+  "license": "ODbL 1.0 (OpenStreetMap contributors)",
+  "provider": "geofabrik",
+  "schema_version": 1,
+  "version": "260819"
+}
