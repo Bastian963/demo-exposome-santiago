@@ -1,0 +1,26 @@
+schema_version: 1
+
+# This recovery queue is for Joaco's `runner/multicity-2026-08-12` checkout.
+# It deliberately contains only studies whose non-OSM work is already cached.
+# Do not use it from a checkout that has not recovered these studies and their
+# reference geometries into Git.
+batch_config: config/operations/multicity_14.yaml
+retry_interval_hours: 6
+max_failure_cycles: 3
+
+osm_layers:
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare
+
+# Santa Marta passed materialize, temporal completeness, native detail, staged
+# and canonical publication gates on 2026-08-19.  It is intentionally absent.
+cities:
+  - id: cartagena
+    aggregate_study: cartagena_urban
+    native_study: cartagena_native
+  - id: pasto
+    aggregate_study: pasto_urban
+    native_study: pasto_native

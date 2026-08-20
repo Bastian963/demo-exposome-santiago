@@ -34,6 +34,31 @@ URLs firmadas, datos personales ni payloads completos a este documento.
 
 ## Incidentes registrados
 
+### 2026-08-19 — healthcare/Overpass — mirrors agotados en Cartagena
+
+- Estudios afectados: `cartagena_urban` (observado); cualquier estudio nuevo
+  que dependa de Overpass puede mostrar el mismo patrón.
+- Síntoma observable: la primera etiqueta `amenity` permanece en `0/2`; cada
+  mirror agota dos intentos. Se observaron `ConnectionError` en `.de`,
+  `ResponseStatusCodeError` en `.fr` y timeout por intento en `.ch`.
+- Causa raíz: indisponibilidad o saturación transitoria de los mirrors, no una
+  configuración inválida de Cartagena.
+- Artefactos que deben invalidarse: ninguno. El runner conserva bundles
+  exitosos y no reemplaza master/release ante el fallo de la capa.
+- Checkpoint seguro desde el cual reanudar: caches por tag existentes; en este
+  caso `amenity` no terminó y se reintentará íntegra, mientras cualquier tag
+  ya guardado se omite.
+- Corrección: no hacer bucles inmediatos. Ejecutar las capas no-OSM pendientes,
+  esperar seis horas y reintentar solo la capa OSM con `--resume`, en serie.
+  Tras tres ciclos, dejar `needs_review` y continuar otra ciudad.
+- Prueba o gate preventivo: los tests de fallback de `osm_fetch` cubren la
+  rotación y el límite por endpoint; el supervisor
+  `scripts/run_osm_recovery_week.py --dry-run` verifica la cola antes de una
+  pasada humana.
+- Comando de recuperación: `nohup .venv/bin/python
+  scripts/run_osm_recovery_week.py --duration-hours 168 >
+  logs/osm_recovery_week.log 2>&1 &`.
+
 Los siete siguientes salieron al habilitar **Lima** y correr **Bogotá**
 (2026-07-22/25). Los siete tienen **fix en código con test**, así que una ciudad
 nueva los hereda ya corregidos: se documentan para reconocer el síntoma rápido y
