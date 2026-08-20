@@ -36,6 +36,7 @@ class BatchCity:
     aggregate_study: str
     native_study: str
     portable_layers: tuple[str, ...] | None = None
+    native_layers: tuple[str, ...] | None = None
 
 
 @dataclass(frozen=True)
@@ -116,6 +117,17 @@ def load_batch_config(path: str | Path, *, repo_root: str | Path) -> BatchConfig
             raise ValueError(
                 "city portable_layers must be a unique subset of global portable_layers"
             )
+        raw_native_layers = record.get("native_layers")
+        if raw_native_layers is not None and (
+            not isinstance(raw_native_layers, list)
+            or not raw_native_layers
+            or not all(isinstance(item, str) for item in raw_native_layers)
+            or len(set(raw_native_layers)) != len(raw_native_layers)
+            or not set(raw_native_layers).issubset(set(portable_layers))
+        ):
+            raise ValueError(
+                "city native_layers must be a non-empty unique subset of global portable_layers"
+            )
         cities.append(
             BatchCity(
                 id=_safe_id(record.get("id"), "city id"),
@@ -123,6 +135,9 @@ def load_batch_config(path: str | Path, *, repo_root: str | Path) -> BatchConfig
                 native_study=_safe_id(record.get("native_study"), "native study"),
                 portable_layers=(
                     tuple(raw_city_layers) if raw_city_layers is not None else None
+                ),
+                native_layers=(
+                    tuple(raw_native_layers) if raw_native_layers is not None else None
                 ),
             )
         )
@@ -135,7 +150,8 @@ def validate_batch_studies(batch: BatchConfig, *, repo_root: str | Path) -> None
     """Prove that every pair targets one location and contains the portable 14."""
     root = Path(repo_root).resolve()
     for city in batch.cities:
-        expected = set(city.portable_layers or batch.portable_layers)
+        expected_aggregate = set(city.portable_layers or batch.portable_layers)
+        expected_native = set(city.native_layers or city.portable_layers or batch.portable_layers)
         aggregate = load_study(city.aggregate_study, repo_root_path=root)
         native = load_study(city.native_study, repo_root_path=root)
         if aggregate.is_native:
@@ -153,7 +169,10 @@ def validate_batch_studies(batch: BatchConfig, *, repo_root: str | Path) -> None
                 f"{city.aggregate_study} declares detail.native_study={declared_native!r}, "
                 f"expected {city.native_study!r}"
             )
-        for context, label in ((aggregate, "aggregate"), (native, "native")):
+        for context, label, expected in (
+            (aggregate, "aggregate", expected_aggregate),
+            (native, "native", expected_native),
+        ):
             enabled = set(canonical_enabled_layers(context))
             missing = sorted(expected - enabled)
             if missing:
@@ -262,7 +281,7 @@ def build_task_plan(
                     retryable=True,
                 )
         for city in chosen:
-            for layer_id in city.portable_layers or batch.portable_layers:
+            for layer_id in city.native_layers or city.portable_layers or batch.portable_layers:
                 key = f"{city.id}:native:{layer_id}"
                 native_keys[city.id].append(key)
                 add(

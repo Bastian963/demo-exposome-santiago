@@ -1,0 +1,46 @@
+schema_version: 1
+
+# Ejecutable subset of the cohort-priority queue.  An entry belongs here only
+# after its aggregate/native study pair, reference geometry and licenses are
+# versioned in this repository and `exposome run --dry-run` succeeds.
+#
+# Cartagena, Pasto and Santa Marta are intentionally absent for now: their
+# configurations/results live on the Joaco runner and must be recovered into
+# Git before a second machine can run or publish them reproducibly.  Arequipa,
+# Barranquilla, Cali and Belo Horizonte still need that setup work.
+portable_layers:
+  - air_quality_pm25
+  - air_quality_satellite
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare
+
+# Order is cohort priority among the studies that are ready in this checkout.
+# San Juan is already being collected on the local machine, so do not select it
+# on Joaco until its release has been transferred and verified.
+cities:
+  - id: san_juan
+    aggregate_study: san_juan_departamentos
+    native_study: san_juan_native
+    # Native products are meaningful only for the seven layers that have a
+    # direct verified-detail recipe.  The aggregate still runs all 14 layers.
+    native_layers:
+      - air_quality_pm25
+      - air_quality_satellite
+      - alan
+      - greenspace_multisource
+      - precipitation
+      - climate_heat
+      - wind
+  - id: sao_paulo
+    aggregate_study: sao_paulo_distritos
+    native_study: sao_paulo_native

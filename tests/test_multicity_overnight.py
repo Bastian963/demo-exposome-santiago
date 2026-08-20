@@ -58,6 +58,23 @@ class MulticityOvernightTests(unittest.TestCase):
         self.assertIn("lima:publish:webapp", keys)
         self.assertIn("lima:validate:production", keys)
 
+    def test_city_can_declare_a_narrower_native_layer_set(self) -> None:
+        batch = load_batch_config(
+            "config/operations/cohort_latam_ready.yaml", repo_root=ROOT
+        )
+        validate_batch_studies(batch, repo_root=ROOT)
+        san_juan = select_cities(batch, ["san_juan"])
+        tasks = build_task_plan(batch, repo_root=ROOT, cities=san_juan)
+        keys = {task.key for task in tasks}
+        self.assertEqual(
+            len([key for key in keys if key.startswith("san_juan:aggregate:")]),
+            14,
+        )
+        self.assertEqual(
+            len([key for key in keys if key.startswith("san_juan:native:")]),
+            7,
+        )
+
     def test_phase_selection_keeps_preflight_but_omits_provider_layers(self) -> None:
         city = select_cities(self.batch, ["bogota_localidades"])
         tasks = build_task_plan(

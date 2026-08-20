@@ -44,6 +44,19 @@ Chiclayo (15), Cuernavaca ZM (14), Talca (6). Umbral de inclusión pendiente de
 decisión; con n≈30 la variación intra-ciudad es poco estimable, probablemente
 solo perfil de exposición puntual (estilo `caba_native`) y no estudio agregado.
 
+### Operación semanal LatAm (n ≥ 25)
+
+La decisión operativa vigente amplía la cola hasta `n ≥ 25`, con publicación
+completa en GEMMA como objetivo; el detalle, la serie temporal y los gates no
+se sustituyen por una tabla agregada. El orden, estado remoto y recuperación
+del checkout de Joaco se mantienen en
+[`cohort_latam_week.md`](cohort_latam_week.md).
+
+Los resultados de Santa Marta, Cartagena y Pasto observados en Joaco todavía
+no se tratan como cobertura canónica de este checkout: sus configuraciones,
+límites con procedencia/licencia y manifests deben incorporarse y verificarse
+en Git antes de ejecutar o publicar desde otra máquina.
+
 Colas residuales por país (no asignables a un metro): CO 391 (10,1 %; 144
 strings de ciudad distintos — la cola larga colombiana es el mayor hueco de
 cobertura), PE 92, CL 51, MX 35, AR 10, BR 2. Fuera de LatAm o sin país: ~25

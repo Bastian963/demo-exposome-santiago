@@ -113,6 +113,24 @@ el mismo comando. El cache científico no se borra y `--force` no forma parte de
 este flujo. Sigue [Incidentes multiciudad](incidentes-multiciudad.md) para
 convertir el fallo en una lección estable.
 
+## Cola semanal de cohorte LatAm
+
+La selección, prioridades, gates de GEMMA y procedimiento para recuperar el
+trabajo de Joaco están en [`../../cohort_latam_week.md`](../../cohort_latam_week.md).
+El supervisor humano `scripts/run_cohort_latam_week.py` envuelve este mismo
+orquestador; no implementa descargas ni crea una segunda ruta científica. Guarda
+solo estado de operación bajo `cache/cohort_latam_week/`, rota por ciudades en
+slices de diez horas y deja en revisión una ciudad después de tres ciclos con
+fallo para que las demás puedan continuar.
+
+Cuando el único pendiente es OSM/Overpass, usar en cambio
+`scripts/run_osm_recovery_week.py` con
+`config/operations/osm_recovery_colombia.yaml`: limita la cola a las cinco capas
+OSM, espera seis horas entre pasadas y no lanza materialización/publicación
+hasta que todas cierren con `--resume`. La bitácora y el incidente de Cartagena
+están en [`../../cohort_latam_week.md`](../../cohort_latam_week.md) y
+[`incidentes-multiciudad.md`](incidentes-multiciudad.md).
+
 ## Qué significa «14 en resolución»
 
 El número 14 mide capas portables completas, no promete catorce rásters finos.
