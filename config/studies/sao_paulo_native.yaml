@@ -31,3 +31,14 @@ layers:
   - social_infrastructure
   - food_environment
   - healthcare
+
+layer_overrides:
+  greenspace:
+    access:
+      osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
+  food_environment:
+    osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
+  healthcare:
+    osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
+  social_infrastructure:
+    osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
