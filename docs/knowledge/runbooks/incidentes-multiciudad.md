@@ -59,6 +59,35 @@ URLs firmadas, datos personales ni payloads completos a este documento.
   scripts/run_osm_recovery_week.py --duration-hours 168 >
   logs/osm_recovery_week.log 2>&1 &`.
 
+### 2026-08-20 — OSM Colombia — fallback reproducible a extracto Geofabrik
+
+- Estudios afectados: `cartagena_urban`, `pasto_urban` y sus companions
+  native, tras fallos repetidos de la etiqueta `amenity` en los tres mirrors
+  Overpass.
+- Diagnóstico: que `.de`, `.fr` y `.ch` fallen tras sus plazos no invalida los
+  bundles ni es motivo para aumentar el paralelismo. Los mensajes `loading
+  tile checkpoint` son lecturas locales, no descargas nuevas.
+- Corrección durable: usar el extracto OSM PBF fechado de Colombia en vez de
+  consultas HTTP para `greenspace_access`, `food_environment`, `healthcare` y
+  `social_infrastructure`. **No** usar los archivos `-free.shp.zip` ni
+  `-free.gpkg.zip`: no preservan los tags OSM que filtran estas capas.
+- Ubicación canónica en Joaco:
+  `data/raw/geofabrik/colombia/<YYMMDD>/colombia.osm.pbf`. El payload no se
+  versiona en Git ni se deja en Dropbox/una unidad NTFS; el
+  `source_manifest.json` y el SHA-256 sí son el registro reproducible.
+- Ingesta, después de una descarga humana y verificación de tamaño/hash:
+  `PYTHONPYCACHEPREFIX=/tmp .venv/bin/python
+  scripts/migrations/ingest_geofabrik_extract.py --source
+  data/raw/geofabrik/colombia/<YYMMDD>/colombia.osm.pbf --region colombia
+  --version <YYMMDD> --source-path south-america`.
+- Configuración posterior: declarar el mismo `osm_extract` bajo
+  `layer_overrides` de las cuatro capas para cada estudio afectado y reanudar
+  con `--resume`. `walkability` queda fuera: construye un grafo de calles y no
+  consume este extracto.
+- Regla operativa: no cambiar a este origen a mitad de una tarea activa. Dejar
+  que el supervisor registre `needs_review`, validar el snapshot y recién
+  entonces cambiar la configuración y reiniciar la recuperación.
+
 Los siete siguientes salieron al habilitar **Lima** y correr **Bogotá**
 (2026-07-22/25). Los siete tienen **fix en código con test**, así que una ciudad
 nueva los hereda ya corregidos: se documentan para reconocer el síntoma rápido y
