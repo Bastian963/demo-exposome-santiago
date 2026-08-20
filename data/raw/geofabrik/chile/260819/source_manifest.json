@@ -1,0 +1,19 @@
+{
+  "assets": [
+    {
+      "bytes": 346015388,
+      "media_type": "application/octet-stream",
+      "path": "chile.osm.pbf",
+      "resource_id": "chile",
+      "sha256": "a8804a24f76dc4e420e402f6efc45cd8cdd99d2753308a0eae35832d552c2a0b",
+      "url": "https://download.geofabrik.de/south-america/chile.html",
+      "year": null
+    }
+  ],
+  "created_utc": "2026-08-20T21:48:52.622594+00:00",
+  "dataset": "osm-regional-extract",
+  "license": "ODbL 1.0 (OpenStreetMap contributors)",
+  "provider": "geofabrik",
+  "schema_version": 1,
+  "version": "260819"
+}
