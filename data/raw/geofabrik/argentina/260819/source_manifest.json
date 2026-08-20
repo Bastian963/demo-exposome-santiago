@@ -1,0 +1,19 @@
+{
+  "assets": [
+    {
+      "bytes": 427304426,
+      "media_type": "application/octet-stream",
+      "path": "argentina.osm.pbf",
+      "resource_id": "argentina",
+      "sha256": "cde2009564ce0c1fd33eedb851bc226d7481ad956057f6fe1b8e53e30973e605",
+      "url": "https://download.geofabrik.de/south-america/argentina.html",
+      "year": null
+    }
+  ],
+  "created_utc": "2026-08-20T21:37:51.448947+00:00",
+  "dataset": "osm-regional-extract",
+  "license": "ODbL 1.0 (OpenStreetMap contributors)",
+  "provider": "geofabrik",
+  "schema_version": 1,
+  "version": "260819"
+}
