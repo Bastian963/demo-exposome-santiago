@@ -168,6 +168,42 @@ versionar el manifiesto/configuración. Este fallback sirve para salud,
 alimentación, infraestructura social y acceso verde; no sustituye la descarga
 de grafos de `walkability`.
 
+### Snapshots OSM locales para la campaña LATAM
+
+La campaña de cohorte usa snapshots Geofabrik fechados de **2026-08** para las
+cuatro capas por tags (`greenspace_access`, `food_environment`, `healthcare` y
+`social_infrastructure`) en ciudades nuevas o reintentos. No se recalculan
+publicaciones anteriores solo para cambiar este backend. `walkability` queda
+fuera porque requiere un grafo vial.
+
+El inventario, URLs fechadas y cobertura por ciudades están en
+[`config/operations/geofabrik_latam_cohort.yaml`](../config/operations/geofabrik_latam_cohort.yaml).
+Incluye Colombia, Perú, Chile, México, Argentina y Brasil Sudeste; este último
+cubre São Paulo y Belo Horizonte sin descargar el PBF nacional completo.
+
+En Joaco, antes de bajar cualquier archivo, revisar qué falta y mostrar los
+comandos manuales que reanudan una transferencia interrumpida:
+
+```bash
+cd ~/projects/Brainlat-runner
+PYTHONPYCACHEPREFIX=/tmp .venv/bin/python \
+  scripts/check_geofabrik_latam_cohort.py --commands
+```
+
+El operador ejecuta solo los bloques de regiones `missing` o `unfrozen`, uno a
+la vez. Después de cada ingesta, versiona únicamente
+`data/raw/geofabrik/<region>/260819/source_manifest.json`; el PBF queda fuera
+de Git. El check completo —sin red— es:
+
+```bash
+PYTHONPYCACHEPREFIX=/tmp .venv/bin/python \
+  scripts/check_geofabrik_latam_cohort.py --require-payload --verify-hash
+```
+
+No se crean scripts de descarga ni tareas periódicas de actualización. Cambiar
+de snapshot es un cambio científico de entrada: se añade una nueva versión,
+se valida y se declara explícitamente en los estudios afectados.
+
 ## Gates de publicación
 
 Por cada ciudad: capas agregadas -> native -> series anuales -> detalle

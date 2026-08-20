@@ -88,6 +88,19 @@ URLs firmadas, datos personales ni payloads completos a este documento.
   que el supervisor registre `needs_review`, validar el snapshot y recién
   entonces cambiar la configuración y reiniciar la recuperación.
 
+### 2026-08-20 — OSM LATAM — inventario de snapshots reutilizables
+
+- Estudios afectados: ciudades nuevas o reintentos de la cohorte LATAM que
+  usan capas OSM por tags.
+- Prevención: consultar `config/operations/geofabrik_latam_cohort.yaml` antes
+  de una corrida. El mismo PBF fechado se reutiliza para todas las ciudades de
+  una región; no se descarga uno por ciudad ni se usa `latest`.
+- Gate preventivo: `PYTHONPYCACHEPREFIX=/tmp .venv/bin/python
+  scripts/check_geofabrik_latam_cohort.py --require-payload --verify-hash`.
+  Verifica el hash sin red y falla si falta un snapshot requerido.
+- Límite: `walkability` no es compatible porque necesita un grafo de calles;
+  las publicaciones existentes no se recalculan retrospectivamente.
+
 Los siete siguientes salieron al habilitar **Lima** y correr **Bogotá**
 (2026-07-22/25). Los siete tienen **fix en código con test**, así que una ciudad
 nueva los hereda ya corregidos: se documentan para reconocer el síntoma rápido y
