@@ -32,7 +32,12 @@ from exposome.raw_sources import build_raw_source_asset, write_source_manifest  
 APP = typer.Typer(help="Validate and freeze a Geofabrik OSM extract.")
 
 RAW_ROOT = ROOT / "data/raw/geofabrik"
-SOURCE_PAGE_TEMPLATE = "https://download.geofabrik.de/europe/spain/{region}.html"
+# The continent/country path a region lives under on download.geofabrik.de. The
+# provenance URL written into source_manifest.json is the only record of where a
+# payload came from, so it has to be the real page: hardcoding `europe/spain`
+# made every non-Spanish extract claim a Spanish origin.
+SOURCE_PAGE_TEMPLATE = "https://download.geofabrik.de/{path}/{region}.html"
+DEFAULT_SOURCE_PATH = "europe/spain"
 
 # GDAL's OSM driver always exposes these five layers. A file that lacks any of
 # them is not a `.osm.pbf` we can filter against.
@@ -117,6 +122,13 @@ def run(
     source: Path = typer.Option(..., exists=True, dir_okay=False, readable=True),
     region: str = typer.Option(..., help="Geofabrik region id, e.g. cataluna or pais-vasco."),
     version: str = typer.Option(..., help="Cut date from the file name, e.g. 260809."),
+    source_path: str = typer.Option(
+        DEFAULT_SOURCE_PATH,
+        help=(
+            "Geofabrik continent/country path the region page lives under, e.g. "
+            "europe/spain or south-america. Recorded as the payload's provenance URL."
+        ),
+    ),
     destination: Path = typer.Option(RAW_ROOT),
     payload_root: Path | None = typer.Option(
         None, help="Where the .pbf lives; defaults to destination. Keep it off Dropbox/iCloud."
@@ -138,7 +150,7 @@ def run(
     if verify_only:
         return
 
-    url = SOURCE_PAGE_TEMPLATE.format(region=region)
+    url = SOURCE_PAGE_TEMPLATE.format(path=source_path.strip("/"), region=region)
     snapshot = Path(destination) / token / version
     payload_dir = snapshot if payload_root is None else Path(payload_root) / token / version
     target = payload_dir / f"{token}.osm.pbf"
