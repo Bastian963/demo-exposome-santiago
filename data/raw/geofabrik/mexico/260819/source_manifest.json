@@ -1,0 +1,19 @@
+{
+  "assets": [
+    {
+      "bytes": 644259700,
+      "media_type": "application/octet-stream",
+      "path": "mexico.osm.pbf",
+      "resource_id": "mexico",
+      "sha256": "72c9276f68ccd63272dff5e9a3d5967d1aadfa856d4c8de2c096366f38051c69",
+      "url": "https://download.geofabrik.de/north-america/mexico.html",
+      "year": null
+    }
+  ],
+  "created_utc": "2026-08-20T21:47:11.348505+00:00",
+  "dataset": "osm-regional-extract",
+  "license": "ODbL 1.0 (OpenStreetMap contributors)",
+  "provider": "geofabrik",
+  "schema_version": 1,
+  "version": "260819"
+}
