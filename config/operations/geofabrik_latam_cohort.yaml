@@ -1,0 +1,73 @@
+schema_version: 1
+
+# Frozen OSM inputs for the 2026-08 cohort campaign.  A snapshot is reusable
+# by every city in its coverage; it is deliberately a country/region asset,
+# never a city-specific download.  The PBF payload is ignored by Git while
+# its source_manifest.json is versioned after ingestion.
+campaign: cohort_latam_202608
+version: "260819"
+provider: geofabrik
+dataset: osm-regional-extract
+
+# Only these tag-based layers can consume a Geofabrik PBF.  Walkability builds
+# an OSM street graph and must keep its graph-specific backend.
+supported_layers:
+  - greenspace_access
+  - food_environment
+  - healthcare
+  - social_infrastructure
+
+snapshots:
+  - id: argentina
+    label: Argentina
+    source_path: south-america
+    page_url: https://download.geofabrik.de/south-america/argentina.html
+    pbf_url: https://download.geofabrik.de/south-america/argentina-260819.osm.pbf
+    filename: argentina.osm.pbf
+    countries: [AR]
+    covers: [san_juan, buenos_aires_amba]
+
+  - id: chile
+    label: Chile
+    source_path: south-america
+    page_url: https://download.geofabrik.de/south-america/chile.html
+    pbf_url: https://download.geofabrik.de/south-america/chile-260819.osm.pbf
+    filename: chile.osm.pbf
+    countries: [CL]
+    covers: [santiago, talca]
+
+  - id: colombia
+    label: Colombia
+    source_path: south-america
+    page_url: https://download.geofabrik.de/south-america/colombia.html
+    pbf_url: https://download.geofabrik.de/south-america/colombia-260819.osm.pbf
+    filename: colombia.osm.pbf
+    countries: [CO]
+    covers: [bogota, valle_aburra, medellin, santa_marta, cartagena, pasto, barranquilla, cali]
+
+  - id: mexico
+    label: México
+    source_path: north-america
+    page_url: https://download.geofabrik.de/north-america/mexico.html
+    pbf_url: https://download.geofabrik.de/north-america/mexico-260819.osm.pbf
+    filename: mexico.osm.pbf
+    countries: [MX]
+    covers: [cdmx, cuernavaca]
+
+  - id: peru
+    label: Perú
+    source_path: south-america
+    page_url: https://download.geofabrik.de/south-america/peru.html
+    pbf_url: https://download.geofabrik.de/south-america/peru-260819.osm.pbf
+    filename: peru.osm.pbf
+    countries: [PE]
+    covers: [lima, arequipa, chiclayo]
+
+  - id: sudeste
+    label: Brasil Sudeste
+    source_path: south-america/brazil
+    page_url: https://download.geofabrik.de/south-america/brazil/sudeste.html
+    pbf_url: https://download.geofabrik.de/south-america/brazil/sudeste-260819.osm.pbf
+    filename: sudeste.osm.pbf
+    countries: [BR]
+    covers: [sao_paulo, belo_horizonte]
