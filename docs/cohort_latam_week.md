@@ -144,6 +144,30 @@ nohup .venv/bin/python scripts/run_osm_recovery_week.py \
   > logs/osm_recovery_week.log 2>&1 &
 ```
 
+### Fallback local para Colombia cuando Overpass agota sus mirrors
+
+Si `healthcare` o cualquier capa por tags agota los mirrors `.de`, `.fr` y
+`.ch` en ciclos espaciados, no se paralelizan las consultas ni se borran los
+checkpoints. Se usa un snapshot manual de Geofabrik, que conserva la misma
+fuente OSM en un archivo local y evita Overpass.
+
+En Joaco el archivo se guarda fuera de Dropbox, con la fecha del snapshot:
+
+```bash
+cd ~/projects/Brainlat-runner
+mkdir -p data/raw/geofabrik/colombia/260819
+curl -fL -C - -o data/raw/geofabrik/colombia/260819/colombia.osm.pbf \
+  https://download.geofabrik.de/south-america/colombia-260819.osm.pbf
+sha256sum data/raw/geofabrik/colombia/260819/colombia.osm.pbf
+```
+
+El archivo correcto es únicamente `colombia-260819.osm.pbf`; nunca una variante
+`free.shp.zip` o `free.gpkg.zip`. Antes de apuntar estudios a él, correr el
+migrador de ingesta para crear `source_manifest.json`, revisar el hash y
+versionar el manifiesto/configuración. Este fallback sirve para salud,
+alimentación, infraestructura social y acceso verde; no sustituye la descarga
+de grafos de `walkability`.
+
 ## Gates de publicación
 
 Por cada ciudad: capas agregadas -> native -> series anuales -> detalle
