@@ -1,0 +1,19 @@
+{
+  "assets": [
+    {
+      "bytes": 326408409,
+      "media_type": "application/octet-stream",
+      "path": "colombia.osm.pbf",
+      "resource_id": "colombia",
+      "sha256": "8cd509914c4a60098544243f913b62594cd5ac731a8d00e4f273beab96dcf08f",
+      "url": "https://download.geofabrik.de/south-america/colombia.html",
+      "year": null
+    }
+  ],
+  "created_utc": "2026-08-20T20:43:21.056987+00:00",
+  "dataset": "osm-regional-extract",
+  "license": "ODbL 1.0 (OpenStreetMap contributors)",
+  "provider": "geofabrik",
+  "schema_version": 1,
+  "version": "260819"
+}
