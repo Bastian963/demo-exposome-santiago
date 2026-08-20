@@ -1,0 +1,19 @@
+{
+  "assets": [
+    {
+      "bytes": 855201486,
+      "media_type": "application/octet-stream",
+      "path": "sudeste.osm.pbf",
+      "resource_id": "sudeste",
+      "sha256": "5b4e85db721dcc496c30ee278c05b36abb67878b2ee0b022c3ceb1b08a8cf1c8",
+      "url": "https://download.geofabrik.de/south-america/brazil/sudeste.html",
+      "year": null
+    }
+  ],
+  "created_utc": "2026-08-20T21:23:23.257566+00:00",
+  "dataset": "osm-regional-extract",
+  "license": "ODbL 1.0 (OpenStreetMap contributors)",
+  "provider": "geofabrik",
+  "schema_version": 1,
+  "version": "260819"
+}
