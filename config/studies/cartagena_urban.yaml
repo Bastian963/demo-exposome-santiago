@@ -20,3 +20,13 @@ detail:
   native_study: cartagena_native
 
 layers: [pm25, air_quality_satellite, alan, greenspace_coverage, greenspace_multisource, precipitation, climate_heat, wind, wildfire, greenspace_access, walkability, social_infrastructure, food_environment, healthcare]
+layer_overrides:
+  greenspace:
+    access:
+      osm_extract: data/raw/geofabrik/colombia/260819/colombia.osm.pbf
+  food_environment:
+    osm_extract: data/raw/geofabrik/colombia/260819/colombia.osm.pbf
+  healthcare:
+    osm_extract: data/raw/geofabrik/colombia/260819/colombia.osm.pbf
+  social_infrastructure:
+    osm_extract: data/raw/geofabrik/colombia/260819/colombia.osm.pbf
