@@ -20,6 +20,7 @@ from exposome.temporal_exposomes import (
     collect_missing,
     discover_temporal_specs,
     inventory,
+    required_annual_products,
     validate_no_analysis_side_effects,
 )
 
@@ -98,6 +99,18 @@ class TestTemporalCatalog(unittest.TestCase):
             validate_no_analysis_side_effects(
                 TemporalPaths(Path("webapp/public/data"), Path("cache/temporal"))
             )
+
+    def test_documented_source_gap_is_visible_but_not_required(self) -> None:
+        context = load_study("bogota_localidades", repo_root_path=REPO_ROOT)
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = TemporalPaths(Path(tmp) / "out", Path(tmp) / "cache")
+            annual = inventory(
+                context, paths=paths, layers=["greenspace_multisource"]
+            )
+        required = required_annual_products(annual, context)
+        self.assertEqual(len(annual), 9)
+        self.assertEqual(len(required), 8)
+        self.assertNotIn(2019, required["year"].tolist())
 
 
 class TestTemporalCollection(unittest.TestCase):
@@ -215,6 +228,25 @@ class TestTemporalCollection(unittest.TestCase):
             )
             self.assertEqual(failure["error_type"], "RuntimeError")
             self.assertIn("--resume", failure["retry"])
+
+    def test_collection_does_not_retry_documented_source_gap(self) -> None:
+        """ADR 0008 gaps stay pending in inventory but never call the provider."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            with patch(
+                "exposome.temporal_exposomes._run_adapter",
+                side_effect=RuntimeError("provider unavailable"),
+            ) as run_adapter:
+                with self.assertRaises(RuntimeError):
+                    collect_missing(
+                        "bogota_localidades",
+                        layers=["greenspace_multisource"],
+                        output_root=root / "out",
+                        cache_root=root / "cache",
+                    )
+        # Dynamic World has 2016--2024 (nine) annual targets; 2019 is an
+        # explicit source-gap exception, so only eight provider calls occur.
+        self.assertEqual(run_adapter.call_count, 8)
 
     def test_non_santiago_inventory_never_uses_santiago_wildfire_cache(self) -> None:
         lima = load_study("lima_distritos", repo_root_path=REPO_ROOT)

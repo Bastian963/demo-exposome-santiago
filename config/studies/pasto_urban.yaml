@@ -19,6 +19,21 @@ period: {start_date: "2015-01-01", end_date: "2024-12-31"}
 detail:
   native_study: pasto_native
 
+# Dynamic World has documented, deterministic gaps for Pasto's urban AOI in
+# 2016 and 2019.  Keep them in expected_years so the published green series is
+# visibly incomplete and stays preview-only; do not interpolate or retry them.
+temporal_exceptions:
+  - layer_id: greenspace_multisource
+    indicator: green
+    years: [2016, 2019]
+    reason: >-
+      Dynamic World (composite Oct-Mar) returned no valid zonal green/tree/grass
+      values for Pasto cabecera in 2016, and no available image bands for the
+      same AOI/season in 2019. Observed in the 2026-08-21 resumable collection;
+      the other configured years are complete. These are provider coverage gaps,
+      not values to interpolate or retry.
+    doc: docs/greenspace_multisource_methodology.md#limitations
+
 layers: [pm25, air_quality_satellite, alan, greenspace_coverage, greenspace_multisource, precipitation, climate_heat, wind, wildfire, greenspace_access, walkability, social_infrastructure, food_environment, healthcare]
 layer_overrides:
   greenspace:
