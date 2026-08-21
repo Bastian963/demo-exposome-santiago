@@ -144,11 +144,6 @@ def fetch_green_areas(
     This matters for rural units such as Bogota's Usme and Sumapaz, where one
     locality contains 16--64 Overpass tiles.
     """
-    if cache_path and cache_path.exists():
-        gdf = gpd.read_file(cache_path)
-        if len(gdf) > 0:
-            return gdf
-
     access_cfg = cfg["greenspace"]["access"]
     ox.settings.requests_timeout = int(access_cfg.get("requests_timeout_s", 180))
     attempts = int(access_cfg.get("overpass_attempts", 1))
@@ -165,10 +160,19 @@ def fetch_green_areas(
         gdf = fetch_features_from_local_extract(
             extract, tags, label=f"greenspace_access[{cfg.get('name', '?')}]", log=print
         )
+        gdf = _repair_green_geometries(gdf)
         if cache_path is not None:
             cache_path.parent.mkdir(parents=True, exist_ok=True)
             gdf.to_file(cache_path, driver="GeoJSON")
         return gdf
+
+    # A cache made from a prior Overpass run is valid only when the study has
+    # no declared frozen extract.  The PBF is the durable source of record and
+    # must take precedence over an old network cache.
+    if cache_path and cache_path.exists():
+        gdf = gpd.read_file(cache_path)
+        if len(gdf) > 0:
+            return _repair_green_geometries(gdf)
 
     regions = _normalize_regions(cfg["region_query"])
     geo_crs = cfg["crs"]["geographic"]
@@ -262,13 +266,7 @@ def fetch_green_areas(
     )
     gdf = _deduplicate_osm_features(gdf)
 
-    # Keep only polygonal geometries
-    gdf = gdf[gdf.geometry.type.isin(["Polygon", "MultiPolygon"])].copy().reset_index(drop=True)
-    gdf = gdf[gdf.geometry.notna() & ~gdf.geometry.is_empty].copy()
-
-    # Repair invalid geometries
-    gdf["geometry"] = gdf.geometry.buffer(0)
-    gdf = gdf[gdf.geometry.notna() & ~gdf.geometry.is_empty].copy()
+    gdf = _repair_green_geometries(gdf)
 
     # Keep a small set of useful columns
     keep_cols = ["geometry", "name", "leisure", "landuse"]
@@ -283,16 +281,36 @@ def fetch_green_areas(
     return gdf
 
 
+def _repair_green_geometries(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """Normalize OSM green geometries before spatial overlay operations.
+
+    Historic Overpass caches can contain self-touching polygons.  Repairing
+    them only with ``buffer(0)`` is insufficient: a later ``union_all`` may
+    fail with a GEOS ``TopologyException``.  ``make_valid`` followed by an
+    explode preserves polygonal pieces and removes line/point remnants.
+    """
+    work = gdf[gdf.geometry.notna() & ~gdf.geometry.is_empty].copy()
+    if work.empty:
+        return work
+    invalid = ~work.geometry.is_valid
+    if bool(invalid.any()):
+        work.loc[invalid, "geometry"] = work.loc[invalid].geometry.make_valid()
+    work = work.explode(index_parts=False, ignore_index=True)
+    work = work[work.geometry.type.isin(["Polygon", "MultiPolygon"])].copy()
+    work = work[work.geometry.notna() & ~work.geometry.is_empty].copy()
+    return work.reset_index(drop=True)
+
+
 def compute_green_coverage(
     communes: gpd.GeoDataFrame,
     green_areas: gpd.GeoDataFrame,
 ) -> gpd.GeoDataFrame:
     """Compute green area, percentage and count per commune."""
     metric_crs = communes.crs
-    green_metric = green_areas.to_crs(metric_crs)
+    green_metric = _repair_green_geometries(green_areas.to_crs(metric_crs))
 
     # Deduplicate overlapping green polygons
-    green_union = green_metric.geometry.union_all().buffer(0)
+    green_union = green_metric.geometry.union_all()
 
     has_spatial_id = "spatial_id" in communes.columns and "spatial_name" in communes.columns
     base_cols = (["spatial_id", "spatial_name"] if has_spatial_id else []) + ["name", "area_km2", "geometry"]
@@ -327,7 +345,7 @@ def compute_access_metrics(
 ) -> gpd.GeoDataFrame:
     """Compute distance and buffer-based accessibility metrics per commune."""
     metric_crs = communes.crs
-    green_metric = green_areas.to_crs(metric_crs)
+    green_metric = _repair_green_geometries(green_areas.to_crs(metric_crs))
 
     # Representative points of green areas for distance calculations
     green_pts = green_metric.copy()
