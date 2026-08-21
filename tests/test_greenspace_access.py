@@ -83,6 +83,15 @@ class TestComputeGreenCoverage(unittest.TestCase):
         numeric_cols = [c for c in result.columns if c not in ("name", "geometry")]
         self.assertFalse(result[numeric_cols].isna().any().any())
 
+    def test_self_touching_green_polygon_is_repaired_before_union(self) -> None:
+        # A bow-tie polygon is a realistic OSM topology defect.  It previously
+        # reached union_all from a persisted raw cache and raised GEOSException.
+        bow_tie = Polygon([(100, 100), (300, 300), (100, 300), (300, 100), (100, 100)])
+        invalid_green = gpd.GeoDataFrame({"geometry": [bow_tie]}, crs=METRIC_CRS)
+        result = compute_green_coverage(self.communes, invalid_green)
+        row_a = result[result["name"] == "ComunaA"].iloc[0]
+        self.assertGreater(row_a["green_osm_km2"], 0)
+
 
 class TestComputeAccessMetrics(unittest.TestCase):
     def setUp(self) -> None:
@@ -265,6 +274,24 @@ class TestFetchGreenAreasChunking(unittest.TestCase):
             # Only the missing locality (Region B) should trigger a download.
             self.assertEqual(mock_download.call_count, 1)
             self.assertEqual(mock_download.call_args_list[0].args[0], "Region B, Argentina")
+
+    def test_declared_extract_takes_precedence_over_legacy_overpass_cache(self) -> None:
+        """A frozen snapshot must replace, rather than silently reuse, raw cache."""
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            cache_path = Path(tmp) / "combined_greenspace_osm.geojson"
+            self._polygon_gdf().to_file(cache_path, driver="GeoJSON")
+            cfg = _make_cfg("Region A, Argentina")
+            cfg["greenspace"]["access"]["osm_extract"] = "data/raw/geofabrik/example.osm.pbf"
+            with patch(
+                "exposome.greenspace_access.fetch_features_from_local_extract",
+                return_value=self._polygon_gdf(),
+            ) as local_extract:
+                result = fetch_green_areas(cfg, cache_path=cache_path)
+
+            local_extract.assert_called_once()
+            self.assertEqual(len(result), 1)
 
 
 if __name__ == "__main__":
