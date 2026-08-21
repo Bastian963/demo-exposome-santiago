@@ -58,6 +58,29 @@ class MulticityOvernightTests(unittest.TestCase):
         self.assertIn("lima:publish:webapp", keys)
         self.assertIn("lima:validate:production", keys)
 
+    def test_documented_temporal_exceptions_use_preview_coverage_only(self) -> None:
+        lima = select_cities(self.batch, ["lima"])
+        lima_tasks = {task.key: task for task in build_task_plan(
+            self.batch, repo_root=ROOT, cities=lima
+        )}
+        self.assertEqual(
+            lima_tasks["lima:publish:preview-production"].command[-1], "production"
+        )
+        self.assertEqual(lima_tasks["lima:validate:production"].command[-1], "production")
+
+        pasto = select_cities(self.batch, ["pasto"])
+        pasto_tasks = {task.key: task for task in build_task_plan(
+            self.batch, repo_root=ROOT, cities=pasto
+        )}
+        self.assertEqual(
+            pasto_tasks["pasto:publish:preview-production"].command[-1], "preview"
+        )
+        self.assertEqual(pasto_tasks["pasto:validate:production"].command[-1], "preview")
+        self.assertEqual(
+            pasto_tasks["pasto:publish:preview-production"].label,
+            "staged preview coverage pasto_urban",
+        )
+
     def test_city_can_declare_a_narrower_native_layer_set(self) -> None:
         batch = load_batch_config(
             "config/operations/cohort_latam_ready.yaml", repo_root=ROOT

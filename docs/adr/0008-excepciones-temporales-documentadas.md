@@ -81,6 +81,11 @@ Publicación y auditoría honran la excepción **sin tocar `expected_years`**:
    publicar el resto del estudio sin volver a llamar al proveedor para un hueco
    ya confirmado; su salida informa por separado los objetivos exceptuados y
    los objetivos requeridos completos.
+6. `run_multicity_overnight.py` detecta la excepción declarada y ejecuta
+   `resolution-coverage --tier preview` para su bundle de staging y el bundle
+   publicado. No reemplaza el gate temporal: los años faltantes que no estén
+   declarados siguen bloqueando la publicación antes de llegar a esa auditoría.
+   Sin excepciones documentadas, el supervisor conserva `--tier production`.
 
 En el navegador, `temporalSeriesSpatiallyComplete()`
 (`webapp/src/data-repository.js`) ya evalúa si `years` cubre todo
@@ -123,7 +128,8 @@ comunal silencioso: la ausencia se declara, no se disimula.
   indefinidamente.
 - La consecuencia de tier es explícita y deliberada: `resolution-coverage`
   sigue exigiendo la serie completa para `production`. Ninguna excepción sube
-  de tier por sí sola.
+  de tier por sí sola; el supervisor verifica explícitamente `preview` para
+  permitir publicar el resto del estudio declarado.
 - Toda excepción queda grabada en `config/studies/<id>.yaml` (fuente de
   verdad versionada) y viaja al `manifest.json` publicado — auditable sin
   releer el código de la capa.

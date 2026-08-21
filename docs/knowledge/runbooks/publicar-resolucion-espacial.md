@@ -372,6 +372,10 @@ que:
   subconjunto de `expected_years` y tenga motivo documentado).
 - `resolution-coverage` **no** cambia — sigue exigiendo la serie completa para
   `production`. El estudio queda en `preview` a propósito.
+- El supervisor nocturno detecta una excepción documentada y usa
+  `resolution-coverage --tier preview` tanto en staging como al validar la
+  publicación. Esto permite publicar el estudio restante, pero no promueve su
+  bundle a producción ni permite huecos que no estén declarados.
 - La app oculta el selector temporal de ese indicador (serie declarada
   incompleta), pero el indicador sigue visible con su soporte espacial
   habitual — grilla fina o COG si los publica, no un choropleth

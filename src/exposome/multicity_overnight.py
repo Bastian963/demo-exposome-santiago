@@ -195,6 +195,20 @@ def select_cities(batch: BatchConfig, selected: Iterable[str] | None) -> tuple[B
     return tuple(resolved)
 
 
+def _coverage_tier(context: object) -> str:
+    """Choose the publication gate without hiding documented annual gaps.
+
+    ``temporal_exceptions`` are an explicit study-level decision: publication
+    and the strict spatial audit may proceed, but the resulting bundle must
+    remain preview because its declared annual support is incomplete.  The
+    temporal completeness command still rejects every gap that is *not*
+    documented in the study, so this does not turn provider failures into a
+    permissive production gate.
+    """
+    study = getattr(context, "study", None)
+    return "preview" if getattr(study, "temporal_exceptions", ()) else "production"
+
+
 def build_task_plan(
     batch: BatchConfig,
     *,
@@ -395,6 +409,7 @@ def build_task_plan(
             publish_keys[city.id] = publish_key
             preview_root = root / "cache/multicity_publish_gate" / city.id
             context = load_study(city.aggregate_study, repo_root_path=root)
+            coverage_tier = _coverage_tier(context)
             preview_bundle = (
                 preview_root
                 / "v1"
@@ -468,14 +483,14 @@ def build_task_plan(
                 preview_coverage_key,
                 city,
                 "publish",
-                f"staged production coverage {city.aggregate_study}",
+                f"staged {coverage_tier} coverage {city.aggregate_study}",
                 (
                     exposome,
                     "resolution-coverage",
                     "--bundle",
                     str(preview_bundle),
                     "--tier",
-                    "production",
+                    coverage_tier,
                 ),
                 requires=(preview_key,),
             )
@@ -491,6 +506,7 @@ def build_task_plan(
     if "validate" in selected_phases:
         for city in chosen:
             context = load_study(city.aggregate_study, repo_root_path=root)
+            coverage_tier = _coverage_tier(context)
             bundle = (
                 root
                 / "webapp/public/data/v1"
@@ -511,14 +527,14 @@ def build_task_plan(
                 f"{city.id}:validate:production",
                 city,
                 "validate",
-                f"production coverage {city.aggregate_study}",
+                f"{coverage_tier} coverage {city.aggregate_study}",
                 (
                     exposome,
                     "resolution-coverage",
                     "--bundle",
                     str(bundle),
                     "--tier",
-                    "production",
+                    coverage_tier,
                 ),
                 requires=publish_requirement,
             )
