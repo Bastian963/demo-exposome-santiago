@@ -22,6 +22,7 @@ from exposome.temporal_exposomes import (  # noqa: E402
     default_paths,
     duration_hint,
     inventory,
+    required_annual_products,
     status_summary,
     validate_no_analysis_side_effects,
 )
@@ -91,22 +92,27 @@ def run(
     except ValueError as exc:
         raise typer.BadParameter(str(exc), param_hint="--layer") from exc
     annual = table[table["classification"] == "annual_downloadable"]
+    required = required_annual_products(annual, context)
     pending = int((annual["state"] == "pending").sum())
     cached = int((annual["state"] == "source_cached").sum())
     complete = int((annual["state"] == "complete").sum())
+    required_complete = int((required["state"] == "complete").sum())
+    excepted = len(annual) - len(required)
 
     typer.echo(status_summary(table))
     typer.echo(
         f"\nTargets: {len(annual)}; complete={complete}; "
+        f"excepted={excepted}; required_complete={required_complete}/{len(required)}; "
         f"source_cached={cached}; pending_download={pending}"
     )
     typer.echo(duration_hint(0 if local_only else pending))
     if dry_run:
         typer.echo("\n" + table.to_string(index=False))
     if status or dry_run:
-        if require_complete and complete != len(annual):
+        if require_complete and required_complete != len(required):
             typer.echo(
-                f"Annual completeness gate failed: {complete}/{len(annual)} complete.",
+                "Annual completeness gate failed: "
+                f"{required_complete}/{len(required)} required targets complete.",
                 err=True,
             )
             raise typer.Exit(code=2)
@@ -127,12 +133,15 @@ def run(
         typer.echo(f"\nCollection finished with failures: {exc}", err=True)
         raise typer.Exit(code=1) from exc
     final_annual = final[final["classification"] == "annual_downloadable"]
+    final_required = required_annual_products(final_annual, context)
     typer.echo(
         "\nCollection checkpointed: "
         f"{int((final_annual['state'] == 'complete').sum())}/{len(final_annual)} "
-        "annual products validated."
+        "annual products validated; "
+        f"{int((final_required['state'] == 'complete').sum())}/{len(final_required)} "
+        "required targets complete."
     )
-    if require_complete and not (final_annual["state"] == "complete").all():
+    if require_complete and not (final_required["state"] == "complete").all():
         raise typer.Exit(code=2)
 
 

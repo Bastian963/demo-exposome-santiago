@@ -119,7 +119,17 @@ agriculture is not health-relevant urban greenspace.
   bogota_localidades --status` will always show `greenspace_multisource: 8
   complete / 1 pending`, and `--require-complete` will always fail on it. This is
   expected — do not spend further time retrying or debugging this specific cell
-  before checking this note.
+  before checking this note. The annual collector keeps the missing source row
+  visible but excludes the declared exception from its retry/completeness gate;
+  it reports the remaining required targets separately.
+- **Known annual gaps — Pasto cabecera / 2016 and 2019.** The same peak-season
+  Dynamic World contract returned no valid zonal `green`/`tree`/`grass` values
+  for the one-unit urban AOI in 2016, and an empty image-band collection in
+  2019 (collection log 2026-08-21). The remaining configured years are valid.
+  The gaps are declared in `pasto_urban.yaml` under `temporal_exceptions`; they
+  are not interpolated and are excluded from unattended retries. The published
+  study therefore remains `preview` and its annual green selector stays hidden,
+  while the latest verified green grid remains available.
 
 ## Reproduce
 

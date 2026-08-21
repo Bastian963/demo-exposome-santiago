@@ -75,6 +75,12 @@ Publicación y auditoría honran la excepción **sin tocar `expected_years`**:
    evaluando `expected_years` completo sin descontar la excepción, así que el
    indicador exceptuado sigue reportándose `missing` y el estudio permanece en
    `publication_tier: preview`, nunca vuelve a `production` en silencio.
+5. `run_missing_annual_exposomes.py` conserva la fila pendiente en su
+   inventario, pero excluye el `(layer_id, year)` documentado de la cola de
+   reintentos y de `--require-complete`. Así un supervisor multiciudad puede
+   publicar el resto del estudio sin volver a llamar al proveedor para un hueco
+   ya confirmado; su salida informa por separado los objetivos exceptuados y
+   los objetivos requeridos completos.
 
 En el navegador, `temporalSeriesSpatiallyComplete()`
 (`webapp/src/data-repository.js`) ya evalúa si `years` cubre todo

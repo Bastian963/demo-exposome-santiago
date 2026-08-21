@@ -1018,7 +1018,17 @@ def collect_missing(
     units = _canonical_units(context)
     expected = len(units)
     start, end = _project_years(context)
-    targets = [(spec, year) for spec in specs for year in spec.years(start, end)]
+    excepted_targets = _excepted_annual_targets(context)
+    # A documented permanent source gap must remain visible in inventory and
+    # publication metadata, but it is not a retryable collection target.  This
+    # keeps an overnight supervisor from burning a provider call on the same
+    # known-empty scene every cycle.
+    targets = [
+        (spec, year)
+        for spec in specs
+        for year in spec.years(start, end)
+        if (spec.layer_id, year) not in excepted_targets
+    ]
     failures: list[tuple[str, int, str]] = []
     progress = tqdm(targets, desc=f"temporal exposomes [{study}]", unit="year")
     for spec, year in progress:
@@ -1108,6 +1118,31 @@ def collect_missing(
     if selected:
         return inventory(context, paths=paths, layers=selected)
     return table
+
+
+def _excepted_annual_targets(context: StudyContext) -> set[tuple[str, int]]:
+    """Return documented layer/year source gaps for the study's annual plan."""
+    return {
+        (exception.layer_id, int(year))
+        for exception in getattr(context.study, "temporal_exceptions", ())
+        for year in exception.years
+    }
+
+
+def required_annual_products(table: pd.DataFrame, context: StudyContext) -> pd.DataFrame:
+    """Annual inventory rows that remain mandatory after documented gaps.
+
+    Exceptions are layer/year-scoped by design (ADR 0008), matching the
+    collection and publication contracts.  They are *not* removed from the
+    inventory: callers can still report the incomplete provider coverage.
+    """
+    annual = table[table["classification"] == "annual_downloadable"].copy()
+    excepted = _excepted_annual_targets(context)
+    required = [
+        (str(row.layer_id), int(row.year)) not in excepted
+        for row in annual.itertuples(index=False)
+    ]
+    return annual.loc[required].copy()
 
 
 def completed_annual_products(
