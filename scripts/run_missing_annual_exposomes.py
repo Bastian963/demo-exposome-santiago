@@ -93,19 +93,19 @@ def run(
         raise typer.BadParameter(str(exc), param_hint="--layer") from exc
     annual = table[table["classification"] == "annual_downloadable"]
     required = required_annual_products(annual, context)
-    pending = int((annual["state"] == "pending").sum())
-    cached = int((annual["state"] == "source_cached").sum())
     complete = int((annual["state"] == "complete").sum())
     required_complete = int((required["state"] == "complete").sum())
+    required_pending = int((required["state"] == "pending").sum())
+    required_cached = int((required["state"] == "source_cached").sum())
     excepted = len(annual) - len(required)
 
     typer.echo(status_summary(table))
     typer.echo(
         f"\nTargets: {len(annual)}; complete={complete}; "
         f"excepted={excepted}; required_complete={required_complete}/{len(required)}; "
-        f"source_cached={cached}; pending_download={pending}"
+        f"source_cached={required_cached}; pending_download={required_pending}"
     )
-    typer.echo(duration_hint(0 if local_only else pending))
+    typer.echo(duration_hint(0 if local_only else required_pending))
     if dry_run:
         typer.echo("\n" + table.to_string(index=False))
     if status or dry_run:
