@@ -141,3 +141,5 @@ layer_overrides:
     osm_extract: data/raw/geofabrik/cataluna/260809/cataluna.osm.pbf
   social_infrastructure:
     osm_extract: data/raw/geofabrik/cataluna/260809/cataluna.osm.pbf
+  walkability:
+    osm_extract: data/raw/geofabrik/cataluna/260809/cataluna.osm.pbf

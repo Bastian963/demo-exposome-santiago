@@ -30,3 +30,5 @@ layer_overrides:
     osm_extract: data/raw/geofabrik/colombia/260819/colombia.osm.pbf
   social_infrastructure:
     osm_extract: data/raw/geofabrik/colombia/260819/colombia.osm.pbf
+  walkability:
+    osm_extract: data/raw/geofabrik/colombia/260819/colombia.osm.pbf

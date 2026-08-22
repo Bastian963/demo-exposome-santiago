@@ -8,13 +8,14 @@ from artifact_test_case import MaterializedArtifactTestCase
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import numpy as np
 import pandas as pd
+import geopandas as gpd
+from shapely.geometry import LineString, box
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from exposome.walkability import _network_stats_for_commune  # noqa: E402
+from exposome.walkability import _checkpoint_path, _network_stats_for_commune  # noqa: E402
 
 DATA_DIR = REPO_ROOT / "data" / "processed"
 MASTER_CSV = DATA_DIR / "santiago_exposome_master.csv"
@@ -83,6 +84,48 @@ class NetworkStatsFailModeTests(unittest.TestCase):
         with patch("exposome.walkability.ox.graph_from_polygon", side_effect=always_fails):
             with self.assertRaises(ConnectionError):
                 _network_stats_for_commune(object(), area_m2=1000.0, metric_crs="EPSG:32719")
+
+    def test_local_highway_lines_do_not_call_overpass(self) -> None:
+        geometry = box(-0.01, -0.01, 0.01, 0.01)
+        roads = gpd.GeoDataFrame(
+            {
+                "id": ["east_west", "north_south"],
+                "highway": ["residential", "residential"],
+                "geometry": [
+                    LineString([(-0.01, 0), (0, 0), (0.01, 0)]),
+                    LineString([(0, -0.01), (0, 0), (0, 0.01)]),
+                ],
+            },
+            crs="EPSG:4326",
+        )
+        with patch("exposome.walkability.ox.graph_from_polygon") as remote:
+            result = _network_stats_for_commune(
+                geometry,
+                area_m2=1_000_000,
+                metric_crs="EPSG:3857",
+                local_highways=roads,
+            )
+
+        remote.assert_not_called()
+        self.assertIsNotNone(result)
+        assert result is not None
+        self.assertGreaterEqual(result["walk_n_nodes"], 5)
+        self.assertGreater(result["walk_intersection_density"], 0)
+
+
+class CheckpointPathTests(unittest.TestCase):
+    def test_local_extract_uses_a_separate_checkpoint_from_live_overpass(self) -> None:
+        output = Path("/tmp/walkability-output")
+        cache = Path("/tmp/walkability-cache")
+        remote = _checkpoint_path("sao_paulo_distritos", output, cache, None)
+        local = _checkpoint_path(
+            "sao_paulo_distritos", output, cache, "data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf"
+        )
+
+        self.assertEqual(remote, output / "sao_paulo_distritos_walkability.csv")
+        self.assertEqual(local.parent, cache)
+        self.assertTrue(local.name.startswith("sao_paulo_distritos_walkability_pbf_"))
+        self.assertNotEqual(local, remote)
 
 
 class WalkabilityLayerTest(MaterializedArtifactTestCase):

@@ -555,6 +555,46 @@ def fetch_features_from_local_extract(
     return _deduplicate_osm_features(combined)
 
 
+def fetch_highway_lines_from_local_extract(
+    extract_path: str | Path,
+    *,
+    bbox: Sequence[float],
+    label: str,
+    log: Callable[[str], None] = print,
+) -> gpd.GeoDataFrame:
+    """Read one AOI-bounded OSM highway line inventory from a local PBF.
+
+    GDAL's stock OSM configuration leaves ``highway`` in ``other_tags`` on
+    the ``lines`` layer, unlike a handful of point attributes.  This is the
+    local counterpart to OSMnx's street-network query: it makes exactly one
+    provider-free pass over the snapshot, then callers may construct a graph
+    for each analysis unit entirely in memory.
+    """
+    path = Path(extract_path)
+    if not path.exists():
+        raise FileNotFoundError(f"OSM extract not found for {label}: {path}")
+    log(f"  [{label}] reading highway lines from {path.name}")
+    frame = gpd.read_file(
+        path,
+        layer="lines",
+        where="other_tags LIKE '%\"highway\"=>%'",
+        columns=["osm_id", "other_tags"],
+        bbox=tuple(float(value) for value in bbox),
+        engine="pyogrio",
+    )
+    if frame.empty:
+        return gpd.GeoDataFrame(
+            {"id": [], "highway": [], "geometry": []}, crs="EPSG:4326"
+        )
+    tags = frame["other_tags"].map(parse_other_tags)
+    frame = frame.assign(highway=tags.map(lambda item: item.get("highway")))
+    frame = frame[frame["highway"].notna() & frame.geometry.notna()].copy()
+    frame["id"] = frame["osm_id"]
+    frame = frame[["id", "highway", "geometry"]]
+    log(f"  [{label}] highway lines: {len(frame):,} features")
+    return gpd.GeoDataFrame(frame, geometry="geometry", crs=frame.crs)
+
+
 def fetch_features_from_bbox_tiled(
     bbox: Sequence[float],
     tags: dict[str, Any],

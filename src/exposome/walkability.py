@@ -19,12 +19,17 @@ from __future__ import annotations
 
 import json
 import warnings
+import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
+from collections import defaultdict
+from collections.abc import Iterable
 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+from pyproj import Transformer
+from shapely.geometry import GeometryCollection, LineString, MultiLineString, Point
 from tqdm import tqdm
 
 import time
@@ -37,18 +42,41 @@ except ImportError as e:
 try:
     from .demography import normalize_comuna_name  # noqa: F401 (used indirectly)
     from . import boundaries, config as _config
-    from .osm_fetch import call_with_overpass_fallback
+    from .osm_fetch import call_with_overpass_fallback, fetch_highway_lines_from_local_extract
 except ImportError:
     import sys as _sys
     _sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
     import exposome.boundaries as boundaries  # type: ignore[no-redef]
     import exposome.config as _config  # type: ignore[no-redef]
-    from exposome.osm_fetch import call_with_overpass_fallback  # type: ignore[no-redef]
+    from exposome.osm_fetch import (  # type: ignore[no-redef]
+        call_with_overpass_fallback,
+        fetch_highway_lines_from_local_extract,
+    )
 
 # "all" captures all street types — needed for Latin American cities where OSM
 # footway tagging is incomplete.
 _NETWORK_TYPE = "all"
 _BETWEEN_COMMUNES_S = 2  # polite delay between communes to avoid rate-limiting
+_LOCAL_EXCLUDED_HIGHWAYS = frozenset(
+    {"abandoned", "construction", "platform", "proposed", "raceway"}
+)
+
+
+def _checkpoint_path(
+    city: str, out_dir: Path, cache_dir: Path, extract: str | Path | None
+) -> Path:
+    """Return a resume-safe checkpoint path for the selected OSM backend.
+
+    A PBF-backed run must not resume rows that were obtained from live
+    Overpass: the two sources can differ, and doing so would leave a bundle
+    with mixed provenance.  The final normalized CSV stays at its canonical
+    path; only the incremental checkpoint is backend-specific.
+    """
+    if not extract:
+        return out_dir / f"{city}_walkability.csv"
+    source = str(Path(extract).resolve())
+    source_key = hashlib.sha256(source.encode("utf-8")).hexdigest()[:12]
+    return cache_dir / f"{city}_walkability_pbf_{source_key}.csv"
 
 
 def _load_boundaries(
@@ -78,10 +106,152 @@ def _load_boundaries(
     return boundaries.get_communes(cfg, cache_path=cache_path)[["name", "geometry"]]
 
 
+def _stats_from_graph(
+    graph,
+    area_m2: float,
+) -> dict[str, float] | None:
+    """Compute the canonical five metrics from either OSM graph backend."""
+    if graph.number_of_nodes() < 5:
+        return None
+    stats = ox.basic_stats(graph, area=area_m2)
+
+    circuity = stats.get("circuity_avg")
+    if circuity is None:
+        edges = ox.graph_to_gdfs(graph, nodes=False, edges=True)
+        if "length" in edges.columns and len(edges) > 0:
+            sl = edges.geometry.apply(
+                lambda g: ((g.coords[0][0] - g.coords[-1][0]) ** 2
+                           + (g.coords[0][1] - g.coords[-1][1]) ** 2) ** 0.5
+            )
+            circuity = float(
+                edges["length"].sum() / sl.replace(0, np.nan).sum()
+            )
+        else:
+            circuity = np.nan
+
+    return {
+        "walk_intersection_density": stats.get("intersection_density_km", np.nan),
+        "walk_street_density_km_km2": stats.get("street_density_km", np.nan),
+        "walk_avg_street_length_m": stats.get("street_length_avg", np.nan),
+        "walk_streets_per_node": stats.get("streets_per_node_avg", np.nan),
+        "walk_circuity": circuity,
+        "walk_n_nodes": graph.number_of_nodes(),
+    }
+
+
+def _line_parts(geometry) -> Iterable[LineString]:
+    """Yield non-empty line strings after clipping an OSM way to an AOI."""
+    if geometry.is_empty:
+        return
+    if isinstance(geometry, LineString):
+        if len(geometry.coords) >= 2:
+            yield geometry
+        return
+    if isinstance(geometry, (MultiLineString, GeometryCollection)):
+        for part in geometry.geoms:
+            yield from _line_parts(part)
+
+
+def graph_from_local_highway_lines(
+    highways: gpd.GeoDataFrame,
+    geometry_4326,
+    metric_crs: str,
+):
+    """Build an OSMnx-compatible graph from frozen PBF highway linework.
+
+    One PBF pass supplies all highway ways.  Each way is clipped to the
+    requested analysis geometry and split at its original OSM vertices; shared
+    vertices become graph nodes.  Edge lengths and node coordinates are
+    projected to the study metric CRS before ``basic_stats`` sees them.
+    """
+    if highways.empty:
+        return None
+    candidates = highways[
+        highways.geometry.notna()
+        & ~highways["highway"].astype(str).isin(_LOCAL_EXCLUDED_HIGHWAYS)
+        & highways.geometry.intersects(geometry_4326)
+    ]
+    if candidates.empty:
+        return None
+
+    transformer = Transformer.from_crs("EPSG:4326", metric_crs, always_xy=True)
+    nodes: dict[tuple[float, float], dict[str, float | str]] = {}
+    edges: list[dict[str, object]] = []
+    edge_keys: defaultdict[tuple[str, str], int] = defaultdict(int)
+
+    def node_id(coordinate: tuple[float, float]) -> str:
+        # OSM vertices recur with bit-identical WGS84 coordinates; rounding
+        # only protects the GeoPackage/GDAL float representation from a
+        # sub-nanometre mismatch while retaining distinct street nodes.
+        key = (round(float(coordinate[0]), 7), round(float(coordinate[1]), 7))
+        value = f"{key[0]:.7f},{key[1]:.7f}"
+        if key not in nodes:
+            x, y = transformer.transform(*key)
+            nodes[key] = {"id": value, "x": float(x), "y": float(y)}
+        return value
+
+    for record in candidates.itertuples(index=False):
+        clipped = record.geometry.intersection(geometry_4326)
+        for part in _line_parts(clipped):
+            coordinates = list(part.coords)
+            for start, end in zip(coordinates, coordinates[1:], strict=False):
+                if start == end:
+                    continue
+                u, v = node_id(start), node_id(end)
+                start_xy = nodes[(round(start[0], 7), round(start[1], 7))]
+                end_xy = nodes[(round(end[0], 7), round(end[1], 7))]
+                metric_line = LineString(
+                    [(float(start_xy["x"]), float(start_xy["y"])),
+                     (float(end_xy["x"]), float(end_xy["y"]))]
+                )
+                key = edge_keys[(u, v)]
+                edge_keys[(u, v)] += 1
+                edges.append(
+                    {
+                        "u": u,
+                        "v": v,
+                        "key": key,
+                        "osmid": str(record.id),
+                        "length": float(metric_line.length),
+                        "geometry": metric_line,
+                    }
+                )
+    if not edges:
+        return None
+
+    node_records = list(nodes.values())
+    node_frame = gpd.GeoDataFrame(
+        node_records,
+        geometry=[Point(float(item["x"]), float(item["y"])) for item in node_records],
+        crs=metric_crs,
+    ).set_index("id")
+    edge_frame = gpd.GeoDataFrame(edges, geometry="geometry", crs=metric_crs)
+    edge_frame = edge_frame.set_index(["u", "v", "key"])
+    graph = ox.graph_from_gdfs(node_frame, edge_frame, graph_attrs={"crs": metric_crs})
+    for node, count in ox.stats.count_streets_per_node(graph).items():
+        graph.nodes[node]["street_count"] = count
+    return graph
+
+
+def local_street_graph_from_extract(
+    extract_path: str | Path,
+    geometry_4326,
+    metric_crs: str,
+    *,
+    label: str,
+):
+    """Read a frozen PBF once and return a graph clipped to one AOI."""
+    highways = fetch_highway_lines_from_local_extract(
+        extract_path, bbox=geometry_4326.bounds, label=label
+    )
+    return graph_from_local_highway_lines(highways, geometry_4326, metric_crs)
+
+
 def _network_stats_for_commune(
     geom_4326,
     area_m2: float,
     metric_crs: str | None = None,
+    local_highways: gpd.GeoDataFrame | None = None,
 ) -> dict[str, float] | None:
     """Fetch OSM street network and compute stats for one commune geometry.
 
@@ -96,6 +266,12 @@ def _network_stats_for_commune(
     build_walkability_layer, propagates this to fail the whole layer run --
     see execute_run_plan).
     """
+    if local_highways is not None:
+        if metric_crs is None:
+            raise ValueError("metric_crs is required for a local OSM extract")
+        graph = graph_from_local_highway_lines(local_highways, geom_4326, metric_crs)
+        return _stats_from_graph(graph, area_m2) if graph is not None else None
+
     def _fetch() -> dict[str, float] | None:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -103,30 +279,7 @@ def _network_stats_for_commune(
         if G.number_of_nodes() < 5:
             return None
         G_proj = ox.project_graph(G, to_crs=metric_crs)
-        stats = ox.basic_stats(G_proj, area=area_m2)
-
-        circuity = stats.get("circuity_avg")
-        if circuity is None:
-            edges = ox.graph_to_gdfs(G_proj, nodes=False, edges=True)
-            if "length" in edges.columns and len(edges) > 0:
-                sl = edges.geometry.apply(
-                    lambda g: ((g.coords[0][0] - g.coords[-1][0]) ** 2
-                               + (g.coords[0][1] - g.coords[-1][1]) ** 2) ** 0.5
-                )
-                circuity = float(
-                    edges["length"].sum() / sl.replace(0, np.nan).sum()
-                )
-            else:
-                circuity = np.nan
-
-        return {
-            "walk_intersection_density": stats.get("intersection_density_km", np.nan),
-            "walk_street_density_km_km2": stats.get("street_density_km", np.nan),
-            "walk_avg_street_length_m": stats.get("street_length_avg", np.nan),
-            "walk_streets_per_node": stats.get("streets_per_node_avg", np.nan),
-            "walk_circuity": circuity,
-            "walk_n_nodes": G_proj.number_of_nodes(),
-        }
+        return _stats_from_graph(G_proj, area_m2)
 
     return call_with_overpass_fallback(
         _fetch, log=lambda msg: print(msg, end=" ", flush=True)
@@ -181,11 +334,14 @@ def build_walkability_layer(
     gdf_4326 = boundaries_gdf.to_crs("EPSG:4326")
     gdf_metric = boundaries_gdf.to_crs(metric_crs)
 
+    walk_cfg = cfg.get("walkability", {})
+    extract = walk_cfg.get("osm_extract") if isinstance(walk_cfg, dict) else None
     # Resume mode: load existing CSV and skip communes that already succeeded.
     existing: dict[str, dict] = {}
     csv_out = out_dir / f"{city}_walkability.csv"
-    if resume and csv_out.exists():
-        prev = pd.read_csv(csv_out)
+    checkpoint_out = _checkpoint_path(city, out_dir, cache_dir, extract)
+    if resume and checkpoint_out.exists():
+        prev = pd.read_csv(checkpoint_out)
         for _, r in prev.iterrows():
             if r.get("walk_n_nodes", 0) > 0:
                 existing[r["name"]] = r.to_dict()
@@ -193,10 +349,21 @@ def build_walkability_layer(
 
     rows: list[dict] = []
     n_communes = len(boundaries_gdf)
+    local_highways: gpd.GeoDataFrame | None = None
+    if extract and len(existing) < n_communes:
+        # One PBF scan supplies all remaining communes.  It is deliberately
+        # deferred when the backend-specific checkpoint is already complete.
+        local_highways = fetch_highway_lines_from_local_extract(
+            extract,
+            bbox=gdf_4326.total_bounds,
+            label=f"walkability[{city}]",
+        )
+
     # Checkpoint path: written after every commune (not just once at the end)
     # so a crash mid-run only loses the commune in flight. --resume re-reads
-    # this same file and skips whatever is already here (see `existing` above).
-    checkpoint_out = out_dir / f"{city}_walkability.csv"
+    # the backend-specific file and skips whatever is already here (see
+    # `existing` above). The canonical output is only replaced after all units
+    # are assembled below.
     progress = tqdm(list(gdf_4326.iterrows()), desc=f"walkability [{city}]", unit="commune")
     for i, (_, row) in enumerate(progress, 1):
         name = row["name"]
@@ -213,8 +380,10 @@ def build_walkability_layer(
         # fail the whole layer run rather than 0-fill this commune as if it
         # were sparsely connected (see _network_stats_for_commune). Rows
         # already checkpointed for prior communes remain on disk for --resume.
-        result = _network_stats_for_commune(row["geometry"], area_m2, metric_crs)
-        if i < n_communes:
+        result = _network_stats_for_commune(
+            row["geometry"], area_m2, metric_crs, local_highways=local_highways
+        )
+        if i < n_communes and local_highways is None:
             time.sleep(_BETWEEN_COMMUNES_S)
         if result is None:
             tqdm.write(f"  [{i:2d}/{n_communes}] {name} … sparse/empty network → NaN")
@@ -291,12 +460,18 @@ def build_walkability_layer(
     metadata = {
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "city": city,
-        "source": "OpenStreetMap via osmnx",
+        "source": (
+            "OpenStreetMap Geofabrik local extract via GDAL/OSMnx stats"
+            if extract else "OpenStreetMap via osmnx"
+        ),
+        "osm_extract": str(extract) if extract else None,
         "network_type": _NETWORK_TYPE,
         "crs_metric": metric_crs,
         "method": (
-            "Street network fetched per commune via osmnx "
-            f"(network_type='{_NETWORK_TYPE}'). network_type='all' used instead of "
+            ("Street network read once from the frozen local OSM extract and "
+             "split at original OSM vertices per unit. " if extract else
+             "Street network fetched per commune via osmnx ")
+            + f"(network_type='{_NETWORK_TYPE}'). network_type='all' used instead of "
             "'walk' because OSM footway tagging can be incomplete in Latin American cities; all "
             "streets are de facto walkable. Basic network stats computed on "
             f"projected graph ({metric_crs}). walk_index = z-scored composite of "

@@ -73,3 +73,5 @@ layer_overrides:
     osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
   social_infrastructure:
     osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
+  walkability:
+    osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf

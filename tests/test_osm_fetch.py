@@ -24,13 +24,14 @@ sys.path.insert(0, str(ROOT / "src"))
 import osmnx as ox  # noqa: E402
 import geopandas as gpd  # noqa: E402
 import pandas as pd  # noqa: E402
-from shapely.geometry import Point  # noqa: E402
+from shapely.geometry import LineString, Point  # noqa: E402
 
 from exposome.osm_fetch import (  # noqa: E402
     _bbox_tiles,
     call_with_overpass_fallback,
     fetch_features_from_bbox_tiled,
     fetch_features_from_local_extract,
+    fetch_highway_lines_from_local_extract,
     local_extract_where,
     overpass_endpoints,
     parse_other_tags,
@@ -403,6 +404,38 @@ class LocalExtractFetchTests(unittest.TestCase):
             fetch_features_from_local_extract(
                 "/nonexistent/region.osm.pbf", {"leisure": ["park"]}, label="x", log=lambda _: None
             )
+
+    def test_highway_lines_use_one_local_pbf_query_with_bbox(self) -> None:
+        frame = gpd.GeoDataFrame(
+            {
+                "osm_id": ["11", "12"],
+                "other_tags": ['"highway"=>"residential"', '"name"=>"No es calle"'],
+                "geometry": [
+                    LineString([(0, 0), (1, 0)]),
+                    LineString([(0, 1), (1, 1)]),
+                ],
+            },
+            crs="EPSG:4326",
+        )
+        captured: dict[str, object] = {}
+
+        def fake_read_file(path, **kwargs):
+            captured.update(kwargs)
+            return frame
+
+        with patch("exposome.osm_fetch.gpd.read_file", side_effect=fake_read_file):
+            result = fetch_highway_lines_from_local_extract(
+                self._extract_file(),
+                bbox=(0, 0, 1, 1),
+                label="walkability",
+                log=lambda _: None,
+            )
+
+        self.assertEqual(result["id"].tolist(), ["11"])
+        self.assertEqual(result["highway"].tolist(), ["residential"])
+        self.assertEqual(captured["layer"], "lines")
+        self.assertEqual(captured["bbox"], (0.0, 0.0, 1.0, 1.0))
+        self.assertEqual(captured["where"], "other_tags LIKE '%\"highway\"=>%'")
 
     def test_extra_keys_materialize_a_column_even_when_no_feature_carries_it(self) -> None:
         # social_infrastructure reads `access` with .get(); a missing column

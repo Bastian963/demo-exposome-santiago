@@ -796,22 +796,70 @@ def _write_gpkg_atomic(frame: gpd.GeoDataFrame, path: Path, *, layer: str) -> No
         raise
 
 
+def _native_osm_extract(context: Any, layer_id: str) -> Path | None:
+    """Resolve an optional frozen OSM snapshot from the study settings."""
+    cfg = context.resolved_config()
+    if layer_id == "greenspace_access":
+        block = cfg.get("greenspace", {}).get("access", {})
+    else:
+        block = cfg.get(layer_id, {})
+    extract = block.get("osm_extract") if isinstance(block, Mapping) else None
+    if not extract:
+        return None
+    path = Path(str(extract))
+    if not path.is_absolute():
+        path = Path(context.repo_root) / path
+    if not path.is_file():
+        raise FileNotFoundError(
+            f"Configured OSM extract for {context.study.id}/{layer_id} is missing: {path}"
+        )
+    return path
+
+
 def export_native_osm(context: Any, layer_id: str) -> tuple[Path, Path]:
     """Cache raw OSM features/network; derived point metrics remain query-time."""
     import osmnx as ox
-    from .osm_fetch import fetch_features_from_bbox_tiled
+    from .osm_fetch import fetch_features_from_bbox_tiled, fetch_features_from_local_extract
 
     aoi = load_native_aoi(context)
-    minx, miny, maxx, maxy = aoi_geometry(aoi).bounds
+    geometry = aoi_geometry(aoi)
+    minx, miny, maxx, maxy = geometry.bounds
     out_dir = native_output_dir(context, layer_id)
     out_dir.mkdir(parents=True, exist_ok=True)
+    extract = _native_osm_extract(context, layer_id)
     if layer_id == "walkability":
-        graph = ox.graph_from_bbox((minx, miny, maxx, maxy), network_type="walk", simplify=True)
+        if extract is None:
+            graph = ox.graph_from_bbox(
+                (minx, miny, maxx, maxy), network_type="walk", simplify=True
+            )
+            method = f"OpenStreetMap walking network clipped to the {context.study.id} AOI."
+        else:
+            from .walkability import local_street_graph_from_extract
+
+            metric_crs = str(context.resolved_config()["crs"]["metric"])
+            graph = local_street_graph_from_extract(
+                extract,
+                geometry,
+                metric_crs,
+                label=f"{context.study.id} walkability",
+            )
+            if graph is None:
+                raise ValueError(f"No street network found in local OSM extract for {context.study.id}")
+            method = (
+                f"Frozen OSM street network from {extract.name}, clipped to the "
+                f"{context.study.id} AOI."
+            )
         nodes, edges = ox.graph_to_gdfs(graph)
         path = out_dir / "walkability_native.gpkg"
         _prepare_gpkg_frame(nodes).to_file(path, layer="nodes", driver="GPKG")
         _prepare_gpkg_frame(edges).to_file(path, layer="edges", driver="GPKG")
-        metadata = write_native_metadata(context, layer_id, outputs=[path], method=f"OpenStreetMap walking network clipped to the {context.study.id} AOI.")
+        metadata = write_native_metadata(
+            context,
+            layer_id,
+            outputs=[path],
+            method=method,
+            extra={"osm_extract": str(extract)} if extract else None,
+        )
         return path, metadata
     tags = {
         "greenspace_access": {"leisure": ["park", "garden", "nature_reserve", "recreation_ground"], "landuse": ["recreation_ground", "forest"]},
@@ -819,16 +867,44 @@ def export_native_osm(context: Any, layer_id: str) -> tuple[Path, Path]:
         "food_environment": {"shop": ["supermarket", "greengrocer", "convenience", "market"], "amenity": ["fast_food", "restaurant", "cafe"]},
         "healthcare": {"amenity": ["hospital", "clinic", "doctors", "dentist", "pharmacy"]},
     }[layer_id]
-    features = fetch_features_from_bbox_tiled(
-        (minx, miny, maxx, maxy),
-        tags,
-        label=f"{context.study.id} {layer_id}",
-    )
+    if extract is None:
+        features = fetch_features_from_bbox_tiled(
+            (minx, miny, maxx, maxy),
+            tags,
+            label=f"{context.study.id} {layer_id}",
+        )
+        method = (
+            f"OpenStreetMap raw features cached inside the {context.study.id} AOI; "
+            "distance/count metrics are computed at query time."
+        )
+    else:
+        features = fetch_features_from_local_extract(
+            extract,
+            tags,
+            label=f"{context.study.id} {layer_id}",
+        )
+        features = features[
+            features.geometry.notna() & features.geometry.intersects(geometry)
+        ].copy()
+        method = (
+            f"Frozen OSM raw features from {extract.name} intersecting the "
+            f"{context.study.id} AOI; distance/count metrics are computed at query time."
+        )
     if features.empty:
         features = gpd.GeoDataFrame(geometry=[], crs="EPSG:4326")
     path = out_dir / f"{layer_id}_native.gpkg"
     _write_gpkg_atomic(features, path, layer="features")
-    metadata = write_native_metadata(context, layer_id, outputs=[path], method=f"OpenStreetMap raw features cached inside the {context.study.id} AOI; distance/count metrics are computed at query time.", extra={"tags": tags, "n_features": len(features)})
+    metadata = write_native_metadata(
+        context,
+        layer_id,
+        outputs=[path],
+        method=method,
+        extra={
+            "tags": tags,
+            "n_features": len(features),
+            **({"osm_extract": str(extract)} if extract else {}),
+        },
+    )
     return path, metadata
 
 

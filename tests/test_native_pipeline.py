@@ -9,7 +9,7 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import rasterio
-from shapely.geometry import Point
+from shapely.geometry import Point, box
 from rasterio.transform import from_origin
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -201,6 +201,45 @@ class NativeOsmExportTests(unittest.TestCase):
         self.assertNotIn("currency:MXN", prepared.columns)
         self.assertEqual(prepared.iloc[0]["payment_coins"], '["MXN", "USD"]')
         self.assertEqual(prepared.iloc[0]["element"], "node")
+
+    def test_native_tag_export_honors_the_study_pbf_override(self) -> None:
+        import sys
+
+        sys.path.insert(0, str(ROOT / "src"))
+        from exposome import native
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            extract = root / "snapshot.osm.pbf"
+            extract.write_bytes(b"placeholder")
+            output = root / "output"
+            output.mkdir()
+            context = MagicMock()
+            context.repo_root = root
+            context.study.id = "test_native"
+            context.resolved_config.return_value = {
+                "greenspace": {"access": {"osm_extract": extract.name}}
+            }
+            features = gpd.GeoDataFrame(
+                {"id": ["1"], "geometry": [Point(0, 0)]}, crs="EPSG:4326"
+            )
+            with (
+                patch.object(native, "load_native_aoi", return_value=MagicMock()),
+                patch.object(native, "aoi_geometry", return_value=box(-1, -1, 1, 1)),
+                patch.object(native, "native_output_dir", return_value=output),
+                patch.object(native, "write_native_metadata", return_value=output / "metadata.json"),
+                patch(
+                    "exposome.osm_fetch.fetch_features_from_bbox_tiled",
+                    side_effect=AssertionError("must not call Overpass"),
+                ),
+                patch(
+                    "exposome.osm_fetch.fetch_features_from_local_extract",
+                    return_value=features,
+                ) as local_fetch,
+            ):
+                native.export_native_osm(context, "greenspace_access")
+
+        local_fetch.assert_called_once()
 
 
 class NativeAirQualitySatelliteTests(unittest.TestCase):

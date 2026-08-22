@@ -32,7 +32,7 @@ mano desde la página** (ver `data/raw/geofabrik/README.md`), se congela con
 `layer_overrides.greenspace.access.osm_extract`).
 
 **Va en `layer_overrides`, no en `layer_inputs`**, aunque `noise_spain` use lo
-segundo: estas cuatro capas corren por el camino heredado de runner que recibe
+segundo: estas cinco capas corren por el camino heredado de runner que recibe
 `--city`, así que sólo ven el `cfg` resuelto y nunca los `layer_inputs` del
 estudio. De yapa entra en `layer_execution_identity` vía `layer_settings`, de
 modo que declararlo —o cambiar el corte— invalida el `--resume` de esas capas
@@ -104,10 +104,24 @@ nada de lo que Overpass encuentra dentro de la región**.
 | `food_environment` | extracto | 1 por categoría (5) | POIs por tag; sólo usa geometría |
 | `healthcare` | extracto | 1 | POIs por tag |
 | `social_infrastructure` | extracto | 1 | POIs por tag |
-| `walkability` | **Overpass** | — | construye un grafo de calles con `ox.graph_from_polygon`; osmnx no lee `.pbf` directo |
+| `walkability` | extracto | 1 lectura de `lines/highway` por corrida | arma localmente un grafo compatible con OSMnx y calcula las mismas métricas por unidad |
 
 Las capas sin `osm_extract` declarado siguen usando Overpass sin cambios, así
 que ciudades como Bogotá o Santiago no se ven afectadas.
+
+### Red vial local para `walkability`
+
+El driver GDAL deja `highway` dentro de `other_tags` en la capa `lines`. La
+ruta local filtra esa clave una vez dentro del bbox del estudio, descarta
+`abandoned`, `construction`, `platform`, `proposed` y `raceway`, y parte cada
+way en sus vértices OSM originales. Vértices compartidos forman nodos comunes;
+las aristas se proyectan al CRS métrico del estudio antes de calcular densidad
+de intersecciones, densidad/longitud de calles, calles por nodo y circuidad.
+
+No hace routing ni infiere acceso peatonal nuevo: conserva el contrato actual
+`network_type: all`. Es un backend reproducible para las mismas métricas y
+mantiene el checkpoint CSV por unidad. El producto nativo usa el mismo backend
+para escribir sus capas `nodes`/`edges` en GeoPackage.
 
 ### Una sola pasada, no una por clave de tag
 
@@ -165,3 +179,6 @@ código aguas abajo.** Toda clave que sólo esté en el segundo conjunto va en
 - **Geometrías.** GDAL emite avisos de anillos no cerrados en algunos
   multipolígonos de OSM. Los ensambla igual; el efecto sobre áreas agregadas no
   se ha cuantificado y conviene medirlo si alguna unidad da un valor extremo.
+- **Aristas de borde.** Las calles se recortan al AOI/unidad antes de calcular
+  métricas. Los nodos creados sobre el borde tienen grado uno y no se cuentan
+  como intersecciones; es preferible a incluir red exterior.
