@@ -370,7 +370,9 @@ misma causa (el runner no replicaba post-procesos de `config.load_config`).
   argentino en los cinco layers OSM del estudio agregado.
 - Corrección: `greenspace_multisource` reduce y guarda cada unidad por
   separado en un cache validado parcial; al reintentar procesa sólo los nombres
-  faltantes. San Juan declara
+  faltantes. Las unidades cuyo área excede el presupuesto de 2 millones de
+  píxeles se muestrean a una escala determinista más gruesa, declarada en la
+  identidad de cache, en vez de fallar toda la ciudad. San Juan declara
   `data/raw/geofabrik/argentina/260819/argentina.osm.pbf` para acceso verde,
   caminabilidad, infraestructura social, alimentación y salud.
 - Recuperación: detener el supervisor que esté ejecutando consultas Overpass,

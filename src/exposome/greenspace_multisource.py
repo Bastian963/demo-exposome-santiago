@@ -20,6 +20,7 @@ numbers". See docs/greenspace_multisource_methodology.md.
 from __future__ import annotations
 
 import json
+import math
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -46,6 +47,7 @@ DW_CLASSES = [
     "snow_and_ice",
 ]
 _DW_INDEX = {name: i for i, name in enumerate(DW_CLASSES)}
+_MAX_PIXELS_PER_ZONE = 2_000_000
 
 
 def _season_filter(season_months: list[int]) -> ee.Filter:
@@ -177,7 +179,9 @@ def _checkpointed_zonal_means(
     A single ``reduceRegions`` call for an entire large study area can exceed
     Earth Engine's interactive deadline.  Per-unit reductions are smaller and,
     importantly, survive an interruption or a provider timeout: the validated
-    partial cache is read before the next attempt.
+    partial cache is read before the next attempt. Very large rural units use
+    a deterministic coarser sampling scale so one exceptional polygon cannot
+    exhaust the interactive GEE budget for the entire study.
     """
     checkpoint = store.load_checkpoint_csv("zonal", required_columns=required_columns)
     stats: dict[str, dict[str, Any]] = {}
@@ -201,7 +205,13 @@ def _checkpointed_zonal_means(
         for name, row in pending.set_index("_name", drop=False).iterrows():
             region = gpd.GeoDataFrame([row], geometry="geometry", crs=communes.crs)
             region_fc = gee.gdf_to_feature_collection(region.drop(columns="_name"))
-            fetched = _zonal_means(image, region_fc, scale, tile_scale=16)
+            area_km2 = float(row.get("area_km2", 0.0))
+            zone_scale = _adaptive_zone_scale(scale, area_km2)
+            if zone_scale != scale:
+                tqdm.write(
+                    f"  [{label}] {name}: {area_km2:,.0f} km² → sampling at {zone_scale} m"
+                )
+            fetched = _zonal_means(image, region_fc, zone_scale, tile_scale=16)
             value = fetched.get(str(name))
             if value is None:
                 raise ValueError(f"{label} returned no zonal result for {name!r}")
@@ -215,6 +225,21 @@ def _checkpointed_zonal_means(
     frame = pd.DataFrame(list(stats.values())).sort_values("name")
     store.write_csv_atomic("zonal", frame, completed_keys=stats)
     return stats
+
+
+def _adaptive_zone_scale(base_scale: int, area_km2: float) -> int:
+    """Bound one zonal GEE request to a reproducible pixel budget.
+
+    A mean at a coarser provider sampling scale remains an area summary, not a
+    synthetic fine raster. The policy is part of the cache identity so a later
+    change cannot silently reuse these values.
+    """
+    if base_scale < 1:
+        raise ValueError("base_scale must be positive")
+    if area_km2 < 0:
+        raise ValueError("area_km2 must be non-negative")
+    minimum_scale = math.ceil(math.sqrt(area_km2 * 1_000_000 / _MAX_PIXELS_PER_ZONE))
+    return max(base_scale, minimum_scale)
 
 
 def _write_multisource_figure(gdf: "gpd.GeoDataFrame", out_path: Path) -> None:
@@ -371,10 +396,12 @@ def build_greenspace_multisource_layer(
                 "crs": "EPSG:4326",
                 "tile_scale": 16,
                 "execution": "per_spatial_unit_checkpointed",
+                "max_pixels_per_zone": _MAX_PIXELS_PER_ZONE,
+                "adaptive_sampling": "ceil(sqrt(area_m2/max_pixels_per_zone))",
                 "reducer": "mean",
             },
             spatial_fingerprint=spatial_key,
-            algorithm_version="3",
+            algorithm_version="4",
         ),
         "canopy": CacheIdentity(
             layer_id="greenspace_multisource",
@@ -389,10 +416,12 @@ def build_greenspace_multisource_layer(
                 "crs": "EPSG:4326",
                 "tile_scale": 16,
                 "execution": "per_spatial_unit_checkpointed",
+                "max_pixels_per_zone": _MAX_PIXELS_PER_ZONE,
+                "adaptive_sampling": "ceil(sqrt(area_m2/max_pixels_per_zone))",
                 "reducer": "mean",
             },
             spatial_fingerprint=spatial_key,
-            algorithm_version="3",
+            algorithm_version="4",
         ),
     }
     stores = {name: CacheStore(cache_dir, identity) for name, identity in identities.items()}

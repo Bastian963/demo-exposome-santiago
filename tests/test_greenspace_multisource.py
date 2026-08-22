@@ -131,6 +131,23 @@ class TestCanopyProjection(unittest.TestCase):
         self.assertIsNotNone(result)
 
 
+class TestAdaptiveZoneScale(unittest.TestCase):
+    def test_small_zone_keeps_configured_scale(self) -> None:
+        mod = _load_module(self)
+        self.assertEqual(mod._adaptive_zone_scale(30, 10), 30)
+
+    def test_large_zone_uses_deterministic_coarser_scale(self) -> None:
+        mod = _load_module(self)
+        # 20,000 km² would contain ~22.2M 30-m pixels. The bounded request
+        # samples at 100 m, limiting the reduction to 2M pixels.
+        self.assertEqual(mod._adaptive_zone_scale(30, 20_000), 100)
+
+    def test_negative_area_is_rejected(self) -> None:
+        mod = _load_module(self)
+        with self.assertRaises(ValueError):
+            mod._adaptive_zone_scale(30, -1)
+
+
 @unittest.skipUnless(MULTISOURCE_CSV.exists(), "run scripts/run_greenspace_multisource.py first")
 class TestOutputContract(unittest.TestCase):
     @classmethod
