@@ -200,6 +200,7 @@ _RUNNERS: Mapping[str, LayerRunner] = {
         "exposome.walkability",
         "build_walkability_layer",
         ("city", "out_dir", "cache_dir", "resume"),
+        algorithm_version="2",
     ),
     "public_transport": LegacyFunctionAdapter(
         "exposome.public_transport", "build_public_transport_layer", _COMMON
