@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import sys
+import tempfile
 import unittest
 from artifact_test_case import MaterializedArtifactTestCase
 from pathlib import Path
@@ -111,6 +112,35 @@ class NetworkStatsFailModeTests(unittest.TestCase):
         assert result is not None
         self.assertGreaterEqual(result["walk_n_nodes"], 5)
         self.assertGreater(result["walk_intersection_density"], 0)
+
+    def test_empty_local_extract_is_a_hard_failure_not_an_all_zero_layer(self) -> None:
+        from exposome.walkability import build_walkability_layer
+
+        units = gpd.GeoDataFrame(
+            {"name": ["Test"], "geometry": [box(0, 0, 1, 1)]}, crs="EPSG:4326"
+        )
+        empty = gpd.GeoDataFrame(
+            {"id": [], "highway": [], "geometry": []}, crs="EPSG:4326"
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with (
+                patch(
+                    "exposome.walkability._config.load_config",
+                    return_value={
+                        "crs": {"metric": "EPSG:3857"},
+                        "expected_units": 1,
+                        "walkability": {"osm_extract": "empty.osm.pbf"},
+                    },
+                ),
+                patch("exposome.walkability._load_boundaries", return_value=units),
+                patch(
+                    "exposome.walkability.fetch_highway_lines_from_local_extract",
+                    return_value=empty,
+                ),
+            ):
+                with self.assertRaisesRegex(ValueError, "returned no highway lines"):
+                    build_walkability_layer("test", out_dir=root / "out", cache_dir=root / "cache")
 
 
 class CheckpointPathTests(unittest.TestCase):

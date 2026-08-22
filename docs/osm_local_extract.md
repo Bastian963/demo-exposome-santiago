@@ -111,8 +111,10 @@ que ciudades como Bogotá o Santiago no se ven afectadas.
 
 ### Red vial local para `walkability`
 
-El driver GDAL deja `highway` dentro de `other_tags` en la capa `lines`. La
-ruta local filtra esa clave una vez dentro del bbox del estudio, descarta
+En los PBF estándar de Geofabrik, el driver GDAL expone `highway` como columna
+directa de la capa `lines`; algunos drivers alternativos pueden dejarla en
+`other_tags`. La ruta local lee ambas representaciones una vez dentro del bbox
+del estudio, prioriza la columna directa y descarta
 `abandoned`, `construction`, `platform`, `proposed` y `raceway`, y parte cada
 way en sus vértices OSM originales. Vértices compartidos forman nodos comunes;
 las aristas se proyectan al CRS métrico del estudio antes de calcular densidad
@@ -122,6 +124,29 @@ No hace routing ni infiere acceso peatonal nuevo: conserva el contrato actual
 `network_type: all`. Es un backend reproducible para las mismas métricas y
 mantiene el checkpoint CSV por unidad. El producto nativo usa el mismo backend
 para escribir sus capas `nodes`/`edges` en GeoPackage.
+
+#### Gate obligatorio: nunca aceptar un éxito con red vacía
+
+Un primer intento de São Paulo (2026-08-22) filtró sólo
+`other_tags LIKE ...highway...`. Como ese PBF promovía `highway` a una columna,
+el filtro devolvió cero líneas. El builder convirtió las 96 unidades en
+`sparse/empty network → NaN` y luego las rellenó a cero: técnicamente terminó
+`executed`, pero el resultado era científicamente inválido.
+
+Desde la corrección, si un extracto local devuelve cero líneas el builder falla
+explícitamente y no escribe un bundle cero. Antes de aceptar una corrida, el
+operador debe comprobar en el log las tres señales siguientes:
+
+1. `reading highway lines from <extracto>.osm.pbf`;
+2. `highway lines: N features`, con `N > 0`;
+3. al menos una unidad `ok (... nodes, ... intersec/km²)`.
+
+El checkpoint de caminabilidad PBF vive bajo `cache/` y está separado del CSV
+canónico/los checkpoints de Overpass. Por eso no mezcla una comuna antigua
+obtenida remotamente con las demás del snapshot. Si una versión de código
+defectuosa alcanzó a publicar una capa cero, se actualiza el runner (la versión
+de algoritmo invalida el bundle) y se reejecuta **sólo** `walkability` con
+`--force`; no se borran PBFs ni caches de las otras capas.
 
 ### Una sola pasada, no una por clave de tag
 
