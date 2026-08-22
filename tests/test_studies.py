@@ -112,6 +112,26 @@ class StudyConfigTest(unittest.TestCase):
         self.assertEqual(native.location.id, visible.location.id)
         self.assertEqual(native.aoi_path, visible.spatial_path)
 
+    def test_san_juan_uses_the_frozen_argentina_extract_for_osm_layers(self) -> None:
+        from exposome.settings import resolve_settings
+
+        visible = load_study("san_juan_departamentos", repo_root_path=REPO_ROOT)
+        native = load_study("san_juan_native", repo_root_path=REPO_ROOT)
+        settings = resolve_settings(visible).legacy_mapping()
+        extract = "data/raw/geofabrik/argentina/260819/argentina.osm.pbf"
+
+        self.assertEqual(visible.expected_units, 19)
+        self.assertEqual(visible.study.raw["detail"]["native_study"], "san_juan_native")
+        self.assertTrue(native.is_native)
+        for configured_extract in (
+            settings["greenspace"]["access"]["osm_extract"],
+            settings["walkability"]["osm_extract"],
+            settings["social_infrastructure"]["osm_extract"],
+            settings["food_environment"]["osm_extract"],
+            settings["healthcare"]["osm_extract"],
+        ):
+            self.assertEqual(configured_extract, extract)
+
     def test_belo_horizonte_rmbh_has_a_native_companion_and_frozen_osm_inputs(self) -> None:
         from exposome.settings import resolve_settings
 

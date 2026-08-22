@@ -80,3 +80,20 @@ layers:
   - social_infrastructure
   - food_environment
   - healthcare
+
+# The province-wide study spans 19 departamentos.  Do not issue one live
+# Overpass request per departamento: the immutable Argentina extract was
+# downloaded and verified under data/raw/geofabrik/argentina/260819/ and is a
+# faster, reproducible source for every OSM-backed layer below.
+layer_overrides:
+  greenspace:
+    access:
+      osm_extract: data/raw/geofabrik/argentina/260819/argentina.osm.pbf
+  walkability:
+    osm_extract: data/raw/geofabrik/argentina/260819/argentina.osm.pbf
+  social_infrastructure:
+    osm_extract: data/raw/geofabrik/argentina/260819/argentina.osm.pbf
+  food_environment:
+    osm_extract: data/raw/geofabrik/argentina/260819/argentina.osm.pbf
+  healthcare:
+    osm_extract: data/raw/geofabrik/argentina/260819/argentina.osm.pbf

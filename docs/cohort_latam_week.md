@@ -246,6 +246,12 @@ semana de ejecución autónoma:
 5. Sólo entonces ejecutar las otras cuatro capas nativas y el supervisor de la
    semana. Nunca iniciar dos procesos sobre el mismo estudio a la vez.
 
+**Excepción de escala provincial:** si el estudio agregado cubre una provincia
+completa pero el companion native sólo contiene raster, los cinco overrides se
+declaran en el agregado. No se fabrican overrides native para layers que ese
+native no tiene. En reducciones GEE zonales largas, el runner debe guardar una
+unidad por vez; un timeout no autoriza a borrar resultados ya checkpointed.
+
 El agotamiento consecutivo de los mirrors Overpass (`.de`, `.fr`, `.ch`) es un
 incidente de proveedor, no una razón para aumentar reintentos o paralelizar.
 Si la ciudad ya tiene un PBF congelado, el log de estas cinco capas debe decir

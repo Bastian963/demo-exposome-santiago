@@ -148,6 +148,8 @@ def _zonal_means(
     image: ee.Image,
     regions: ee.FeatureCollection,
     scale: int,
+    *,
+    tile_scale: int = 16,
 ) -> dict[str, dict[str, Any]]:
     """Zonal mean of every band over each region, keyed by the ``name`` field."""
     stats = image.reduceRegions(
@@ -155,10 +157,64 @@ def _zonal_means(
         reducer=ee.Reducer.mean(),
         scale=scale,
         crs="EPSG:4326",
-        tileScale=8,
+        tileScale=tile_scale,
     )
     rows = gee.fc_to_dicts(stats)
     return {r["name"]: r for r in rows if "name" in r}
+
+
+def _checkpointed_zonal_means(
+    *,
+    image: ee.Image,
+    communes: "gpd.GeoDataFrame",
+    scale: int,
+    store: CacheStore,
+    required_columns: list[str],
+    label: str,
+) -> dict[str, dict[str, Any]]:
+    """Reduce one spatial unit at a time and checkpoint each valid result.
+
+    A single ``reduceRegions`` call for an entire large study area can exceed
+    Earth Engine's interactive deadline.  Per-unit reductions are smaller and,
+    importantly, survive an interruption or a provider timeout: the validated
+    partial cache is read before the next attempt.
+    """
+    checkpoint = store.load_checkpoint_csv("zonal", required_columns=required_columns)
+    stats: dict[str, dict[str, Any]] = {}
+    if checkpoint.hit and checkpoint.frame is not None:
+        stats = {
+            str(row["name"]): row
+            for row in checkpoint.frame.to_dict("records")
+            if "name" in row
+        }
+        tqdm.write(f"  [{label}] {checkpoint.reason}; resuming {len(stats)}/{len(communes)} units …")
+
+    ordered = communes.assign(_name=communes["name"].astype(str)).sort_values("_name")
+    pending = ordered.loc[~ordered["_name"].isin(stats)]
+    progress = tqdm(
+        total=len(communes),
+        initial=len(stats),
+        desc=f"  [{label}] GEE zones",
+        unit="unit",
+    )
+    try:
+        for name, row in pending.set_index("_name", drop=False).iterrows():
+            region = gpd.GeoDataFrame([row], geometry="geometry", crs=communes.crs)
+            region_fc = gee.gdf_to_feature_collection(region.drop(columns="_name"))
+            fetched = _zonal_means(image, region_fc, scale, tile_scale=16)
+            value = fetched.get(str(name))
+            if value is None:
+                raise ValueError(f"{label} returned no zonal result for {name!r}")
+            stats[str(name)] = value
+            frame = pd.DataFrame(list(stats.values())).sort_values("name")
+            store.checkpoint_csv("zonal", frame, completed_keys=stats)
+            progress.update(1)
+    finally:
+        progress.close()
+
+    frame = pd.DataFrame(list(stats.values())).sort_values("name")
+    store.write_csv_atomic("zonal", frame, completed_keys=stats)
+    return stats
 
 
 def _write_multisource_figure(gdf: "gpd.GeoDataFrame", out_path: Path) -> None:
@@ -313,11 +369,12 @@ def build_greenspace_multisource_layer(
                 "output_bands": ["green", "tree", "grass"],
                 "scale_meters": dw_scale,
                 "crs": "EPSG:4326",
-                "tile_scale": 8,
+                "tile_scale": 16,
+                "execution": "per_spatial_unit_checkpointed",
                 "reducer": "mean",
             },
             spatial_fingerprint=spatial_key,
-            algorithm_version="2",
+            algorithm_version="3",
         ),
         "canopy": CacheIdentity(
             layer_id="greenspace_multisource",
@@ -330,11 +387,12 @@ def build_greenspace_multisource_layer(
                 "output_bands": ["canopy_cover", "canopy_height"],
                 "scale_meters": canopy_sample_scale,
                 "crs": "EPSG:4326",
-                "tile_scale": 8,
+                "tile_scale": 16,
+                "execution": "per_spatial_unit_checkpointed",
                 "reducer": "mean",
             },
             spatial_fingerprint=spatial_key,
-            algorithm_version="2",
+            algorithm_version="3",
         ),
     }
     stores = {name: CacheStore(cache_dir, identity) for name, identity in identities.items()}
@@ -374,11 +432,13 @@ def build_greenspace_multisource_layer(
             season_months=dw_cfg["season_months"],
             green_classes=dw_cfg["green_classes"],
         )
-        dw_stats = _zonal_means(dw_image, regions_fc, dw_scale)
-        stores["dynamic_world"].write_csv_atomic(
-            "zonal",
-            pd.DataFrame(list(dw_stats.values())),
-            completed_keys=dw_stats,
+        dw_stats = _checkpointed_zonal_means(
+            image=dw_image,
+            communes=communes,
+            scale=dw_scale,
+            store=stores["dynamic_world"],
+            required_columns=["name", "green", "tree", "grass"],
+            label="dynamic_world",
         )
     progress.update(1)
 
@@ -398,11 +458,13 @@ def build_greenspace_multisource_layer(
             band=canopy_cfg["band"],
             min_height_m=canopy_cfg["min_height_m"],
         )
-        canopy_stats = _zonal_means(canopy_image, regions_fc, canopy_sample_scale)
-        stores["canopy"].write_csv_atomic(
-            "zonal",
-            pd.DataFrame(list(canopy_stats.values())),
-            completed_keys=canopy_stats,
+        canopy_stats = _checkpointed_zonal_means(
+            image=canopy_image,
+            communes=communes,
+            scale=canopy_sample_scale,
+            store=stores["canopy"],
+            required_columns=["name", "canopy_cover", "canopy_height"],
+            label="canopy",
         )
     progress.update(1)
     progress.close()

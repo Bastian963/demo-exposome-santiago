@@ -357,6 +357,28 @@ misma causa (el runner no replicaba post-procesos de `config.load_config`).
   `exposome run --study <native> --layers walkability --resume --no-build-master`.
   Los cuatro layers nativos PBF que ya terminaron válidos se conservan.
 
+### 2026-08-22 — San Juan / Dynamic World y Overpass — no dejar una provincia completa en una sola consulta
+
+- Estudios afectados: ciudades con unidades administrativas extensas, en
+  particular `san_juan_departamentos` (19 departamentos y ~88 554 km²).
+- Síntomas observables: Dynamic World falla con `EEException: Computation
+  timed out` tras un único `reduceRegions`; después, acceso verde comienza
+  `OSM region checkpoints: 0/19` y consume varios minutos por departamento en
+  mirrors Overpass aunque ya existe un PBF argentino congelado.
+- Causa raíz: la reducción GEE para todas las geometrías se hacía en una sola
+  petición sin checkpoint intermedio; además faltaba declarar el extracto
+  argentino en los cinco layers OSM del estudio agregado.
+- Corrección: `greenspace_multisource` reduce y guarda cada unidad por
+  separado en un cache validado parcial; al reintentar procesa sólo los nombres
+  faltantes. San Juan declara
+  `data/raw/geofabrik/argentina/260819/argentina.osm.pbf` para acceso verde,
+  caminabilidad, infraestructura social, alimentación y salud.
+- Recuperación: detener el supervisor que esté ejecutando consultas Overpass,
+  actualizar configuración/código, recuperar primero
+  `greenspace_multisource` y `greenspace_access` con `--resume`, y recién
+  después reiniciar la semana con `--reset-state`. No borrar el PBF ni capas
+  válidas; el checkpoint de una unidad OSM ya terminada también se conserva.
+
 - La resolución se valida en el bundle publicado, no en `palette.json`. Un
   TIFF existente no se publica si su sidecar no prueba grilla, resolución y
   soporte preservado. Véase
