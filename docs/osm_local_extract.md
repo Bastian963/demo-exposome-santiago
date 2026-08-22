@@ -125,6 +125,11 @@ No hace routing ni infiere acceso peatonal nuevo: conserva el contrato actual
 mantiene el checkpoint CSV por unidad. El producto nativo usa el mismo backend
 para escribir sus capas `nodes`/`edges` en GeoPackage.
 
+En un estudio native con `crs.metric: auto`, el CRS no se pasa literalmente a
+PyProj: se deriva desde el AOI antes de construir el grafo. Si el log muestra
+`CRSError: Invalid projection: auto`, actualizar el runner y reanudar sólo
+`walkability` native; los exports nativos PBF por tags ya válidos no se repiten.
+
 #### Gate obligatorio: nunca aceptar un éxito con red vacía
 
 Un primer intento de São Paulo (2026-08-22) filtró sólo

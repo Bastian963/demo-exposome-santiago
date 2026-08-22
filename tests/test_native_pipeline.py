@@ -241,6 +241,48 @@ class NativeOsmExportTests(unittest.TestCase):
 
         local_fetch.assert_called_once()
 
+    def test_native_walkability_resolves_an_auto_metric_crs_from_its_aoi(self) -> None:
+        import sys
+
+        sys.path.insert(0, str(ROOT / "src"))
+        from exposome import native
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            extract = root / "snapshot.osm.pbf"
+            extract.write_bytes(b"placeholder")
+            output = root / "output"
+            output.mkdir()
+            context = MagicMock()
+            context.repo_root = root
+            context.study.id = "test_native"
+            context.metric_crs = None
+            context.location.metric_crs = None
+            context.resolved_config.return_value = {"walkability": {"osm_extract": extract.name}}
+            aoi = gpd.GeoDataFrame({"geometry": [box(-1, -1, 1, 1)]}, crs="EPSG:4326")
+            metric = MagicMock()
+            metric.to_string.return_value = "EPSG:32723"
+            graph = MagicMock()
+            prepared = MagicMock()
+            with (
+                patch.object(native, "load_native_aoi", return_value=aoi),
+                patch.object(native, "aoi_geometry", return_value=box(-1, -1, 1, 1)),
+                patch.object(native, "native_output_dir", return_value=output),
+                patch.object(native, "write_native_metadata", return_value=output / "metadata.json"),
+                patch.object(native, "_prepare_gpkg_frame", return_value=prepared),
+                patch("osmnx.graph_to_gdfs", return_value=(MagicMock(), MagicMock())),
+                patch("exposome.spatial.resolve_metric_crs", return_value=metric),
+                patch("exposome.walkability.local_street_graph_from_extract", return_value=graph) as local_graph,
+            ):
+                native.export_native_osm(context, "walkability")
+
+        local_graph.assert_called_once_with(
+            extract,
+            box(-1, -1, 1, 1),
+            "EPSG:32723",
+            label="test_native walkability",
+        )
+
 
 class NativeAirQualitySatelliteTests(unittest.TestCase):
     """air_quality_satellite native export: NO2 band only (Hallazgo 3)."""

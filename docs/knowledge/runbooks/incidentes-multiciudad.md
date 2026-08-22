@@ -325,6 +325,22 @@ misma causa (el runner no replicaba post-procesos de `config.load_config`).
   verificar `highway lines: N` y unidades `ok`, y sólo después reanudar native
   y el supervisor semanal. No eliminar PBFs ni checkpoints de capas sanas.
 
+### 2026-08-22 — São Paulo native / caminabilidad PBF — CRS `auto` no resoluble
+
+- Estudios afectados: estudios native cuya ubicación declara `crs.metric: auto`.
+- Síntoma observable: los cuatro exports PBF por tags terminan `executed`, pero
+  `walkability` falla con `CRSError: Invalid projection: auto`.
+- Causa raíz: el estudio agregado resuelve `auto` desde sus unidades espaciales;
+  el companion native tiene sólo un AOI y la primera ruta PBF le pasó la cadena
+  literal `auto` a PyProj/OSMnx.
+- Corrección: `export_native_osm` resuelve el CRS métrico desde el AOI native
+  mediante `resolve_metric_crs` antes de construir el grafo. La prueba
+  `test_native_walkability_resolves_an_auto_metric_crs_from_its_aoi` cubre esta
+  rama.
+- Recuperación: actualizar código y reanudar solamente
+  `exposome run --study <native> --layers walkability --resume --no-build-master`.
+  Los cuatro layers nativos PBF que ya terminaron válidos se conservan.
+
 - La resolución se valida en el bundle publicado, no en `palette.json`. Un
   TIFF existente no se publica si su sidecar no prueba grilla, resolución y
   soporte preservado. Véase

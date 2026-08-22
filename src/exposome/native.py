@@ -835,8 +835,18 @@ def export_native_osm(context: Any, layer_id: str) -> tuple[Path, Path]:
             method = f"OpenStreetMap walking network clipped to the {context.study.id} AOI."
         else:
             from .walkability import local_street_graph_from_extract
+            from .spatial import resolve_metric_crs
 
-            metric_crs = str(context.resolved_config()["crs"]["metric"])
+            # Native locations may intentionally declare ``crs.metric: auto``.
+            # The aggregate runner resolves it from its spatial units, whereas
+            # native has only the AOI and must resolve it here before passing it
+            # to pyproj/OSMnx.
+            metric_crs = getattr(context, "metric_crs", None)
+            if not metric_crs:
+                metric_crs = resolve_metric_crs(
+                    aoi,
+                    configured=getattr(context.location, "metric_crs", None),
+                ).to_string()
             graph = local_street_graph_from_extract(
                 extract,
                 geometry,
