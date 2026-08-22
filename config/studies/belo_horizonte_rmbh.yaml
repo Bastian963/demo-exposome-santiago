@@ -1,0 +1,55 @@
+schema_version: 1
+id: belo_horizonte_rmbh
+location: br/belo_horizonte
+hidden: false
+
+# This is the 34-municipality legally constituted Região Metropolitana de
+# Belo Horizonte (RMBH).  It deliberately excludes the distinct Colar
+# Metropolitano and is not a city-only Belo Horizonte study.
+spatial:
+  path: data/reference/br/belo_horizonte/belo_horizonte_rmbh/spatial_units.geojson
+  id_column: unit_id
+  name_column: unit_name
+  unit_type: municipio
+  expected_units: 34
+  source: IBGE Recortes Metropolitanos (official RMBH membership) + Malha Municipal Digital MG 2024 (municipal geometry)
+  license: IBGE public geoscience data; attribution required — see data/raw/br/belo_horizonte/ibge_rmbh/2021-2024/source_manifest.json
+
+period:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+
+detail:
+  native_study: belo_horizonte_native
+
+layers:
+  - pm25
+  - air_quality_satellite
+  - alan
+  - greenspace_coverage
+  - greenspace_multisource
+  - precipitation
+  - climate_heat
+  - wind
+  - wildfire
+  - greenspace_access
+  - walkability
+  - social_infrastructure
+  - food_environment
+  - healthcare
+
+# The 2026-08-19 Geofabrik Sudeste extract is a frozen, checksummed OSM
+# snapshot already used by São Paulo.  It removes Overpass from every local
+# OSM layer, including walkability's highway network.
+layer_overrides:
+  greenspace:
+    access:
+      osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
+  food_environment:
+    osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
+  healthcare:
+    osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
+  social_infrastructure:
+    osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf
+  walkability:
+    osm_extract: data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf

@@ -112,6 +112,26 @@ class StudyConfigTest(unittest.TestCase):
         self.assertEqual(native.location.id, visible.location.id)
         self.assertEqual(native.aoi_path, visible.spatial_path)
 
+    def test_belo_horizonte_rmbh_has_a_native_companion_and_frozen_osm_inputs(self) -> None:
+        from exposome.settings import resolve_settings
+
+        visible = load_study("belo_horizonte_rmbh", repo_root_path=REPO_ROOT)
+        native = load_study("belo_horizonte_native", repo_root_path=REPO_ROOT)
+
+        self.assertEqual(visible.expected_units, 34)
+        self.assertEqual(visible.study.raw["detail"]["native_study"], "belo_horizonte_native")
+        self.assertTrue(native.is_native)
+        self.assertTrue(native.study.hidden)
+        self.assertEqual(native.aoi_path, visible.spatial_path)
+        self.assertEqual(len(visible.enabled_layers), 14)
+        self.assertEqual(len(native.enabled_layers), 14)
+
+        settings = resolve_settings(visible).legacy_mapping()
+        extract = "data/raw/geofabrik/sudeste/260819/sudeste.osm.pbf"
+        self.assertEqual(settings["walkability"]["osm_extract"], extract)
+        self.assertEqual(settings["greenspace"]["access"]["osm_extract"], extract)
+        self.assertEqual(settings["healthcare"]["osm_extract"], extract)
+
     def test_legacy_city_config_is_a_valid_transitional_study(self) -> None:
         context = load_study("santiago", repo_root_path=REPO_ROOT)
 

@@ -301,6 +301,22 @@ misma causa (el runner no replicaba post-procesos de `config.load_config`).
 
 ## Lecciones vigentes
 
+### 2026-08-22 — ciudades metropolitanas — no confundir RM con “Colar” o municipio central
+
+- Estudios afectados: ciudades cuya residencia de cohorte se etiqueta como
+  región metropolitana, empezando por `belo_horizonte_rmbh`.
+- Riesgo: usar sólo el municipio central reduce la cobertura; sumar el Colar
+  Metropolitano por proximidad la amplía sin sustento. Ambos resultados rompen
+  la correspondencia entre la etiqueta de cohorte, unidad espacial y release.
+- Prevención: la referencia debe cruzar una lista oficial de membresía de la
+  región metropolitana con la malla municipal oficial. El migrador de RMBH
+  exige 34 `CD_MUN` únicos y escribe hashes de ambas fuentes; si el total
+  cambia, falla antes de crear o reemplazar la referencia.
+- Operación: no se agrega la ciudad a `cohort_latam_ready.yaml` ni se inicia
+  una corrida semanal hasta que existan referencia, manifiesto crudo y dos
+  preflights limpios. Para OSM, declarar un PBF local en los cinco layers,
+  incluido `walkability`, evita repetir el incidente de Overpass/PBF vacío.
+
 ### 2026-08-22 — São Paulo / caminabilidad PBF — falso éxito de red vacía
 
 - Estudios afectados: cualquier estudio con `walkability.osm_extract`.

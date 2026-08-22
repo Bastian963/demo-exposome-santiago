@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "provider": "IBGE",
+  "dataset": "rmbh_official_membership_and_municipal_mesh",
+  "version": "2021-2024",
+  "scope": "IBGE category Região Metropolitana de Belo Horizonte only; excludes Colar Metropolitano",
+  "files": [
+    {
+      "path": "rmbh_membership.geojson",
+      "sha256": "b41444dfafe1dbd1bc158f23ae06131c8e05bc5800e244d58000717c661565c4",
+      "source_url": "https://geoservicos.ibge.gov.br/geoserver/CGMAT/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=CGMAT:qg_2021_212_categoriametrop&outputFormat=application/json&srsName=EPSG:4326&CQL_FILTER=nm_catmetrop%20%3D%20%27Regi%C3%A3o%20Metropolitana%20de%20Belo%20Horizonte%27",
+      "role": "official metropolitan membership"
+    },
+    {
+      "path": "MG_Municipios_2024.zip",
+      "sha256": "1a3a083e2632fee757142ac6c6af3d122cc36601926e7efd690b19bd9fd37b9e",
+      "source_url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_municipais/municipio_2024/UFs/MG/MG_Municipios_2024.zip",
+      "role": "official municipal geometry"
+    }
+  ]
+}

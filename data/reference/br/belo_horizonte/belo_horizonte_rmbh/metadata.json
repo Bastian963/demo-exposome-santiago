@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "study_id": "belo_horizonte_rmbh",
+  "spatial_id": "unit_id (IBGE CD_MUN, seven digits)",
+  "source_geometry": "data/raw/br/belo_horizonte/ibge_rmbh/2021-2024/MG_Municipios_2024.zip",
+  "source_geometry_sha256": "1a3a083e2632fee757142ac6c6af3d122cc36601926e7efd690b19bd9fd37b9e",
+  "membership_source": "data/raw/br/belo_horizonte/ibge_rmbh/2021-2024/rmbh_membership.geojson",
+  "membership_source_sha256": "b41444dfafe1dbd1bc158f23ae06131c8e05bc5800e244d58000717c661565c4",
+  "unit_count": 34,
+  "total_bounds": [
+    -44.658902,
+    -20.486693,
+    -43.478047,
+    -19.058973
+  ],
+  "scope": "IBGE Região Metropolitana de Belo Horizonte (RMBH), excludes Colar Metropolitano"
+}

@@ -70,7 +70,7 @@ un fallo de geometría, estudio o contrato espacial.
 | 1 | San Juan (provincia) | AR | 195 | recolección activa en equipo local | Terminar allí; no duplicar en Joaco. Transferir release validado. |
 | 2 | São Paulo | BR | 143 | datos agregados existentes, no publicada | Verificar/reanudar el par agregado/native y correr gates de publicación. |
 | 3 | Santa Marta | CO | 74 | publicada y validada en Joaco; pendiente de recuperar en este checkout | Incorporar configuraciones, referencias y release por Git; no repetir la colección. |
-| 4 | Belo Horizonte | BR | 52 | sin estudio versionado | Preparar municipios RMBH, estudios y native; pasar preflight. |
+| 4 | Belo Horizonte | BR | 52 | preparación RMBH oficial en curso | Congelar las fuentes IBGE, construir los 34 municipios RMBH (sin Colar), pasar preflight agregado/native y luego encolar. |
 | 5 | Cartagena | CO | 31 | agregado en Joaco; `healthcare` estaba en reanudación | Terminar `healthcare`, recuperar configuración y validar ambos estudios. |
 | 6 | Arequipa | PE | 31 | sin estudio versionado | Preparar límites oficiales, configuración, companion native y preflight. |
 | 7 | Pasto | CO | 30 | preflight remoto exitoso; capas no iniciadas | Recuperar configuración de Joaco y verificarla en Git antes de encolarla. |
@@ -79,6 +79,26 @@ un fallo de geometría, estudio o contrato espacial.
 
 Ciudades ya visibles en GEMMA no vuelven a la cola por defecto. Solo se
 reabren si falta un gate de publicación o si cambió la proveniencia de una capa.
+
+### Onboarding: Belo Horizonte — RMBH oficial
+
+La ciudad #10 por cohorte se procesa como **Região Metropolitana de Belo
+Horizonte (RMBH)** y no como el municipio central: son exactamente 34
+municipios oficiales; el **Colar Metropolitano** es una categoría legal
+separada y queda fuera. El migrador
+`scripts/migrations/build_belo_horizonte_rmbh_reference.py` exige dos fuentes
+IBGE congeladas: la membresía oficial de Recortes Metropolitanos y la Malha
+Municipal Digital de Minas Gerais que aporta las geometrías. No descarga nada;
+rechaza otra cantidad de unidades, códigos sin geometría, duplicados y
+geometrías no poligonales.
+
+Después de la migración, el estudio visible es `belo_horizonte_rmbh` y su
+companion oculto es `belo_horizonte_native`. Ambos usan el mismo snapshot
+Geofabrik `sudeste/260819`: salud, alimentación, infraestructura social,
+acceso verde **y caminabilidad** leen el PBF local. Por lo tanto, ninguna de
+esas capas debe volver a Overpass. Belo Horizonte sólo entra en la cola semanal
+después de que ambos `exposome run --dry-run` pasen en el equipo que tiene
+tanto el PBF como las referencias IBGE.
 
 ## Ejecución humana en Joaco
 

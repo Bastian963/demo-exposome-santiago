@@ -1,0 +1,24 @@
+schema_version: 1
+id: belo_horizonte
+name: Belo Horizonte — RMBH
+country: Brazil
+country_code: BR
+country_code3: BRA
+timezone: America/Sao_Paulo
+
+# Bounds from the frozen official 2021-2024 reference (-44.6589, -20.4867,
+# -43.4780, -19.0590), expanded by ~0.1 degree on every side for provider
+# requests. It is not a guessed city-centre bbox.
+bbox:
+  west: -44.76
+  south: -20.59
+  east: -43.38
+  north: -18.96
+
+crs:
+  geographic: EPSG:4326
+  metric: auto
+
+# OSM-backed layers use the frozen Sudeste PBF declared at study level; do not
+# add a region_query that could silently return to Overpass.
+region_query: "Belo Horizonte, Minas Gerais, Brazil"
