@@ -301,6 +301,30 @@ misma causa (el runner no replicaba post-procesos de `config.load_config`).
 
 ## Lecciones vigentes
 
+### 2026-08-22 — São Paulo / caminabilidad PBF — falso éxito de red vacía
+
+- Estudios afectados: cualquier estudio con `walkability.osm_extract`.
+- Síntoma observable: el log dice `reading highway lines from <extracto>.osm.pbf`,
+  seguido de `sparse/empty network` para **todas** las unidades y de un
+  `walkability: executed`. El CSV termina con `walk_n_nodes=0` y métricas cero
+  para toda la ciudad.
+- Causa raíz: se buscaba `highway` sólo en `other_tags` de la capa GDAL `lines`.
+  Los PBF Geofabrik estándar promueven esa clave a su propia columna, por lo
+  que el filtro devolvía un GeoDataFrame vacío.
+- Corrección: `fetch_highway_lines_from_local_extract` lee la columna directa y
+  usa `other_tags` únicamente como fallback. `build_walkability_layer` rechaza
+  explícitamente un inventario local vacío y los checkpoints PBF se separan de
+  los de Overpass. El algoritmo de `walkability` se versionó para invalidar el
+  bundle creado antes de la corrección.
+- Prueba o gate preventivo:
+  `tests/test_osm_fetch.py::LocalExtractFetchTests::test_highway_lines_use_one_local_pbf_query_with_bbox`,
+  más las tres señales del log documentadas en
+  [Extractos OSM locales](../../osm_local_extract.md#gate-obligatorio-nunca-aceptar-un-éxito-con-red-vacía).
+- Recuperación: actualizar código, ejecutar únicamente
+  `exposome run --study <agregado> --layers walkability --force --no-build-master`,
+  verificar `highway lines: N` y unidades `ok`, y sólo después reanudar native
+  y el supervisor semanal. No eliminar PBFs ni checkpoints de capas sanas.
+
 - La resolución se valida en el bundle publicado, no en `palette.json`. Un
   TIFF existente no se publica si su sidecar no prueba grilla, resolución y
   soporte preservado. Véase

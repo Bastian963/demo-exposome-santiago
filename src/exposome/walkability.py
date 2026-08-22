@@ -358,6 +358,12 @@ def build_walkability_layer(
             bbox=gdf_4326.total_bounds,
             label=f"walkability[{city}]",
         )
+        if local_highways.empty:
+            raise ValueError(
+                "Frozen OSM extract returned no highway lines for "
+                f"{city}; refusing to publish an all-zero walkability layer. "
+                "Check the PBF schema/coverage and the study osm_extract path."
+            )
 
     # Checkpoint path: written after every commune (not just once at the end)
     # so a crash mid-run only loses the commune in flight. --resume re-reads

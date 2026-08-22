@@ -205,6 +205,39 @@ No se crean scripts de descarga ni tareas periódicas de actualización. Cambiar
 de snapshot es un cambio científico de entrada: se añade una nueva versión,
 se valida y se declara explícitamente en los estudios afectados.
 
+### Checklist PBF antes de una ciudad nueva o una recuperación
+
+Este checklist evita repetir la secuencia de errores observada en Cartagena,
+Pasto y São Paulo. Se aplica por ciudad, agregado y native, antes de dejar una
+semana de ejecución autónoma:
+
+1. Ejecutar `check_geofabrik_latam_cohort.py --require-payload --verify-hash`.
+   Un PBF descargado sin `source_manifest.json` no se considera fuente lista.
+2. Declarar el mismo `osm_extract` fechado en los cinco bloques: acceso verde,
+   caminabilidad, infraestructura social, alimentación y salud, tanto para el
+   estudio agregado como native. La ruta de verde es
+   `greenspace.access.osm_extract`; las otras cuatro usan su bloque de capa.
+3. Correr `exposome run --study <study> --layers walkability --dry-run` para
+   ambos modos. La configuración resuelta debe mencionar el extracto esperado.
+4. Ejecutar primero caminabilidad agregada y revisar el log: exige
+   `highway lines: N features` con `N > 0` y unidades `ok`; una salida de todas
+   las unidades `sparse/empty` no es un resultado válido aunque diga
+   `executed`.
+5. Sólo entonces ejecutar las otras cuatro capas nativas y el supervisor de la
+   semana. Nunca iniciar dos procesos sobre el mismo estudio a la vez.
+
+El agotamiento consecutivo de los mirrors Overpass (`.de`, `.fr`, `.ch`) es un
+incidente de proveedor, no una razón para aumentar reintentos o paralelizar.
+Si la ciudad ya tiene un PBF congelado, el log de estas cinco capas debe decir
+`reading ... from <region>.osm.pbf`; las líneas `attempt ... via
+https://overpass...` indican que falta el override o que se está ejecutando un
+proceso iniciado antes de actualizar el código.
+
+Después de corregir código/configuración, no se reinicia la semana de inmediato:
+se recuperan primero las capas fallidas una por una, se revisan sus artefactos,
+y recién entonces se ejecuta el supervisor con `--reset-state`. Ese flag sólo
+reinicia el estado operacional bajo `cache/`; no borra checkpoints ni PBFs.
+
 ## Gates de publicación
 
 Por cada ciudad: capas agregadas -> native -> series anuales -> detalle
