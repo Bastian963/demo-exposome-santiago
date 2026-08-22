@@ -98,3 +98,5 @@ layer_overrides:
     osm_extract: data/raw/geofabrik/pais_vasco/260809/pais_vasco.osm.pbf
   social_infrastructure:
     osm_extract: data/raw/geofabrik/pais_vasco/260809/pais_vasco.osm.pbf
+  walkability:
+    osm_extract: data/raw/geofabrik/pais_vasco/260809/pais_vasco.osm.pbf

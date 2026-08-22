@@ -165,16 +165,17 @@ El archivo correcto es únicamente `colombia-260819.osm.pbf`; nunca una variante
 `free.shp.zip` o `free.gpkg.zip`. Antes de apuntar estudios a él, correr el
 migrador de ingesta para crear `source_manifest.json`, revisar el hash y
 versionar el manifiesto/configuración. Este fallback sirve para salud,
-alimentación, infraestructura social y acceso verde; no sustituye la descarga
-de grafos de `walkability`.
+alimentación, infraestructura social, acceso verde y caminabilidad. En
+`walkability`, el extracto se traduce localmente a un grafo vial; no se consulta
+Overpass por comuna.
 
 ### Snapshots OSM locales para la campaña LATAM
 
 La campaña de cohorte usa snapshots Geofabrik fechados de **2026-08** para las
 cuatro capas por tags (`greenspace_access`, `food_environment`, `healthcare` y
-`social_infrastructure`) en ciudades nuevas o reintentos. No se recalculan
-publicaciones anteriores solo para cambiar este backend. `walkability` queda
-fuera porque requiere un grafo vial.
+`social_infrastructure`) y para la red vial de `walkability` en ciudades nuevas
+o reintentos. No se recalculan publicaciones anteriores solo para cambiar este
+backend.
 
 El inventario, URLs fechadas y cobertura por ciudades están en
 [`config/operations/geofabrik_latam_cohort.yaml`](../config/operations/geofabrik_latam_cohort.yaml).

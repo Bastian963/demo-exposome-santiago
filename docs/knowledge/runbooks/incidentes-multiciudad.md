@@ -81,9 +81,9 @@ URLs firmadas, datos personales ni payloads completos a este documento.
   data/raw/geofabrik/colombia/<YYMMDD>/colombia.osm.pbf --region colombia
   --version <YYMMDD> --source-path south-america`.
 - Configuración posterior: declarar el mismo `osm_extract` bajo
-  `layer_overrides` de las cuatro capas para cada estudio afectado y reanudar
-  con `--resume`. `walkability` queda fuera: construye un grafo de calles y no
-  consume este extracto.
+  `layer_overrides` de las cinco capas para cada estudio afectado y reanudar
+  con `--resume`. `walkability` consume `lines/highway` del extracto y arma el
+  grafo de calles localmente.
 - Regla operativa: no cambiar a este origen a mitad de una tarea activa. Dejar
   que el supervisor registre `needs_review`, validar el snapshot y recién
   entonces cambiar la configuración y reiniciar la recuperación.
@@ -98,8 +98,9 @@ URLs firmadas, datos personales ni payloads completos a este documento.
 - Gate preventivo: `PYTHONPYCACHEPREFIX=/tmp .venv/bin/python
   scripts/check_geofabrik_latam_cohort.py --require-payload --verify-hash`.
   Verifica el hash sin red y falla si falta un snapshot requerido.
-- Límite: `walkability` no es compatible porque necesita un grafo de calles;
-  las publicaciones existentes no se recalculan retrospectivamente.
+- Límite histórico superado: `walkability` ahora consume `lines/highway` y
+  construye el grafo local. Las publicaciones existentes no se recalculan
+  retrospectivamente sólo para cambiar el backend.
 
 Los siete siguientes salieron al habilitar **Lima** y correr **Bogotá**
 (2026-07-22/25). Los siete tienen **fix en código con test**, así que una ciudad
