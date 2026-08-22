@@ -409,7 +409,8 @@ class LocalExtractFetchTests(unittest.TestCase):
         frame = gpd.GeoDataFrame(
             {
                 "osm_id": ["11", "12"],
-                "other_tags": ['"highway"=>"residential"', '"name"=>"No es calle"'],
+                "highway": ["residential", None],
+                "other_tags": [None, '"highway"=>"service"'],
                 "geometry": [
                     LineString([(0, 0), (1, 0)]),
                     LineString([(0, 1), (1, 1)]),
@@ -431,11 +432,12 @@ class LocalExtractFetchTests(unittest.TestCase):
                 log=lambda _: None,
             )
 
-        self.assertEqual(result["id"].tolist(), ["11"])
-        self.assertEqual(result["highway"].tolist(), ["residential"])
+        self.assertEqual(result["id"].tolist(), ["11", "12"])
+        self.assertEqual(result["highway"].tolist(), ["residential", "service"])
         self.assertEqual(captured["layer"], "lines")
         self.assertEqual(captured["bbox"], (0.0, 0.0, 1.0, 1.0))
-        self.assertEqual(captured["where"], "other_tags LIKE '%\"highway\"=>%'")
+        self.assertEqual(captured["columns"], ["osm_id", "highway", "other_tags"])
+        self.assertNotIn("where", captured)
 
     def test_extra_keys_materialize_a_column_even_when_no_feature_carries_it(self) -> None:
         # social_infrastructure reads `access` with .get(); a missing column
