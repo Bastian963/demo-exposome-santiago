@@ -12,8 +12,9 @@ MANIFESTS_BASE_PATH = ROOT_DIR / "webapp" / "public"
 SNAPSHOT_PATH = Path(__file__).parent / "data" / "cohort_public_snapshot.json"
 
 # UI Constants
-APP_TITLE = "BrainLat Coverage Monitor"
+APP_TITLE = "GEMMA BrainLat Cohort"
 APP_SUBTITLE = "Monitor operativo independiente de GEMMA"
+GEMMA_FULL_NAME = "Global Exposome Modeling, Mapping & Analytics"
 
 # Colors and fonts taken verbatim from GEMMA's palette (webapp/public/palette.json),
 # so this monitor stays a client of the same visual identity instead of a copy of it.

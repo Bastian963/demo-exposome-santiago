@@ -94,15 +94,16 @@ def render_world_map(snapshot: PublicSnapshot):
         pitch=0
     )
     
-    # GEMMA's own LATAM view is a flat navy background with cities as points,
-    # not a real street/satellite basemap -- so skip pydeck's basemap tiles
-    # entirely rather than trying to fake pixel-art terrain it can't render.
+    # GEMMA's own LATAM view is a bespoke Canvas2D globe (live Esri tiles
+    # quantized into a rotating orthographic sphere) with no reusable geometry
+    # behind it, so it can't be ported here. A real Carto basemap, dark and
+    # label-free, is what actually reads as a map instead of floating dots.
     r = pdk.Deck(
         layers=[layer],
         initial_view_state=view_state,
         tooltip=tooltip,
-        map_provider=None,
-        parameters={"clearColor": [26 / 255, 28 / 255, 44 / 255, 1]},  # bg_sky
+        map_provider="carto",
+        map_style="dark_no_labels",
     )
 
     st.pydeck_chart(r, use_container_width=True)

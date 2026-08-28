@@ -1,5 +1,5 @@
 import streamlit as st
-from apps.cohort_coverage_monitor.config import APP_TITLE, APP_SUBTITLE
+from apps.cohort_coverage_monitor.config import APP_TITLE, APP_SUBTITLE, GEMMA_FULL_NAME
 from apps.cohort_coverage_monitor.domain.models import PublicSnapshot
 from apps.cohort_coverage_monitor.services.metrics import calculate_summary_metrics
 from apps.cohort_coverage_monitor.ui.charts import (
@@ -14,6 +14,7 @@ from apps.cohort_coverage_monitor.ui.map_view import render_world_map
 def render_header(snapshot: PublicSnapshot):
     st.title(APP_TITLE)
     st.markdown(f"**{APP_SUBTITLE}**")
+    st.markdown(f"GEMMA = *{GEMMA_FULL_NAME}*")
     st.markdown(f"*Última actualización (snapshot): {snapshot.updated_at} | Generado: {snapshot.snapshot_generated_at[:10]}*")
     
     st.warning(
@@ -47,7 +48,12 @@ def render_summary_cards(snapshot: PublicSnapshot):
 def render_methodology():
     st.markdown("## Metodología")
     with st.expander("Ver detalles de cálculo y arquitectura"):
-        st.markdown("""
+        st.markdown(f"""
+        **0. Qué es GEMMA**
+        GEMMA ({GEMMA_FULL_NAME}) es la webapp pixel-art de BrainLat donde se publican
+        los exposomas urbanos por ciudad. Este monitor es una app aparte: no navega
+        exposomas como GEMMA, solo reporta el estado operativo del pipeline que la alimenta.
+
         **1. Cobertura geográfica priorizada**
         Participantes que viven en una de las 15 áreas metropolitanas priorizadas (n >= 25) dividido por el total de participantes de la cohorte LATAM (2026-07).
         
