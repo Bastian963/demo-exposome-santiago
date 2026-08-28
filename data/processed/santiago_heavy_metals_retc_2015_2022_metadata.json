@@ -1,0 +1,48 @@
+{
+  "created_utc": "2026-06-28T14:04:26.875299+00:00",
+  "city": "santiago",
+  "source": "RETC MMA — Emisiones al aire de fuentes puntuales",
+  "dataset_id": "2733b0f0-428a-4594-afeb-17780c8d47c1",
+  "license": "CC-BY",
+  "years": [
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+  ],
+  "n_communes": 52,
+  "n_sources_total": 5253,
+  "communes_with_pb": 45,
+  "communes_with_mn": 0,
+  "communes_with_as": 47,
+  "metals": [
+    "pb",
+    "mn",
+    "as",
+    "cd",
+    "hg"
+  ],
+  "metal_weights": {
+    "pb": 0.35,
+    "mn": 0.3,
+    "as": 0.2,
+    "cd": 0.1,
+    "hg": 0.05
+  },
+  "columns": {
+    "hm_pb_kg": "Mean annual Pb air emissions from point sources [kg/yr]",
+    "hm_mn_kg": "Mean annual Mn air emissions from point sources [kg/yr]",
+    "hm_as_kg": "Mean annual As air emissions from point sources [kg/yr]",
+    "hm_cd_kg": "Mean annual Cd air emissions from point sources [kg/yr]",
+    "hm_hg_kg": "Mean annual Hg air emissions from point sources [kg/yr]",
+    "hm_pb_log": "log1p(hm_pb_kg) — log-transformed Pb for brain-health models",
+    "hm_as_log": "log1p(hm_as_kg) — log-transformed As for brain-health models",
+    "n_sources": "Unique industrial establishments with heavy metal declarations",
+    "hm_index": "Composite heavy-metals index (weighted z-score, Pb+Mn+As+Cd)"
+  },
+  "note_mn_cd": "Manganeso (Mn) and Cadmio (Cd) are absent from RM RETC declarations: their industrial sources are in other regions (e.g. Atacama, Maule). Both columns are 0 for all 52 RM communes — this is a real data finding."
+}

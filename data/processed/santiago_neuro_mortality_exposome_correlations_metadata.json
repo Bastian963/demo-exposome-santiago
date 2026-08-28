@@ -1,0 +1,29 @@
+{
+  "created_utc": "2026-06-28T13:36:25.123597+00:00",
+  "city": "santiago",
+  "mortality_source": "santiago_neuro_mortality_2018_2022.csv",
+  "master_source": "santiago_exposome_master.csv",
+  "exposures": [
+    "pm25_pop_weighted",
+    "no2_surface_ug_m3",
+    "heat_exposure_index",
+    "sleep_context_index",
+    "noise_combined_pct",
+    "green_cover_pct_ndvi",
+    "social_index",
+    "walk_index",
+    "transit_index",
+    "food_index"
+  ],
+  "outcomes": [
+    "dementia",
+    "alzheimer",
+    "cerebrovascular",
+    "parkinsonism"
+  ],
+  "covariates": [
+    "nse_index",
+    "demo_pct_pop_65_plus"
+  ],
+  "n_rows": 40
+}

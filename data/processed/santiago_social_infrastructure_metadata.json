@@ -1,0 +1,403 @@
+{
+  "created_utc": "2026-06-28T03:45:05.851665+00:00",
+  "city": "santiago",
+  "source": "OpenStreetMap via direct Overpass queries plus existing greenspace OSM cache",
+  "osm_tags": {
+    "amenity": [
+      "library",
+      "community_centre",
+      "social_centre",
+      "social_facility",
+      "arts_centre",
+      "theatre",
+      "events_venue"
+    ],
+    "tourism": [
+      "museum",
+      "gallery"
+    ],
+    "leisure": [
+      "sports_centre",
+      "pitch",
+      "fitness_centre",
+      "swimming_pool",
+      "stadium",
+      "recreation_ground",
+      "park",
+      "playground"
+    ],
+    "club": [
+      "social",
+      "sport"
+    ],
+    "place": [
+      "square"
+    ],
+    "social_facility:for": [
+      "senior",
+      "elderly",
+      "older_people"
+    ]
+  },
+  "raw_categories": {
+    "library": [
+      {
+        "tag": "amenity",
+        "values": [
+          "library"
+        ]
+      }
+    ],
+    "cultural": [
+      {
+        "tag": "amenity",
+        "values": [
+          "arts_centre",
+          "theatre",
+          "events_venue"
+        ]
+      },
+      {
+        "tag": "tourism",
+        "values": [
+          "museum",
+          "gallery"
+        ]
+      }
+    ],
+    "community": [
+      {
+        "tag": "amenity",
+        "values": [
+          "community_centre",
+          "social_centre",
+          "social_facility"
+        ]
+      },
+      {
+        "tag": "club",
+        "values": [
+          "social"
+        ]
+      }
+    ],
+    "senior": [
+      {
+        "tag": "social_facility:for",
+        "values": [
+          "senior",
+          "elderly",
+          "older_people"
+        ]
+      }
+    ],
+    "sports": [
+      {
+        "tag": "leisure",
+        "values": [
+          "sports_centre",
+          "pitch",
+          "fitness_centre",
+          "swimming_pool",
+          "stadium"
+        ]
+      },
+      {
+        "tag": "club",
+        "values": [
+          "sport"
+        ]
+      }
+    ],
+    "public_space": [
+      {
+        "tag": "leisure",
+        "values": [
+          "recreation_ground",
+          "park",
+          "garden",
+          "dog_park",
+          "playground"
+        ]
+      },
+      {
+        "tag": "landuse",
+        "values": [
+          "village_green",
+          "recreation_ground"
+        ]
+      },
+      {
+        "tag": "place",
+        "values": [
+          "square"
+        ]
+      }
+    ]
+  },
+  "curated_categories": {
+    "library": [
+      {
+        "tag": "amenity",
+        "values": [
+          "library"
+        ]
+      }
+    ],
+    "cultural": [
+      {
+        "tag": "amenity",
+        "values": [
+          "arts_centre",
+          "theatre",
+          "events_venue"
+        ]
+      },
+      {
+        "tag": "tourism",
+        "values": [
+          "museum",
+          "gallery"
+        ]
+      }
+    ],
+    "community": [
+      {
+        "tag": "amenity",
+        "values": [
+          "community_centre",
+          "social_centre",
+          "social_facility"
+        ]
+      },
+      {
+        "tag": "club",
+        "values": [
+          "social"
+        ]
+      }
+    ],
+    "senior": [
+      {
+        "tag": "social_facility:for",
+        "values": [
+          "senior",
+          "elderly",
+          "older_people"
+        ]
+      }
+    ],
+    "sports": [
+      {
+        "tag": "leisure",
+        "values": [
+          "sports_centre",
+          "stadium",
+          "fitness_centre"
+        ]
+      }
+    ],
+    "public_space": [
+      {
+        "tag": "leisure",
+        "values": [
+          "recreation_ground",
+          "park",
+          "garden",
+          "dog_park",
+          "playground"
+        ]
+      },
+      {
+        "tag": "landuse",
+        "values": [
+          "village_green",
+          "recreation_ground"
+        ]
+      },
+      {
+        "tag": "place",
+        "values": [
+          "square"
+        ]
+      }
+    ]
+  },
+  "raw_category_counts_deduplicated": {
+    "library": 117,
+    "cultural": 391,
+    "community": 368,
+    "senior": 38,
+    "sports": 15200,
+    "public_space": 7022
+  },
+  "curated_category_counts_deduplicated": {
+    "library": 113,
+    "cultural": 389,
+    "community": 368,
+    "senior": 38,
+    "sports": 756,
+    "public_space": 6995
+  },
+  "deduplication_radius_m": 50.0,
+  "grid_spacing_m": 1000,
+  "coverage_thresholds_m": [
+    500,
+    1000
+  ],
+  "no_data_distance_cap_m": 99999.0,
+  "crs_metric": "EPSG:32719",
+  "curation": {
+    "access_excluded_values": [
+      "customers",
+      "no",
+      "permit",
+      "private"
+    ],
+    "sports_leisure_kept_for_curated_signal": [
+      "sports_centre",
+      "stadium",
+      "fitness_centre"
+    ],
+    "sports_leisure_excluded_from_curated_signal": [
+      "pitch",
+      "swimming_pool"
+    ],
+    "public_space_rules": {
+      "leisure": [
+        "recreation_ground",
+        "park",
+        "garden",
+        "dog_park",
+        "playground"
+      ],
+      "landuse": [
+        "village_green",
+        "recreation_ground"
+      ],
+      "place": [
+        "square"
+      ]
+    },
+    "civic_categories": [
+      "library",
+      "cultural",
+      "community",
+      "senior"
+    ],
+    "access_excluded_feature_counts": {
+      "customers": 212,
+      "no": 17,
+      "permit": 17,
+      "private": 6617
+    },
+    "access_excluded_unique_point_counts": {
+      "customers": 123,
+      "no": 11,
+      "permit": 17,
+      "private": 4409
+    }
+  },
+  "method": "OSM social infrastructure points were downloaded as a broad raw inventory, then a curated civic-cultural inventory was derived by excluding access-restricted features and by narrowing sports/public-space membership for the master-facing signal. Distance and coverage metrics were computed on a 1 km grid using the curated inventory. social_index = 0.45 * social_civic_index + 0.35 * social_access_index + 0.20 * social_recreation_index.",
+  "warning": "Ecological proxy for social participation opportunity and cognitive stimulation; not a direct measure of loneliness, social isolation, cognition, dementia, or individual service use.",
+  "index_formula": {
+    "social_civic_points_per_10k": "(library + cultural + community + senior) / population * 10000",
+    "social_recreation_points_per_10k": "(sports + public_space) / population * 10000",
+    "social_civic_diversity": "count of non-zero civic categories among library, cultural, community, senior",
+    "social_civic_index": "mean(z(log1p(social_civic_points_per_10k)), z(social_civic_diversity)), rescaled 0-100",
+    "social_access_index": "mean(z(social_coverage_1000m), -z(social_mean_nearest_m)), rescaled 0-100",
+    "social_recreation_index": "z(log1p(winsorized social_recreation_points_per_10k at p90)), rescaled 0-100",
+    "social_index": "0.45 * social_civic_index + 0.35 * social_access_index + 0.20 * social_recreation_index"
+  },
+  "brain_health_relevance": {
+    "social_isolation": "Social isolation is a modifiable dementia risk factor.",
+    "cognitive_stimulation": "Libraries, cultural venues, and community spaces are plausible neighborhood opportunities for cognitive and social engagement.",
+    "physical_activity": "Sports and public recreation facilities may support activity and social participation."
+  },
+  "n_communes": 52,
+  "n_raw_osm_features": 38212,
+  "n_raw_classified_osm_features": 38212,
+  "n_unique_social_points_raw": 21733,
+  "n_unique_social_points_curated": 8398,
+  "top5_most_accessible": [
+    [
+      "Providencia",
+      93.9
+    ],
+    [
+      "Vitacura",
+      88.0
+    ],
+    [
+      "Santiago",
+      84.9
+    ],
+    [
+      "Macul",
+      83.7
+    ],
+    [
+      "La Reina",
+      81.9
+    ]
+  ],
+  "bot5_least_accessible": [
+    [
+      "San Pedro",
+      25.6
+    ],
+    [
+      "María Pinto",
+      43.2
+    ],
+    [
+      "San José de Maipo",
+      46.9
+    ],
+    [
+      "Melipilla",
+      47.1
+    ],
+    [
+      "Alhué",
+      48.9
+    ]
+  ],
+  "columns": [
+    "name",
+    "social_n_total",
+    "social_n_total_raw",
+    "social_n_library",
+    "social_n_cultural",
+    "social_n_community",
+    "social_n_senior",
+    "social_n_sports",
+    "social_n_public_space",
+    "social_n_sports_raw",
+    "social_n_public_space_raw",
+    "social_private_or_customer_excluded_n",
+    "social_category_diversity",
+    "social_civic_diversity",
+    "social_density_per_km2",
+    "social_points_per_10k",
+    "social_points_per_10k_raw",
+    "social_civic_points_per_10k",
+    "social_recreation_points_per_10k",
+    "social_mean_nearest_m",
+    "social_median_nearest_m",
+    "social_p90_nearest_m",
+    "social_coverage_500m",
+    "social_coverage_1000m",
+    "social_n_access_grid",
+    "social_civic_index",
+    "social_access_index",
+    "social_recreation_index",
+    "social_index"
+  ],
+  "outputs": [
+    "santiago_social_infrastructure.csv",
+    "santiago_social_infrastructure.geojson",
+    "santiago_social_infrastructure_metadata.json",
+    "santiago_social_infrastructure_low_access.csv"
+  ]
+}

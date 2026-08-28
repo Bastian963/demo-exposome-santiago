@@ -1,0 +1,15 @@
+{
+  "created_utc": "2026-06-27T01:18:45.553088+00:00",
+  "city": "santiago",
+  "method": "exg",
+  "samples_per_commune": 1,
+  "actual_samples": 52,
+  "zoom": 17,
+  "tile_mosaic": "3x3",
+  "source": "esri_world_imagery",
+  "outputs": [
+    "santiago_greenspace_cv_sample.csv",
+    "santiago_greenspace_cv_sample.geojson",
+    "santiago_greenspace_cv_commune.csv"
+  ]
+}

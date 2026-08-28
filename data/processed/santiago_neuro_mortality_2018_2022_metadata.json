@@ -1,0 +1,67 @@
+{
+  "created_utc": "2026-06-28T13:44:33.813664+00:00",
+  "city": "santiago",
+  "n_rows": 260,
+  "n_communes": 52,
+  "years": [
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+  ],
+  "source_path_used": "data/raw/deis/defunciones/DEFUNCIONES_FUENTE_DEIS_1990_2023_CIFRAS_OFICIALES.csv",
+  "allow_crude_only": false,
+  "outcomes": {
+    "dementia": [
+      "F00",
+      "F01",
+      "F02",
+      "F03",
+      "G30"
+    ],
+    "alzheimer": [
+      "G30"
+    ],
+    "cerebrovascular": [
+      "I60",
+      "I61",
+      "I62",
+      "I63",
+      "I64",
+      "I65",
+      "I66",
+      "I67",
+      "I68",
+      "I69"
+    ],
+    "parkinsonism": [
+      "G20",
+      "G21"
+    ]
+  },
+  "age_bins": [
+    "0_14",
+    "15_64",
+    "65_plus"
+  ],
+  "standard_population": "Santiago commune demography aggregate from Censo 2017",
+  "columns": [
+    "name",
+    "outcome",
+    "mortality_year_start",
+    "mortality_year_end",
+    "mortality_n_years",
+    "mortality_deaths_total",
+    "mortality_rate_crude_per_100k",
+    "mortality_rate_age_adjusted_per_100k",
+    "mortality_low_count_flag",
+    "mortality_deaths_0_14",
+    "mortality_rate_0_14_per_100k",
+    "mortality_deaths_15_64",
+    "mortality_rate_15_64_per_100k",
+    "mortality_deaths_65_plus",
+    "mortality_rate_65_plus_per_100k"
+  ],
+  "note": "External ecological outcome comparator derived from DEIS mortality data. Not an exposome layer and not suitable for individual-level inference."
+}

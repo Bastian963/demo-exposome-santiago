@@ -1,0 +1,76 @@
+"""Correlate neuropsychiatric hospitalization outcomes with exposome indicators."""
+from __future__ import annotations
+
+import json
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+import pandas as pd
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT / "src"))
+
+import typer  # noqa: E402
+
+from exposome import config as exposome_config  # noqa: E402
+from exposome.neuro_hospitalizations import compute_exposome_correlations  # noqa: E402
+
+app = typer.Typer(help="Compare neuropsychiatric hospitalization outcomes against the exposome master table.")
+
+
+@app.command()
+def run(
+    city: str = typer.Option("santiago", help="City config name"),
+    out_dir: Path = typer.Option(Path("data/processed"), help="Output directory"),
+) -> None:
+    """Write a correlation table between hospitalization outcomes and exposome features."""
+    cfg = exposome_config.load_config(city)
+    hosp_cfg = cfg["neuro_hospitalizations"]
+    years = [int(y) for y in hosp_cfg["years"]]
+    out_dir = Path(out_dir)
+
+    hospital_path = out_dir / f"{city}_neuro_hospitalizations_{min(years)}_{max(years)}.csv"
+    master_path = out_dir / f"{city}_exposome_master.csv"
+    if not hospital_path.exists():
+        raise FileNotFoundError(f"Missing hospitalization comparator: {hospital_path}")
+    if not master_path.exists():
+        raise FileNotFoundError(f"Missing master exposome table: {master_path}")
+
+    hospital = pd.read_csv(hospital_path)
+    master = pd.read_csv(master_path)
+    exposures = list(hosp_cfg["comparison"]["exposures"])
+    outcomes = list(hosp_cfg["comparison"]["outcomes"])
+    covariates = list(hosp_cfg["comparison"]["covariates"])
+
+    result = compute_exposome_correlations(
+        hospital_df=hospital,
+        master_df=master,
+        exposures=exposures,
+        outcomes=outcomes,
+        covariates=covariates,
+    )
+
+    csv_path = out_dir / f"{city}_neuro_hospitalizations_exposome_correlations.csv"
+    meta_path = out_dir / f"{city}_neuro_hospitalizations_exposome_correlations_metadata.json"
+    result.to_csv(csv_path, index=False)
+    meta_path.write_text(
+        json.dumps(
+            {
+                "created_utc": datetime.now(timezone.utc).isoformat(),
+                "city": city,
+                "hospitalization_source": hospital_path.name,
+                "master_source": master_path.name,
+                "exposures": exposures,
+                "outcomes": outcomes,
+                "covariates": covariates,
+                "n_rows": int(len(result)),
+            },
+            indent=2,
+            ensure_ascii=False,
+        )
+    )
+
+
+if __name__ == "__main__":
+    app()

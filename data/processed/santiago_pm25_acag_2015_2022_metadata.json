@@ -1,0 +1,39 @@
+{
+  "created_utc": "2026-06-28T04:37:41.165890+00:00",
+  "city": "santiago",
+  "years": [
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+  ],
+  "method": "ACAG/van Donkelaar satellite-derived surface PM2.5 (AOD + GEOS-Chem + residual CNN calibrated to ground monitors); multi-year mean as a chronic-exposure proxy; commune zonal statistics + WorldPop population-weighted mean.",
+  "resolution_m": 1113,
+  "units": "µg/m^3",
+  "exposure_window": "chronic (multi-year mean)",
+  "who_guideline_pm25_ug_m3": 5.0,
+  "sources": {
+    "pm25": {
+      "provider": "Atmospheric Composition Analysis Group (WashU) — van Donkelaar et al.",
+      "collection": "projects/sat-io/open-datasets/GLOBAL-SATELLITE-PM25/ANNUAL",
+      "catalog": "awesome-gee-community-catalog (sat-io)"
+    },
+    "population": {
+      "provider": "WorldPop",
+      "collection": "WorldPop/GP/100m/pop",
+      "year": 2020
+    }
+  },
+  "columns": [
+    "name",
+    "area_km2",
+    "pm25_mean",
+    "pm25_pop_weighted",
+    "pm25_who_ratio"
+  ],
+  "n_rows": 52
+}

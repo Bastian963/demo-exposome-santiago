@@ -14,3 +14,6 @@ ipykernel
 nbformat
 nbconvert
 earthengine-api
+lightgbm
+pythermalcomfort
+rarfile

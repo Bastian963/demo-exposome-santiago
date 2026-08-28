@@ -1,0 +1,26 @@
+{
+  "created_utc": "2026-06-28T00:37:14.792483+00:00",
+  "city": "santiago",
+  "n_communes": 52,
+  "collection": "LANDSAT/LC08/C02/T1_L2 + LANDSAT/LE09/C02/T1_L2",
+  "years": [
+    2024
+  ],
+  "season_months": [
+    10,
+    11,
+    12,
+    1,
+    2,
+    3
+  ],
+  "ndvi_threshold": 0.2,
+  "evi_threshold": 0.15,
+  "scale_meters": 30,
+  "cloud_mask": "QA_PIXEL",
+  "note": "Landsat-8/9 used to avoid GEE timeouts with Sentinel-2 at 10 m",
+  "outputs": [
+    "santiago_greenspace_coverage.csv",
+    "santiago_greenspace_coverage.geojson"
+  ]
+}

@@ -1,0 +1,1364 @@
+source,matched_in,name,official_type,commune,lon,lat
+deis,osm,Servicio Médico Legal Melipilla,Otro,Melipilla,-71.22452128,-33.69658223
+deis,osm,CEINSA,Clínica Dental,Puente Alto,-70.570507,-33.605288
+deis,osm,Centro Dental RedSalud Apoquindo,Clínica Dental,Las Condes,-70.540345,-33.41253
+deis,osm,Centro Odontológico Uno Salud Dental Estación Central,Clínica Dental,Estación Central,-70.680021,-33.453415
+deis,osm,Sala de procedimientos Embalse,Vacunatorio,Alhué,-71.187524,-34.089481
+deis,osm,Posta de Salud Rural Aliro Cárcarmo (Lonquén),Posta de Salud Rural (PSR),Talagante,-70.853969,-33.709767
+deis,osm,Centro Comunitario de Salud Familiar Hacienda Alhué,Centro Comunitario de Salud Familiar (CECOSF),Alhué,-71.21683,-34.03091
+deis,osm,Posta de Salud Rural El Prado,Posta de Salud Rural (PSR),San Pedro,-71.51013,-33.91865
+deis,osm,Centro Asistencial AChS Paine,Centro de Salud Privado,Paine,-70.741044,-33.813946
+deis,osm,Posta de Salud Rural San Gabriel,Posta de Salud Rural (PSR),San José de Maipo,-70.23606,-33.78344
+deis,osm,Centro Médico KINEROD,Centro de Salud Privado,Buin,-70.744272,-33.73418
+deis,osm,Centro Asistencial AChS Buin,Centro de Salud Privado,Buin,-70.745993,-33.730686
+deis,osm,Centro de Salud Mutual CChC Melipilla,Centro de Salud Privado,Melipilla,-71.210766,-33.686119
+deis,osm,Clínica del Trabajador AChS,Clínica,Melipilla,-71.23301,-33.6801
+deis,osm,Centro Comunitario de Salud Familiar Lo Herrera,Centro Comunitario de Salud Familiar (CECOSF),San Bernardo,-70.744021,-33.669569
+deis,osm,Centro Comunitario de Salud Familiar Ribera del Maipo,Centro Comunitario de Salud Familiar (CECOSF),San Bernardo,-70.66279,-33.64893
+deis,osm,Hospital San José de Maipo,Hospital,San José de Maipo,-70.351496,-33.639361
+deis,osm,Fundación Vida Nueva (Clínica Psiquiátrica),Clínica,Peñaflor,-70.896286,-33.629126
+deis,osm,Clínica de Cirugía Plástica,Clínica,San Bernardo,-70.69878,-33.62467
+deis,osm,COSAM CEIF Centro,Centro Comunitario de Salud Mental (COSAM),Puente Alto,-70.575382,-33.616061
+deis,osm,Servicios Médicos PEÑASalud,Vacunatorio,Peñaflor,-70.89268,-33.611333
+deis,osm,Centro de Salud Familiar Vista Hermosa,Centro de Salud Familiar (CESFAM),Puente Alto,-70.52104,-33.61107
+deis,osm,Centro Medico de Clínica Maitenes Peñaflor,Centro de Salud Privado,Peñaflor,-70.856194,-33.608844
+deis,osm,Centro Comunitario de Salud Familiar Las Hortensias,Centro Comunitario de Salud Familiar (CECOSF),San Bernardo,-70.67051,-33.60213
+deis,osm,Clínica Santa Elena,Clínica,Puente Alto,-70.5560789,-33.5740142
+deis,osm,"Hospital Psiquiátrico El Peral (Santiago, Puente Alto)",Hospital,Puente Alto,-70.551417,-33.579233
+deis,osm,Centro Médico y Dental MegaSalud San Bernardo,Centro de Salud Privado,San Bernardo,-70.703022,-33.578297
+deis,osm,Clínica Psiquiatrica Raquel Gaete,Clínica,Puente Alto,-70.555338,-33.574316
+deis,osm,Posta de Salud Rural Pahuilmo,Posta de Salud Rural (PSR),Melipilla,-71.11575,-33.56916
+deis,osm,Centro Médico MAGNAVIDA,Centro de Salud Privado,Padre Hurtado,-70.798519,-33.56355
+deis,osm,Centro Comunitario de Salud Familiar Los Sauces,Centro Comunitario de Salud Familiar (CECOSF),El Bosque,-70.663764,-33.562694
+deis,osm,COSAM La Florida,Centro Comunitario de Salud Mental (COSAM),La Florida,-70.575392,-33.553972
+deis,osm,Centro Comunitario de Salud Familiar Los Bosquinos,Centro Comunitario de Salud Familiar (CECOSF),Maipú,-70.79348,-33.5498
+deis,osm,Consultorio Prefectura Sur,Centro de Salud Privado,La Cisterna,-70.67246,-33.53549
+deis,osm,Centro Vida Integra de La Florida,Centro de Salud Privado,La Florida,-70.582734,-33.522276
+deis,osm,Clínica Astra La Florida,Clínica,La Florida,-70.57891,-33.521292
+deis,osm,Centro Asistencial AChS La Florida,Centro de Salud Privado,La Florida,-70.604586,-33.518243
+deis,osm,Centro Médico Vida Integra Maipú,Centro de Salud Privado,Maipú,-70.75471,-33.509209
+deis,osm,Centro de Salud Familiar Dr. José Eduardo Ahués Salame,Centro de Salud Familiar (CESFAM),Maipú,-70.77435,-33.50543
+deis,osm,SAR San Miguel,Servicio de Atención Primaria de Urgencia de Alta Resolutividad (SAR),San Miguel,-70.642698,-33.504957
+deis,osm,COSAM Maipú,Centro Comunitario de Salud Mental (COSAM),Maipú,-70.769791,-33.502803
+deis,osm,Laboratorio Clínico Holanda Ltda.,Laboratorio Clínico,Maipú,-70.759935,-33.500558
+deis,osm,Consultorio Escuela de formación policial de Carabineros de Chile,Centro de Salud Privado,Cerrillos,-70.708225,-33.497702
+deis,osm,Centro de Especialidades Clinicas spa (medicec),Centro de Salud Privado,Macul,-70.59538,-33.492637
+deis,osm,Clínica Psiquiátrica Nelly Vergara,Clínica,San Miguel,-70.643089,-33.490599
+deis,osm,Posta de Salud Rural San Antonio de Naltagua,Posta de Salud Rural (PSR),Isla de Maipo,-71.022697,-33.733259
+deis,osm,Corporación Renal Infantil Mater,Centro de Salud Privado,San Miguel,-70.655952,-33.486209
+deis,osm,Unidad de Salud FuncionarioS.S Metropolitano Sur,Otro,San Miguel,-70.641339,-33.486194
+deis,osm,Actividades gestionadas por la Dirección del Servicio para apoyo de la Red (S.S Metropolitano Sur),Otro,San Miguel,-70.641339,-33.486194
+deis,osm,PRAIS (S.S Metropolitano Sur),Otro,San Miguel,-70.641339,-33.486194
+deis,osm,Clínica del Carmen,Clínica,Macul,-70.5926836,-33.4860296
+deis,osm,Centro Médico Alto Tobalaba - Vacunatorio Vacci Protex,Centro de Salud Privado,Peñalolén,-70.557327,-33.48292
+deis,osm,Establecimiento Penitenciario Santiago 1,Centro de Salud Privado,Santiago,-70.656574,-33.475857
+deis,osm,Centro de Diálisis Nephrocare San Vicente,Centro de Diálisis,Santiago,-70.675668,-33.470122
+deis,osm,Centro Asistencial AChS Egaña,Centro de Salud Privado,Peñalolén,-70.574961,-33.466797
+deis,osm,Centro de Salud Familiar Padre Orellana,Centro de Salud Familiar (CESFAM),Santiago,-70.642536,-33.468114
+deis,osm,Centro de Salud Familiar Santiago Occidente de Carabineros de Chile,Centro de Salud Privado,Estación Central,-70.726975,-33.464796
+deis,osm,Centro Médico y Dental ISP,Centro de Salud Privado,Ñuñoa,-70.614717,-33.464262
+deis,osm,Vacunatorio Pharmavisan,Vacunatorio,Ñuñoa,-70.588958,-33.458042
+deis,osm,VACUNATORIO FASTFARMACHILE,Vacunatorio,Las Condes,-70.538996,-33.387198
+deis,osm,Centro Asistencial AChS Alameda,Centro de Salud Privado,Estación Central,-70.694266,-33.454331
+deis,osm,Clínica Los Coihues,Clínica,Estación Central,-70.7252069,-33.4592024
+deis,osm,Clínica Psiquiatrica Renacer,Clínica,Ñuñoa,-70.6063138,-33.4526019
+deis,osm,Clínica Recuperación Alcohol Alfa,Clínica,Ñuñoa,-70.604116,-33.450314
+deis,osm,Red-Lab,Laboratorio Clínico,Ñuñoa,-70.628452,-33.449361
+deis,osm,Espacio EME,Vacunatorio,Ñuñoa,-70.602775,-33.447877
+deis,osm,Laboratorio Referencia Oxman y Cía. Ltda.,Laboratorio Clínico,Santiago,-70.669423,-33.444929
+deis,osm,Laboratorio Bio Reval Ltda,Laboratorio Clínico,Santiago,-70.651889,-33.444597
+deis,osm,Consultorio Escuela de Carabineros de Chile,Centro de Salud Privado,Providencia,-70.6119,-33.44386
+deis,osm,Servicio Médico Dental (S) Armada de Chile,Centro de Salud Privado,Santiago,-70.689673,-33.4437
+deis,osm,Clínica Instituto El Cedro,Clínica,La Reina,-70.5239877,-33.4439993
+deis,osm,Centro de Oncología Preventiva de la Universidad de Chile,Centro de Salud Privado,Santiago,-70.683538,-33.441882
+deis,osm,Laboratorio Sigma,Laboratorio Clínico,Santiago,-70.677134,-33.440215
+deis,osm,Centro de Salud Diagnostiko Ltda,Centro de Salud Privado,Santiago,-70.642253,-33.439095
+deis,osm,Bioánalisis Ltda.,Laboratorio Clínico,Providencia,-70.632423,-33.438106
+deis,osm,Instituto Radiológico Providencia,Centro de Salud Privado,Providencia,-70.631223,-33.436374
+deis,osm,Clínica Psiquiatrica Bretaña,Clínica,Providencia,-70.59623,-33.43594
+deis,osm,VACUMED,Vacunatorio,Providencia,-70.631183,-33.435545
+deis,osm,Orlandi Oncología,Centro de Salud Privado,Providencia,-70.623886,-33.434315
+deis,osm,Centro de Salud Mutual CChC Pudahuel,Centro de Salud Privado,Pudahuel,-70.780219,-33.427641
+deis,osm,Diagnóstico por imagen San Vicente de Paul,Vacunatorio,Providencia,-70.59547,-33.426534
+deis,osm,Hospital Clínico Universidad de Chile,Hospital,Independencia,-70.653116,-33.420057
+deis,osm,INTEGRAMEDICA S.A. SUCURSAL LOS DOMINICOS,Centro de Salud Privado,Las Condes,-70.58871,-33.413184
+deis,osm,Hospital Clínico Universidad de Los Andes,Hospital,Las Condes,-70.5034723,-33.4055828
+deis,osm,CER,Centro de Salud Privado,Las Condes,-70.580694,-33.406463
+deis,osm,Centro Médico Militar Rosa O'Higgins,Centro de Salud Privado,Las Condes,-70.585445,-33.405309
+deis,osm,Centro de la Vision Filial Clinica Las Condes,Centro de Salud Privado,Las Condes,-70.572822,-33.402619
+deis,osm,COSAM Recoleta,Centro Comunitario de Salud Mental (COSAM),Recoleta,-70.641581,-33.402025
+deis,osm,Policlínico del Trabajador AChS Parque Las Américas,Centro de Salud Privado,Conchalí,-70.681955,-33.400648
+deis,osm,Centro Médico y Dental MegaSalud Kennedy,Centro de Salud Privado,Las Condes,-70.574539,-33.40046
+deis,osm,Biomer S.A.,Vacunatorio,Las Condes,-70.574142,-33.400011
+deis,osm,Central Odontológica de la Fuerzas Armadas y de Orden,Centro de Salud Privado,Las Condes,-70.548297,-33.395415
+deis,osm,Centro Comunitario de Salud Familiar Valmi  Aguirre,Centro Comunitario de Salud Familiar (CECOSF),Curacaví,-71.12384,-33.39079
+deis,osm,Santiago Medical Institute SPA,Clínica,Vitacura,-70.57247,-33.389936
+deis,osm,Clínica Psiquiatrica Pocuro,Clínica,Vitacura,-70.54528,-33.38832
+deis,osm,Centro de Salud Mutual CChC las Tranqueras,Centro de Salud Privado,Vitacura,-70.552732,-33.387251
+deis,osm,Teledoc,Centro de Salud Privado,Las Condes,-70.53279,-33.384203
+deis,osm,Procedimientos Clínicos Alto Tabancura,Centro de Salud Privado,Vitacura,-70.536344,-33.380903
+deis,osm,Centro Comunitario de Salud Familiar Dr. Lucas Sierra,Centro Comunitario de Salud Familiar (CECOSF),Conchalí,-70.6629,-33.3757
+deis,osm,Policlínico Instituto de Seguridad del Trabajo de Quilicura,Centro de Salud Privado,Quilicura,-70.713119,-33.373032
+deis,osm,Laboratorio Clínico BIOSOLUCIONES,Laboratorio Clínico,Lo Barnechea,-70.516337,-33.371886
+deis,osm,Clínica Alemana de La Dehesa,Clínica,Lo Barnechea,-70.5446,-33.36385
+deis,osm,Clínica MEDS La Dehesa,Clínica,Lo Barnechea,-70.534952,-33.355737
+deis,osm,Instituto Médico el Arrayán,Centro de Salud Privado,Lo Barnechea,-70.478189,-33.359821
+deis,osm,Centro de Cadera Dr. Mardones,Centro de Salud Privado,Lo Barnechea,-70.51602,-33.356811
+deis,osm,Clínica Monteblanco,Clínica,Lo Barnechea,-70.34427,-33.34334
+deis,osm,Vacunatorio Chicureo SpA,Vacunatorio,Colina,-70.706219,-33.278421
+deis,osm,COSAM Colina,Centro Comunitario de Salud Mental (COSAM),Colina,-70.676615,-33.195683
+deis,osm,Centro Comunitario de Salud Familiar Esmeralda,Centro Comunitario de Salud Familiar (CECOSF),Colina,-70.66344,-33.18373
+deis,osm,Centro Medico Huertos Familiares,Centro de Salud Privado,Tiltil,-70.814156,-33.140344
+deis,osm,SUR Huertos Familiares,Servicio de Urgencia Rural (SUR),Tiltil,-70.795754,-33.135329
+deis,osm,Vacunatorio Darvax,Vacunatorio,La Reina,-70.565863,-33.431268
+deis,osm,Posta de Salud Rural La Capilla de Caleu,Posta de Salud Rural (PSR),Tiltil,-70.995242,-33.002879
+deis,osm,Vacunatorio Patagonia,Vacunatorio,Las Condes,-70.534943,-33.402602
+deis,osm,Centro Comunitario de Salud Familiar LUMEN,Centro Comunitario de Salud Familiar (CECOSF),Maipú,-70.736439,-33.493674
+deis,osm,Centro Medico y Dental Del Valle,Centro de Salud Privado,Pudahuel,-70.848608,-33.45267
+deis,osm,Centro Odontológico Uno Salud Manuel Montt,Clínica Dental,Providencia,-70.624535,-33.430742
+deis,osm,LABORATORIO DE BIOLOGIA MOLECULAR DEPARTAMENTO DE MEDICINA PREVENTIVA,Laboratorio Clínico,La Pintana,-70.630651,-33.574351
+deis,osm,Laboratorio Clínico QUALIFIED SPA,Laboratorio Clínico,Ñuñoa,-70.595679,-33.45749
+deis,osm,Sciensolutions SPA,Centro de Salud Privado,Vitacura,-70.560466,-33.393662
+deis,osm,Laboratorio Clínico LABEXX,Laboratorio Clínico,Peñalolén,-70.557479,-33.48515
+deis,osm,Centro Médico Docente Asistencial USS,Centro de Salud Privado,Providencia,-70.60306,-33.424747
+deis,osm,Clinica Odontológica Municipal de Peñalolén,Clínica Dental,Peñalolén,-70.530655,-33.478094
+deis,osm,Centro de Vacunación Vaxcenter,Vacunatorio,Huechuraba,-70.670141,-33.364238
+deis,osm,Laboratorio Clínico Bradford Hill,Laboratorio Clínico,Recoleta,-70.645243,-33.429129
+deis,osm,Laboratorio Clínico MEDICEC,Laboratorio Clínico,Renca,-70.766639,-33.404442
+deis,osm,Centro Médico KINEROD 2,Centro de Salud Privado,Buin,-70.744362,-33.733317
+deis,osm,Laboratorio Green Lab Sur,Laboratorio Clínico,Providencia,-70.603983,-33.444938
+deis,osm,IMALAB LTDA,Laboratorio Clínico,Providencia,-70.631485,-33.436564
+deis,osm,Laboratorio CLINILAB,Laboratorio Clínico,Peñaflor,-70.880701,-33.61072
+deis,osm,Laboratorio Clínico Vego,Laboratorio Clínico,Maipú,-70.791631,-33.556345
+deis,osm,Centro Comunitario de Salud Familiar Unión y Esfuerzo Rural,Centro Comunitario de Salud Familiar (CECOSF),Pudahuel,-70.81815,-33.38556
+deis,osm,Clínica Vida Estética,Clínica,Providencia,-70.612965,-33.432437
+deis,osm,CIMER,Sala Externa de Toma de Muestras (SETM),Providencia,-70.613329,-33.432643
+deis,osm,Centro Clínico San Gerardo,Clínica,Recoleta,-70.647641,-33.405887
+deis,osm,A.S UTM Plaza San Francisco,Sala Externa de Toma de Muestras (SETM),Vitacura,-70.518403,-33.371865
+deis,osm,UNO SALUD DENTAL PUDAHUEL SUR,Clínica Dental,Pudahuel,-70.736668,-33.470669
+deis,osm,MUTUAL SEGURIDAD MAIPÚ,Centro de Salud Privado,Maipú,-70.75702784,-33.50128342
+deis,osm,LABORATORIO CLINICO CENTRAL LAB,Laboratorio Clínico,Las Condes,-70.5538981,-33.3996048
+deis,osm,OPERACIÓN CLINICA HUINGANAL,Clínica,Vitacura,-70.5991944,-33.4003321
+deis,osm,FUNDACION DEBRA,Centro de Salud Privado,Huechuraba,-70.619211,-33.38657
+deis,osm,SERVITOX LIMITADA,Laboratorio Clínico,Recoleta,-70.6369964,-33.4309749
+deis,osm,Centro  Kintun,Centro de Salud Comunitario para Personas con Demencia,Peñalolén,-70.5412219,-33.4779699
+deis,osm,SETM LA DEHESA,Sala Externa de Toma de Muestras (SETM),Lo Barnechea,-70.51525999,-33.36048008
+deis,osm,SAR ELSA ROMO ARAVENA,Servicio de Atención Primaria de Urgencia de Alta Resolutividad (SAR),Melipilla,-71.2233852,-33.6918733
+deis,osm,A.S UTM Buin UC CHRISTUS,Sala Externa de Toma de Muestras (SETM),Buin,-70.73697352,-33.7363791
+deis,osm,A.S UTM Peñaflor UC CHRISTUS,Sala Externa de Toma de Muestras (SETM),Peñaflor,-70.90034077,-33.60763079
+deis,osm,Centro Médico Bero,Centro de Salud Privado,Lo Prado,-70.72404669,-33.4400857
+deis,osm,UTM MACUL UC CHRISTUS,Sala Externa de Toma de Muestras (SETM),Macul,-70.59904793,-33.48362292
+deis,osm,Laboratorio Clinico Blanco SpA,Laboratorio Clínico,Las Condes,-70.53274462,-33.3846217
+deis,osm,DAVITA BUIN,Centro de Diálisis,Buin,-70.75814771,-33.7346882
+deis,osm,Sala Externa Toma Muestras Sociedad Médica Alto Tobalaba Limitada,Sala Externa de Toma de Muestras (SETM),Peñalolén,-70.55728056,-33.48297915
+deis,osm,Sala Externa Toma Muestas Laboratorio Popular,Sala Externa de Toma de Muestras (SETM),San Joaquín,-70.62965829,-33.50762163
+deis,osm,CECOSF Santa Teresa,Centro Comunitario de Salud Familiar (CECOSF),La Florida,-70.55159192,-33.51806658
+deis,osm,Centro de Especialidades Médicas y Odontológicas,Centro de Especialidades de Atención Primaria (CEAP),El Bosque,-70.67650739,-33.55010129
+deis,osm,SAFEVAC SpA,Vacunatorio,Providencia,-70.60458701,-33.43927161
+deis,osm,NEFRODIALISIS,Centro de Diálisis,Recoleta,-70.64281136,-33.42349991
+deis,osm,DIALISIS COLINA SA,Centro de Diálisis,Colina,-70.6786849,-33.20092325
+deis,osm,DAVITA PUENTE ALTO,Centro de Diálisis,Puente Alto,-70.57210997,-33.58692803
+deis,osm,UNO SALUD LA FLORIDA SANTA AMALIA,Clínica Dental,La Florida,-70.57074036,-33.54510319
+deis,osm,Centro de Resolutividad de la Atención Primaria CREAP,Centro de Especialidades de Atención Primaria (CEAP),Maipú,-70.74561,-33.510053
+deis,osm,UNO SALUD DENTAL BUIN,Clínica Dental,Buin,-70.73599878,-33.73334417
+deis,osm,Centro Comunitario de Salud Familiar IRMA ABARCA,Centro Comunitario de Salud Familiar (CECOSF),Renca,-70.6868816,-33.4150971
+deis,osm,Laboratorio Clínico Román Díaz,Laboratorio Clínico,Ñuñoa,-70.61988158,-33.45066548
+deis,osm,Dr. Mario Vidal Climent,Centro Comunitario de Salud Mental (COSAM),San Miguel,-70.6566904,-33.4833211
+deis,osm,CENTRO MEDICO UC CHRISTUS VITACURA,Centro de Salud Privado,Vitacura,-70.57642663,-33.3926087
+deis,osm,Centro Médico Militar Maipú,Centro de Salud Privado,Estación Central,-70.7201699,-33.4596828
+deis,osm,Centro Médico Militar Cordillera,Centro de Salud Privado,La Reina,-70.5339909,-33.4614726
+deis,osm,FAST CLINIC EL PINO,Centro de Salud Privado,San Bernardo,-70.68343284,-33.60736906
+osm,deis,Farmacias Ahumada,,Las Condes,-70.5250533,-33.376238
+osm,deis,Farmacias Ahumada,,Las Condes,-70.572086,-33.4186414
+osm,deis,SalcoBrand,,Las Condes,-70.57693,-33.426429600000006
+osm,deis,Farmacias Ahumada,,Pudahuel,-70.8415256,-33.440102800000005
+osm,deis,Farmacias Ahumada,,Providencia,-70.6021662,-33.4265433
+osm,deis,Cruz Verde,,Las Condes,-70.5527189,-33.4172998
+osm,deis,Hospital de Niños,,Puente Alto,-70.5813935,-33.5745464
+osm,deis,Farmacias Ahumada,,Las Condes,-70.5647485,-33.42514859999999
+osm,deis,Cruz Verde,,Las Condes,-70.5763604,-33.41102870000001
+osm,deis,Cruz Verde,,Las Condes,-70.5929242,-33.4162944
+osm,deis,SalcoBrand,,Las Condes,-70.5923034,-33.4246145
+osm,deis,Cruz Verde,,Las Condes,-70.6014766,-33.4152789
+osm,deis,SalcoBrand,,Las Condes,-70.6016454,-33.415094999999994
+osm,deis,Cruz Verde,,Providencia,-70.6098437,-33.42152720000001
+osm,deis,Cruz Verde,,Puente Alto,-70.5790751,-33.601222799999995
+osm,deis,Cruz Verde,,Santiago,-70.6686562,-33.44042409999999
+osm,deis,Cruz Verde,,Providencia,-70.6174573,-33.4274659
+osm,deis,Farmacias del Doctor Simi,,Providencia,-70.617703,-33.4276163
+osm,deis,Farmacias Ahumada,,La Florida,-70.5934437,-33.53541130000001
+osm,deis,Cruz Verde,,Las Condes,-70.5785042,-33.423614400000005
+osm,deis,Farmacias Ahumada,,Lo Barnechea,-70.5149047,-33.3622911
+osm,deis,Clínica Odontológica,,Vitacura,-70.5945549,-33.4021725
+osm,deis,SalcoBrand,,Ñuñoa,-70.5978876,-33.4649337
+osm,deis,La Botica Natural,,Providencia,-70.6228769,-33.430741199999986
+osm,deis,Cruz Verde,,Las Condes,-70.5977274,-33.4145884
+osm,deis,Farmacias Ahumada,,Las Condes,-70.5400451,-33.428148
+osm,deis,Cruz Verde,,Las Condes,-70.5782294,-33.4302659
+osm,deis,Farmacias Ahumada,,Las Condes,-70.5783474,-33.43040020000001
+osm,deis,Farmacias Ahumada,,Las Condes,-70.5607581,-33.401306700000006
+osm,deis,Damyfar,,San Joaquín,-70.6178069,-33.49218629999999
+osm,deis,Farmacias Ahumada,,Macul,-70.6169244,-33.491804699999996
+osm,deis,Farmacias Ahumada,,Las Condes,-70.5941798,-33.4165533
+osm,deis,Cruz Verde,,Las Condes,-70.5687008,-33.40957029999999
+osm,deis,Cruz Verde,,Las Condes,-70.5708023,-33.40945239999999
+osm,deis,Farmacias Cruz Verde,,Vitacura,-70.5448948,-33.37633639999999
+osm,deis,SalcoBrand,,San Bernardo,-70.7055737,-33.5938618
+osm,deis,SalcoBrand,,Estación Central,-70.6801104,-33.4515837
+osm,deis,SalcoBrand,,Las Condes,-70.5745636,-33.4106374
+osm,deis,SalcoBrand,,Lo Barnechea,-70.5159616,-33.3587789
+osm,deis,SalcoBrand,,Las Condes,-70.5608712,-33.41179439999999
+osm,deis,SalcoBrand,,Lo Barnechea,-70.5186413,-33.352053600000005
+osm,deis,SalcoBrand,,Las Condes,-70.5689863,-33.40961169999999
+osm,deis,SalcoBrand,,Lo Barnechea,-70.5424242,-33.3476569
+osm,deis,SalcoBrand,,Recoleta,-70.6473597,-33.43071990000001
+osm,deis,SalcoBrand,,Ñuñoa,-70.6032304,-33.4541688
+osm,deis,SalcoBrand,,Lo Barnechea,-70.5323809,-33.355181
+osm,deis,Farmacias SalcoBrand,,Buin,-70.7397103,-33.73277180000001
+osm,deis,La Bótica,,El Bosque,-70.6684771,-33.545483299999994
+osm,deis,SalcoBrand,,Pudahuel,-70.7573724,-33.4436498
+osm,deis,SalcoBrand,,La Pintana,-70.6317967,-33.5825863
+osm,deis,SalcoBrand,,Las Condes,-70.5517781,-33.418397999999996
+osm,deis,SalcoBrand,,Las Condes,-70.5511361,-33.398294899999996
+osm,deis,SalcoBrand,,La Florida,-70.5687395,-33.548177299999985
+osm,deis,SalcoBrand,,Ñuñoa,-70.6016324,-33.4543517
+osm,deis,SalcoBrand,,Las Condes,-70.5407851,-33.4283789
+osm,deis,SalcoBrand,,Renca,-70.7057002,-33.4042842
+osm,deis,SalcoBrand,,Vitacura,-70.5678454,-33.38835619999999
+osm,deis,SalcoBrand,,Las Condes,-70.5151767,-33.392575
+osm,deis,SalcoBrand,,La Florida,-70.5916,-33.53980740000001
+osm,deis,SalcoBrand,,Ñuñoa,-70.5866243,-33.45579849999999
+osm,deis,SalcoBrand,,Las Condes,-70.5194175,-33.37394859999999
+osm,deis,SalcoBrand,,Santiago,-70.6738939,-33.44923099999999
+osm,deis,SalcoBrand,,Maipú,-70.7730581,-33.510099999999994
+osm,deis,SalcoBrand,,Las Condes,-70.5784869,-33.430516600000004
+osm,deis,Farmacias Ahumada,,Melipilla,-71.2137166,-33.6848191
+osm,deis,Cruz Verde,,Recoleta,-70.6322656,-33.40368529999999
+osm,deis,SalcoBrand,,La Florida,-70.5857576,-33.56106969999999
+osm,deis,SalcoBrand,,Puente Alto,-70.5904097,-33.5952308
+osm,deis,Farmacias Ahumada,,Vitacura,-70.5823636,-33.39722389999999
+osm,deis,Cruz Verde,,Las Condes,-70.5649769,-33.407857
+osm,deis,Farmacias Ahumada,,Vitacura,-70.5928068,-33.3920014
+osm,deis,Cruz Roja Chilena El Monte,,El Monte,-70.9784926,-33.67959859999999
+osm,deis,Farmacias Ahumada,,Ñuñoa,-70.6051892,-33.45742070000001
+osm,deis,Cruz Verde,,Ñuñoa,-70.5717333,-33.4533129
+osm,deis,Farmacias del Dr. Simi,,La Florida,-70.5999669,-33.520932499999994
+osm,deis,SalcoBrand,,Puente Alto,-70.5849957,-33.5714824
+osm,deis,Cruz Verde,,Puente Alto,-70.5845371,-33.5714232
+osm,deis,Farmacia Herrera,,La Florida,-70.5858549,-33.56701209999999
+osm,deis,Cruz Verde,,La Florida,-70.6026563,-33.5541407
+osm,deis,Farmacias Ahumada,,La Florida,-70.595108,-33.5197318
+osm,deis,Farmacias Ahumada,,Quilicura,-70.7298769,-33.382411899999994
+osm,deis,Farmacias Ahumada,,Maipú,-70.762968,-33.5205036
+osm,deis,Farmacias Ahumada,,Estación Central,-70.6923521,-33.45394
+osm,deis,Knop,,Las Condes,-70.5683983,-33.409487299999995
+osm,deis,FarPlus,,Las Condes,-70.5695094,-33.40997
+osm,deis,Farmacias Ahumada,,Colina,-70.6806153,-33.285263199999996
+osm,deis,Farmacias Ahumada,,Vitacura,-70.57007160000002,-33.390139
+osm,deis,SalcoBrand,,Las Condes,-70.5721904,-33.4190602
+osm,deis,Los Abedules - Clínica estética y dental,,Lo Barnechea,-70.5227486,-33.3528514
+osm,deis,Cruz Verde,,Lo Barnechea,-70.5438554,-33.34455619999999
+osm,deis,Farmacias Elemental,,Las Condes,-70.6045314,-33.416975099999995
+osm,deis,SalcoBrand,,Las Condes,-70.5010105,-33.36866779999999
+osm,deis,Cruz Verde,,Lo Barnechea,-70.5070675,-33.355958099999995
+osm,deis,Pabellón Central Doctor Octavio Gay Pasche,,San José de Maipo,-70.34989760000002,-33.6458444
+osm,deis,Sanatorio Elba Guarategua,,San José de Maipo,-70.3501873,-33.6438442
+osm,deis,Valdani D,,Providencia,-70.6095613,-33.431679500000016
+osm,deis,Farmacia San Lázaro,,Puente Alto,-70.5838869,-33.6177324
+osm,deis,Cruz Verde,,Santiago,-70.6519712,-33.433516499999996
+osm,deis,Farmacias Central,,Santiago,-70.6587122,-33.437154500000005
+osm,deis,Sanar,,Las Condes,-70.542183,-33.39228609999999
+osm,deis,Cruz Verde,,Huechuraba,-70.62048630000001,-33.3940923
+osm,deis,Farmacias Ahumada,,Ñuñoa,-70.6005099,-33.4535398
+osm,deis,Cruz Verde,,Peñalolén,-70.5781801,-33.4863072
+osm,deis,Cruz Verde,,San Joaquín,-70.6137483,-33.50848100000001
+osm,deis,Cruz Verde,,San Miguel,-70.6569233,-33.50987920000001
+osm,deis,Cruz Verde,,Ñuñoa,-70.61041220000001,-33.448186799999995
+osm,deis,Farmacias Ahumada,,Huechuraba,-70.6702734,-33.351398499999995
+osm,deis,Cruz Verde,,Estación Central,-70.68778820000001,-33.45347279999999
+osm,deis,Farmacias Ahumada,,Santiago,-70.6511075,-33.4351617
+osm,deis,Farmacias del Dr. Simi,,Macul,-70.59917,-33.484990499999995
+osm,deis,Cruz Verde,,Santiago,-70.657971,-33.439067300000005
+osm,deis,Cruz Verde,,La Florida,-70.5536721,-33.5345826
+osm,deis,Cruz Verde,,Puente Alto,-70.5515483,-33.5598405
+osm,deis,SalcoBrand,,Puente Alto,-70.5591529,-33.5577094
+osm,deis,,,Maipú,-70.7913266,-33.5145639
+osm,deis,Cruz Verde,,La Florida,-70.5718488,-33.540352
+osm,deis,SalcoBrand,,La Florida,-70.5740032,-33.535505099999995
+osm,deis,Cruz Verde,,La Florida,-70.5835423,-33.5394907
+osm,deis,Belén,,Maipú,-70.7872846,-33.52442379999999
+osm,deis,Farmacias Ahumada,,Las Condes,-70.513992,-33.4013711
+osm,deis,Farmacias Ahumada,,Pudahuel,-70.8503425,-33.4517577
+osm,deis,Cruz Verde,,Ñuñoa,-70.6023025,-33.45425649999999
+osm,deis,Farmacia Olímpica,,Puente Alto,-70.5784829,-33.5995557
+osm,deis,Cruz Verde,,Vitacura,-70.5969695,-33.3944211
+osm,deis,Farmacia Gireno,,Lo Espejo,-70.7003935,-33.52790769999999
+osm,deis,Farmacia Mebal,,Maipú,-70.7752905,-33.5100637
+osm,deis,Farmacias Ahumada,,Vitacura,-70.5867236,-33.3901353
+osm,deis,Farmacia La Plaza,,Buin,-70.7476455,-33.731614500000006
+osm,deis,Cruz Verde,,Renca,-70.7047778,-33.4055897
+osm,deis,,,Puente Alto,-70.6014771,-33.58216799999999
+osm,deis,Farmacia Los Paltos,,Puente Alto,-70.6009407,-33.58217249999999
+osm,deis,San Juan,,El Monte,-70.9794211,-33.67938960000001
+osm,deis,Farmacias Ahumada,,Ñuñoa,-70.5804123,-33.44807920000001
+osm,deis,,,Maipú,-70.7671737,-33.5281006
+osm,deis,SalcoBrand,,Vitacura,-70.597601,-33.3986856
+osm,deis,Damyfar,,Santiago,-70.6499529,-33.4537059
+osm,deis,Farmacias Ahumada,,Peñalolén,-70.5499158,-33.48858439999999
+osm,deis,SalcoBrand,,Peñalolén,-70.550308,-33.4891966
+osm,deis,Farmacias Ahumada,,Pudahuel,-70.7319206,-33.467889099999994
+osm,deis,Farmacias Ahumada,,Maipú,-70.77529900000002,-33.5313983
+osm,deis,Centro Dental,,Pudahuel,-70.74534870000001,-33.436613200000004
+osm,deis,Carnicería El Productor,,Pudahuel,-70.7465667,-33.436604700000004
+osm,deis,SalcoBrand,,Las Condes,-70.5605455,-33.4168351
+osm,deis,Cruz Verde,,La Cisterna,-70.6591122,-33.51739359999999
+osm,deis,Doctor Simi,,Puente Alto,-70.5822661,-33.5789965
+osm,deis,Salud Farma,,Puente Alto,-70.5810237,-33.5809139
+osm,deis,SalcoBrand,,Lampa,-70.745956,-33.32344590000002
+osm,deis,Farmacias Ahumada,,San Miguel,-70.6570243,-33.508869700000005
+osm,deis,Farmacia José Joaquín Pérez,,Cerro Navia,-70.73862690000001,-33.430039900000004
+osm,deis,Farmacia Dylan 2,,Cerro Navia,-70.7371547,-33.4294581
+osm,deis,Cruz Verde,,Cerro Navia,-70.7358666,-33.4295542
+osm,deis,Clínica Dental,,Cerro Navia,-70.7360287,-33.4292711
+osm,deis,Clínica odontologica UDP,,Santiago,-70.6611506,-33.4499133
+osm,deis,Farmacia San Francisco,,Lo Prado,-70.7328331,-33.43640100000001
+osm,deis,Farmacias,,Puente Alto,-70.5594673,-33.5933533
+osm,deis,SalcoBrand,,Providencia,-70.590936,-33.42687920000001
+osm,deis,SalcoBrand,,Las Condes,-70.544243,-33.4094652
+osm,deis,Consultorio Juan Palau,,Las Condes,-70.5573896,-33.430032999999995
+osm,deis,Cruz Verde,,Pedro Aguirre Cerda,-70.6631693,-33.479001200000006
+osm,deis,Maternidad,,Puente Alto,-70.5795144,-33.5780623
+osm,deis,Cruz Verde,,La Pintana,-70.6295288,-33.5864168
+osm,deis,SalcoBrand,,Lo Prado,-70.7230228,-33.4440445
+osm,deis,Cruz Verde,,Pirque,-70.5706403,-33.634281599999994
+osm,deis,Farmacia Eben Ezer,,Cerro Navia,-70.7375276,-33.431628200000006
+osm,deis,Farmacia FarmaOferta,,Pudahuel,-70.754401,-33.43619389999999
+osm,deis,Farmacia Catherinne II,,Pudahuel,-70.7673805,-33.43637900000001
+osm,deis,Farmacias Espoz,,Lo Prado,-70.736084,-33.4444354
+osm,deis,Farmacia Belén,,Lo Prado,-70.7248051,-33.444198099999994
+osm,deis,Cruz Verde,,Puente Alto,-70.5098643,-33.597264300000006
+osm,deis,,,Providencia,-70.6165026,-33.4462012
+osm,deis,Farmacias del Dr. Simi,,La Cisterna,-70.658377,-33.5163849
+osm,deis,Farmacia Dr Ahorro,,La Cisterna,-70.65880680000001,-33.516217
+osm,deis,Farmacias Manríquez,,La Cisterna,-70.6587707,-33.5177748
+osm,deis,Centro Médico Santa Elena,,La Cisterna,-70.65910100000002,-33.51684740000002
+osm,deis,Farmacia Espoz,,Pudahuel,-70.758438,-33.4429507
+osm,deis,Clínica Odontológica,,Buin,-70.7381327,-33.7305902
+osm,deis,Centro de Diálisis Neprocare Buin,,Buin,-70.7374929,-33.73061349999999
+osm,deis,Farmacias Ahumada,,Buin,-70.7354312,-33.7320655
+osm,deis,Farmacia Kurth,,Buin,-70.7385493,-33.7330683
+osm,deis,Belen Farmacias,,El Bosque,-70.6731876,-33.5694932
+osm,deis,Cruz Verde,,Santiago,-70.6643253,-33.45200849999999
+osm,deis,Farmacia Carmen,,Santiago,-70.6609331,-33.45084320000001
+osm,deis,Cruz Verde,,Vitacura,-70.5673197,-33.376519
+osm,deis,Farmacias Ahumada,,Talagante,-70.9253194,-33.6624842
+osm,deis,Farmacias Ahumada,,Colina,-70.6670045,-33.3039545
+osm,deis,Cruz Verde,,Lo Prado,-70.715786,-33.457498699999995
+osm,deis,Farmacias del Dr. Simi,,Providencia,-70.6118069,-33.4228806
+osm,deis,Farmacia Ximena Polanco,,Providencia,-70.6086889,-33.425502900000005
+osm,deis,,,Recoleta,-70.6457367,-33.430437
+osm,deis,Farmacias del Dr. Simi,,Estación Central,-70.7070754,-33.4579273
+osm,deis,Cruz Verde,,Colina,-70.6772393,-33.285244999999996
+osm,deis,SalcoBrand,,Colina,-70.6755434,-33.2858563
+osm,deis,Farmacias Ahumada,,Colina,-70.6994346,-33.28585399999999
+osm,deis,SalcoBrand,,Colina,-70.7034808,-33.27803450000001
+osm,deis,Farmacias Ahumada,,Santiago,-70.6346613,-33.4478964
+osm,deis,Cuenca y cuenca Ltda oficina 208,,San Miguel,-70.65476,-33.500835
+osm,deis,SalcoBrand,,Santiago,-70.6608773,-33.4534365
+osm,deis,La Torre,,Santiago,-70.6640025,-33.4566159
+osm,deis,Cruz Verde,,Curacaví,-71.1291808,-33.40284030000001
+osm,deis,Cruz Verde,,Calera de Tango,-70.7995775,-33.6235252
+osm,deis,Farmacias del Dr. Simi,,Santiago,-70.6482109,-33.4731434
+osm,deis,SalcoBrand,,Las Condes,-70.57306180000002,-33.40490009999999
+osm,deis,SalcoBrand,,Macul,-70.599189,-33.4857732
+osm,deis,Doctor Benjamín Cousiño,,Santiago,-70.6554967,-33.46173739999998
+osm,deis,Actimed,,Lampa,-70.8110963,-33.2389141
+osm,deis,El Valle,,Colina,-70.6933371,-33.2858519
+osm,deis,Farmacia Gandana,,Recoleta,-70.6396367,-33.41390700000001
+osm,deis,Centro Médico Odontológico,,Colina,-70.6750627,-33.1977076
+osm,deis,Clínica Dental Cerro Blanco,,Recoleta,-70.6445701,-33.421711499999994
+osm,deis,,,Recoleta,-70.6447176,-33.4221448
+osm,deis,Centro Medico,,Recoleta,-70.6471833,-33.43042299999999
+osm,deis,Centro Dental,,Recoleta,-70.6471954,-33.4304611
+osm,deis,Expro Dental,,Recoleta,-70.6463639,-33.4330375
+osm,deis,Farmacias Ahumada,,Colina,-70.6955594,-33.23833059999999
+osm,deis,Farmacias Torres,,Recoleta,-70.6289833,-33.3996143
+osm,deis,Cruz Verde,,Providencia,-70.5918219,-33.435760599999995
+osm,deis,Farmacias Ahumada,,Recoleta,-70.6434273,-33.405582700000004
+osm,deis,Clinica Dental Medica,,Recoleta,-70.6429685,-33.3983052
+osm,deis,Consulta Dental Recoleta,,Recoleta,-70.6429984,-33.39736189999999
+osm,deis,Farmacias Bicentenario,,Recoleta,-70.6429097,-33.395596899999994
+osm,deis,Viadent,,Recoleta,-70.6427184,-33.392024400000004
+osm,deis,Farmacias Latinoamericana,,Recoleta,-70.6430237,-33.4053743
+osm,deis,Cruz Verde,,Conchalí,-70.6800584,-33.384590999999986
+osm,deis,Centro Médico Dental,,Conchalí,-70.6800459,-33.3845355
+osm,deis,Valle de Vida,,Conchalí,-70.679753,-33.384961600000004
+osm,deis,Belén,,Conchalí,-70.680384,-33.3848109
+osm,deis,Centro Médico y Dental,,Conchalí,-70.680199,-33.3852012
+osm,deis,Farmacia Foster,,Independencia,-70.6687005,-33.4056809
+osm,deis,Cruz Verde,,Santiago,-70.6775461,-33.4508074
+osm,deis,Consulta Medica,,Independencia,-70.672522,-33.4185811
+osm,deis,Farmacias Family,,La Florida,-70.6058561,-33.5129369
+osm,deis,,,Colina,-70.7037032,-33.2770529
+osm,deis,Farmacia Nueva Real,,Colina,-70.6769766,-33.2042248
+osm,deis,Farmacias del Dr. Simi,,Colina,-70.6772633,-33.20416259999998
+osm,deis,Doctor Cornejo,,Colina,-70.6817915,-33.20363400000001
+osm,deis,Farmacia Helifarma,,Colina,-70.6805437,-33.20386160000001
+osm,deis,Farmacia Alosal,,Conchalí,-70.6821178,-33.37326299999999
+osm,deis,Farmacia Valle de Vida,,Conchalí,-70.6823938,-33.3737221
+osm,deis,Centro Médico y Dental,,Conchalí,-70.681622,-33.37396480000001
+osm,deis,,,Conchalí,-70.6852549,-33.3746115
+osm,deis,Farmacias Sana Sana,,Huechuraba,-70.635804,-33.37089339999999
+osm,deis,Farmacias Habana,,Puente Alto,-70.5679668,-33.5856419
+osm,deis,Farmacia Vecina,,Quilicura,-70.7507097,-33.353246500000004
+osm,deis,Farmaxal,,Quilicura,-70.747837,-33.360948900000004
+osm,deis,Medisalud,,Quilicura,-70.7486381,-33.3544753
+osm,deis,Coldental,,Quilicura,-70.7397233,-33.350450099999996
+osm,deis,Consulta Dental,,Quilicura,-70.7309894,-33.35610209999999
+osm,deis,Centro Medico,,Quilicura,-70.730596,-33.3557735
+osm,deis,Clínica O'Higgins Salud,,Quilicura,-70.7291413,-33.35918199999999
+osm,deis,Consulta Dental,,Colina,-70.6756621,-33.2052046
+osm,deis,SalcoBrand,,Ñuñoa,-70.5779654,-33.4366645
+osm,deis,Dentist Plus,,San Bernardo,-70.7004711,-33.59495940000001
+osm,deis,Farmacias Santa Ana,,Quilicura,-70.72755580000002,-33.3682673
+osm,deis,San Elias,,Quilicura,-70.7274303,-33.3682037
+osm,deis,,,Conchalí,-70.6690646,-33.397929
+osm,deis,Belén,,Quilicura,-70.7342144,-33.36727619999999
+osm,deis,Ambita Dent,,Quilicura,-70.7342577,-33.36726089999999
+osm,deis,Doctora Magaly Pinto,,Quilicura,-70.734482,-33.3672331
+osm,deis,,,Conchalí,-70.6724242,-33.39540349999999
+osm,deis,Farmacias del Dr. Simi,,Quilicura,-70.734149,-33.36703649999999
+osm,deis,Farmax,,Quilicura,-70.7342981,-33.36698669999999
+osm,deis,Consulta Dental Vanne,,Quilicura,-70.7351559,-33.366653799999995
+osm,deis,Clínica Dental Doctora Cabrera,,Quilicura,-70.7360766,-33.36639259999999
+osm,deis,Farmacias NetFarma,,Maipú,-70.736674,-33.4955052
+osm,deis,Cruz Verde,,Lo Barnechea,-70.5380321,-33.355241299999996
+osm,deis,,,Independencia,-70.6586304,-33.4130905
+osm,deis,Farmacia Vecina,,Quilicura,-70.7224124,-33.36624369999999
+osm,deis,Farmacias Central,,Maipú,-70.7455247,-33.5010831
+osm,deis,Cruz Verde,,Ñuñoa,-70.6213915,-33.44985719999999
+osm,deis,Farmacia Vecina,,Quilicura,-70.7449017,-33.3617766
+osm,deis,Cruz Verde,,Huechuraba,-70.6700873,-33.347436200000004
+osm,deis,,,San Bernardo,-70.7001595,-33.597012199999995
+osm,deis,Huechuraba Salud Clínica Dental,,Huechuraba,-70.6698983,-33.346205
+osm,deis,Clínica Italia,,Lampa,-70.7503576,-33.32608940000001
+osm,deis,Clinica Dental Las Pataguas,,Lo Barnechea,-70.5376123,-33.35463099999999
+osm,deis,Ebenecer,,San Bernardo,-70.7053401,-33.59441339999999
+osm,deis,Jardin del Valle,,Lampa,-70.7427202,-33.32530859999999
+osm,deis,Dental11,,Huechuraba,-70.6770061,-33.3565301
+osm,deis,Farmacias Ahumada,,Puente Alto,-70.5766671,-33.599523299999994
+osm,deis,Clinica Dental,,Ñuñoa,-70.6023183,-33.45416620000001
+osm,deis,Farmacias del Dr. Simi,,Ñuñoa,-70.6046779,-33.4534431
+osm,deis,Homeopatica,,Ñuñoa,-70.6034772,-33.45442499999999
+osm,deis,Galenica,,Ñuñoa,-70.6033958,-33.4544304
+osm,deis,Farmacias del Dr. Simi,,Santiago,-70.6367631,-33.4379504
+osm,deis,Farmacias Chile,,Santiago,-70.6313214,-33.45142680000001
+osm,deis,Cruz Verde,,Santiago,-70.631297,-33.451719199999985
+osm,deis,Consulta Dental,,Recoleta,-70.6429165,-33.3930161
+osm,deis,Cruz Verde,,La Florida,-70.5738835,-33.53621749999999
+osm,deis,EcuaMeden,,Recoleta,-70.6427838,-33.393659899999996
+osm,deis,,,El Bosque,-70.6709632,-33.5624313
+osm,deis,Farmacia Los Maquis,,El Bosque,-70.6706921,-33.561242899999996
+osm,deis,Santa Marta,,Puente Alto,-70.6122387,-33.6294024
+osm,deis,Clinica Dental Pacífico,,Puente Alto,-70.5779753,-33.6096419
+osm,deis,Santa Marta,,Puente Alto,-70.6129577,-33.620540299999995
+osm,deis,Integradent,,Puente Alto,-70.57747980000002,-33.610487899999995
+osm,deis,Farmacia Santa Laura,,Independencia,-70.6607203,-33.405921500000005
+osm,deis,Farmacias Manríquez,,La Cisterna,-70.6679538,-33.545606
+osm,deis,Consulta Dental,,Puente Alto,-70.5778643,-33.6096097
+osm,deis,Catedral,,La Cisterna,-70.663685,-33.5358633
+osm,deis,Farmacias Su Farma,,La Florida,-70.5598068,-33.5591819
+osm,deis,Clinica Conexion Dental,,La Florida,-70.58422490000001,-33.56356479999999
+osm,deis,Dental,,La Cisterna,-70.6618806,-33.5288867
+osm,deis,Farmacia Carla,,Renca,-70.7215483,-33.40096369999999
+osm,deis,Farmacia Carmen,,La Cisterna,-70.6584397,-33.51660680000001
+osm,deis,Homeofarm,,San Miguel,-70.6568649,-33.5109419
+osm,deis,Farmacias Manríquez,,San Miguel,-70.6563462,-33.509185699999996
+osm,deis,La Botica Cubana,,Recoleta,-70.64682590000001,-33.43179379999999
+osm,deis,María Medicinal Growshop,,Ñuñoa,-70.5976395,-33.464351799999996
+osm,deis,,,Puente Alto,-70.5922674,-33.58047859999999
+osm,deis,Dentioral,,Puente Alto,-70.5876212,-33.5798812
+osm,deis,Farmacia Fullfarma,,Puente Alto,-70.5855483,-33.589982
+osm,deis,SalcoBrand,,Ñuñoa,-70.6269588,-33.4549899
+osm,deis,Farmacia Netfarma,,Puente Alto,-70.5990665,-33.588084999999985
+osm,deis,Cruz Verde,,Ñuñoa,-70.6132345,-33.4480573
+osm,deis,Clínica Dental,,Ñuñoa,-70.6130991,-33.4480241
+osm,deis,Consulta Medica,,Puente Alto,-70.599872,-33.5879648
+osm,deis,Clínica Dental,,Puente Alto,-70.576075,-33.609787299999994
+osm,deis,Cruz Verde,,Recoleta,-70.6398892,-33.423631199999996
+osm,deis,Centro Salud,,Puente Alto,-70.5744839,-33.6124834
+osm,deis,Clínica Dental,,Providencia,-70.6286775,-33.4458311
+osm,deis,Centro Medico y Dental Puente Alto,,Puente Alto,-70.57362,-33.607370700000004
+osm,deis,Farmacias Knop,,San Bernardo,-70.7055533,-33.593804299999995
+osm,deis,Farmacia Ferco,,San Joaquín,-70.6264493,-33.50706629999999
+osm,deis,Farmacias La Botika,,La Granja,-70.6232627,-33.53182290000001
+osm,deis,Farmacias Damyfar,,Ñuñoa,-70.6289325,-33.4536792
+osm,deis,Farmacias Netfarma,,Puente Alto,-70.5901565,-33.6278865
+osm,deis,Farmacias La Botika,,Renca,-70.6906596,-33.4097701
+osm,deis,Farmacia Arbolaria,,Vitacura,-70.55006,-33.38305609999998
+osm,deis,,,Santiago,-70.6270785,-33.4660017
+osm,deis,Farmacias Ahumada,,Ñuñoa,-70.5999366,-33.46485800000001
+osm,deis,Cruz Verde,,Ñuñoa,-70.5882441,-33.455717699999994
+osm,deis,Farmacia La Urgencia,,Independencia,-70.6536223,-33.42837740000001
+osm,deis,Dental Medica,,Independencia,-70.6579132,-33.4207284
+osm,deis,MyE Medical,,Macul,-70.5964138,-33.499486899999994
+osm,deis,Farmacia Faresp,,Providencia,-70.6357976,-33.4325635
+osm,deis,Farmacias del Dr. Simi,,Macul,-70.6000205,-33.49254
+osm,deis,Cruz Verde,,Macul,-70.5999787,-33.4914718
+osm,deis,Cruz Verde,,Macul,-70.5994495,-33.4806764
+osm,deis,,,San Miguel,-70.6491532,-33.4804996
+osm,deis,Clínica Odontológica Megasonrisa,,Macul,-70.5994462,-33.4908419
+osm,deis,OC Dental,,Ñuñoa,-70.5988115,-33.4696778
+osm,deis,Farmacias Alkosto,,Santiago,-70.6490554,-33.44717049999999
+osm,deis,Cruz Verde,,Santiago,-70.6495414,-33.44703
+osm,deis,Cruz Verde,,Santiago,-70.6516366,-33.43632999999999
+osm,deis,Farmacias Ahumada,,Santiago,-70.6690965,-33.43503609999999
+osm,deis,Farmacia Otero,,Santiago,-70.6676877,-33.444337999999995
+osm,deis,Cruz Verde,,Santiago,-70.667441,-33.44738480000001
+osm,deis,Farmacias Ahumada,,Santiago,-70.65167910000001,-33.436094700000005
+osm,deis,Farmacias del Dr. Simi,,Santiago,-70.6529922,-33.436251199999994
+osm,deis,Consulta Médica,,Santiago,-70.6530684,-33.436265899999995
+osm,deis,Sos Farmacias,,Santiago,-70.6571631,-33.43671839999999
+osm,deis,Farmacia Paris,,Santiago,-70.6510577,-33.4483928
+osm,deis,Cruz Verde,,Padre Hurtado,-70.8277093,-33.5615237
+osm,deis,Farmacias del Dr. Simi,,Santiago,-70.6494518,-33.43393249999999
+osm,deis,Farmacia Jardín,,Santiago,-70.6682625,-33.434795799999996
+osm,deis,Consultorio Dental,,Santiago,-70.6617859,-33.4345087
+osm,deis,Consulta Medicina Familiar Salud Dental,,Santiago,-70.6665448,-33.4349343
+osm,deis,Farmacia Francesa,,Santiago,-70.6662264,-33.434905799999996
+osm,deis,Baofarma,,Maipú,-70.7511494,-33.47466889999999
+osm,deis,Consulta Dental Belén,,Maipú,-70.7484428,-33.47489469999999
+osm,deis,Belen Farmacias,,Santiago,-70.6525508,-33.43437800000002
+osm,deis,Farmacias del Dr. Simi,,Santiago,-70.6515144,-33.434326199999994
+osm,deis,Farmacias del Dr. Simi,,Estación Central,-70.7072817,-33.4580272
+osm,deis,Farmacia Roxana,,Santiago,-70.6760398,-33.4351579
+osm,deis,,,Santiago,-70.6772894,-33.434156400000006
+osm,deis,Farmacia Todo,,Santiago,-70.6484579,-33.4759405
+osm,deis,,,Estación Central,-70.706881,-33.45795700000001
+osm,deis,Farmacias Belén,,Santiago,-70.6745771,-33.4352407
+osm,deis,,,Santiago,-70.6759486,-33.4545691
+osm,deis,Dentimagen,,Santiago,-70.660857,-33.4393469
+osm,deis,Sattva,,Santiago,-70.6593036,-33.44147650000001
+osm,deis,Farmacias Sos,,Santiago,-70.6581221,-33.4379557
+osm,deis,Farmacias Ahumada,,Ñuñoa,-70.6088059,-33.454983399999996
+osm,deis,Farmacia Manríquez,,Santiago,-70.6578516,-33.4404761
+osm,deis,Santa Marta,,Santiago,-70.6547611,-33.433590899999984
+osm,deis,Consalud,,Ñuñoa,-70.6092938,-33.4538529
+osm,deis,Cruz Verde,,Santiago,-70.6354935,-33.448123
+osm,deis,,,Santiago,-70.6549728,-33.4376056
+osm,deis,Farmacias,,Santiago,-70.6346983,-33.4501059
+osm,deis,Clínica Dental,,Providencia,-70.6138449,-33.439338599999985
+osm,deis,Cruz Verde,,Maipú,-70.7523305,-33.4801894
+osm,deis,SalcoBrand,,Maipú,-70.75177760000001,-33.482976799999996
+osm,deis,Centro Medico Dental,,Cerro Navia,-70.753034,-33.416847
+osm,deis,Farmacias Econofarma,,Maipú,-70.7665144,-33.4898682
+osm,deis,Mi Clinica Dental,,Santiago,-70.6569324,-33.4386404
+osm,deis,Farmacia Mapocho,,Cerro Navia,-70.7513851,-33.42173679999999
+osm,deis,Farmacias del Dr. Simi,,Estación Central,-70.6871636,-33.453372599999994
+osm,deis,Farmacia Belgo Chilena,,Estación Central,-70.6867604,-33.453323899999994
+osm,deis,Farmacia Noe,,Santiago,-70.6756985,-33.4503814
+osm,deis,,,Santiago,-70.6459488,-33.445009
+osm,deis,Farmacias Ahumada,,Santiago,-70.6656264,-33.442661699999995
+osm,deis,Podología,,Maipú,-70.763181,-33.48900510000001
+osm,deis,Cruz Verde,,Padre Hurtado,-70.8152086,-33.56951879999999
+osm,deis,Odontoplus,,Quinta Normal,-70.6920676,-33.4308033
+osm,deis,Cruz Verde,,Quinta Normal,-70.69265830000002,-33.43038070000001
+osm,deis,Farmacia Marsil 1,,Recoleta,-70.65137730000001,-33.43112679999999
+osm,deis,Catagus Farmacias,,Cerro Navia,-70.7599314,-33.420309700000004
+osm,deis,Farmacias Silva,,Cerro Navia,-70.7502035,-33.4170511
+osm,deis,Centro Médico y Dental Prontomed,,Cerro Navia,-70.7428598,-33.41503849999999
+osm,deis,Farmacias del Sur,,Santiago,-70.662767,-33.44714400000001
+osm,deis,Centro Ortopédico,,Providencia,-70.620099,-33.4338796
+osm,deis,Centro Médico y Dental Medicina Cubana,,Maipú,-70.7672772,-33.4849214
+osm,deis,Farmacias,,Santiago,-70.6482179,-33.47290610000001
+osm,deis,Farmacias del Dr. Simi,,Santiago,-70.6423053,-33.472809700000006
+osm,deis,Farmacia Nobel,,Santiago,-70.64307340000002,-33.4585651
+osm,deis,,,Pedro Aguirre Cerda,-70.6801242,-33.5073172
+osm,deis,Farmacias del Dr.,,Pudahuel,-70.7519021,-33.4604182
+osm,deis,Farmacia El Trébol,,Maipú,-70.7793424,-33.515735299999996
+osm,deis,Centro Medico y Dental,,Cerro Navia,-70.7321087,-33.4293572
+osm,deis,Jumart,,La Florida,-70.6103124,-33.5120922
+osm,deis,Denti Family,,La Florida,-70.6102668,-33.51212349999999
+osm,deis,Clinica Dental,,Cerro Navia,-70.7338297,-33.429686200000006
+osm,deis,Farmed,,Cerro Navia,-70.7349355,-33.4296822
+osm,deis,Farmacia Italia,,Cerro Navia,-70.7361372,-33.42957859999999
+osm,deis,Centro Medico,,Cerro Navia,-70.736223,-33.4295993
+osm,deis,Farmacias del Dr. Simi,,Cerro Navia,-70.7341278,-33.4294659
+osm,deis,Dentimed,,San Ramón,-70.6365897,-33.5207484
+osm,deis,Clínica Dental,,Peñaflor,-70.846476,-33.59802249999999
+osm,deis,Farmacias Saint Germain,,La Granja,-70.6361517,-33.520775699999994
+osm,deis,Medica 2000,,Talagante,-70.9231862,-33.66157590000001
+osm,deis,Medical Center,,Talagante,-70.9257516,-33.662610599999994
+osm,deis,Farmacia Farmaund,,Pudahuel,-70.753391,-33.4319971
+osm,deis,Farmacias FullFarma,,Talagante,-70.9245794,-33.663237099999996
+osm,deis,Farma Market,,Talagante,-70.9230847,-33.6653785
+osm,deis,Clínica Meds,,Maipú,-70.7576724,-33.5091003
+osm,deis,Santos Clinica Dental,,Maipú,-70.7580925,-33.50917449999999
+osm,deis,Farmacia Principal,,Maipú,-70.7581147,-33.509174699999996
+osm,deis,Farmacias Espoz,,Maipú,-70.7586675,-33.5093511
+osm,deis,Farmacias Tierra del Fuego,,Pudahuel,-70.750383,-33.43213159999999
+osm,deis,Solo Salud,,Santiago,-70.672937,-33.452398099999996
+osm,deis,Centro Medico y Dialisis Prodial LTDA,,Pudahuel,-70.7663153,-33.4289629
+osm,deis,Farmacia Malloco,,Peñaflor,-70.8527919,-33.60472320000001
+osm,deis,Cruz Verde,,Peñaflor,-70.8551046,-33.6070414
+osm,deis,Siboney,,Santiago,-70.6558292,-33.4606206
+osm,deis,,,San Ramón,-70.634912,-33.533982800000004
+osm,deis,Farmacias del Dr. Simi,,San Ramón,-70.6349275,-33.5338792
+osm,deis,Espoz,,La Granja,-70.6340346,-33.541484700000005
+osm,deis,Ebenecer,,La Granja,-70.63395450000002,-33.5414864
+osm,deis,Centro Dental,,La Granja,-70.6344062,-33.5347651
+osm,deis,Dental Marinita 2,,La Granja,-70.634676,-33.532617
+osm,deis,Farmacias Manríquez,,La Granja,-70.63371700000002,-33.5419749
+osm,deis,Consulta Dental,,La Granja,-70.6342941,-33.5345989
+osm,deis,Cruz Verde,,Talagante,-70.9183604,-33.659924999999994
+osm,deis,Podología,,Ñuñoa,-70.6142425,-33.45272019999999
+osm,deis,Farmacias Cordillera,,Maipú,-70.7576336,-33.507926399999995
+osm,deis,Farmacia Pudahuelísimo,,Maipú,-70.7757593,-33.52466280000001
+osm,deis,Clínica Dental San Pablo,,Maipú,-70.760305,-33.5089804
+osm,deis,Avantt Farmacia,,Maipú,-70.763259,-33.52509310000001
+osm,deis,SionSalud,,Maipú,-70.7694915,-33.521419900000005
+osm,deis,Farmacias Ahumada,,Santiago,-70.6524198,-33.4539161
+osm,deis,Farmàcia Emifar,,Quinta Normal,-70.7109308,-33.4165554
+osm,deis,Farmacias Thomas,,Santiago,-70.6744001,-33.4666261
+osm,deis,Sanchez & Vasquez,,Maipú,-70.74517,-33.499787000000005
+osm,deis,Farmacias Tierra del Fuego,,Cerro Navia,-70.7206078,-33.421185499999986
+osm,deis,Lider,,Quinta Normal,-70.707439,-33.4090301
+osm,deis,Consulta Medica de La Familia,,Pudahuel,-70.7674357,-33.435754
+osm,deis,Doctor Arturo Gallo,,Quinta Normal,-70.6925965,-33.4232389
+osm,deis,Consulta Dental,,Pudahuel,-70.7532585,-33.4401013
+osm,deis,Farmacias Nordenflycht,,Maipú,-70.75227470000002,-33.49609339999999
+osm,deis,Farmacia del Pueblo,,Cerro Navia,-70.730349,-33.430966
+osm,deis,Omari Farmacia,,Santiago,-70.6768463,-33.4507417
+osm,deis,,,Maipú,-70.7409837,-33.47050670000001
+osm,deis,Farmacias Saint Germain,,Maipú,-70.7413726,-33.4761623
+osm,deis,Farmacia la Fen,,Cerrillos,-70.7195952,-33.50451029999999
+osm,deis,Cemeslab,,Pudahuel,-70.7664365,-33.4342593
+osm,deis,Centro Medico Cemeslab,,Pudahuel,-70.7668835,-33.43437439999999
+osm,deis,Farmacia Leo,,Estación Central,-70.6983201,-33.461910499999995
+osm,deis,Clinica Odontologica Ortodonica,,Pudahuel,-70.7512179,-33.4347596
+osm,deis,Clínica Veterinaria,,Pudahuel,-70.7525953,-33.43910170000001
+osm,deis,,,Puente Alto,-70.5973686,-33.5814667
+osm,deis,Consulta Médica Biommb,,Maipú,-70.7390459,-33.471837900000004
+osm,deis,Universal,,Lo Prado,-70.7328001,-33.4443885
+osm,deis,Consulta Dental,,Cerro Navia,-70.7290214,-33.4289349
+osm,deis,Consulta Dental,,Cerro Navia,-70.7270209,-33.429015799999995
+osm,deis,Salud Dental,,Cerro Navia,-70.7260824,-33.4291316
+osm,deis,Farmacias Knop,,Santiago,-70.6754281,-33.4503461
+osm,deis,Farmacia Mapuche,,Santiago,-70.6765667,-33.44992870000001
+osm,deis,Farmacias del Dr. Simi,,Santiago,-70.6767866,-33.449973500000006
+osm,deis,Farmacia,,Quinta Normal,-70.7071392,-33.44169889999999
+osm,deis,Farmacia Los Alpes,,Estación Central,-70.6985027,-33.46872439999999
+osm,deis,,,Maipú,-70.7384023,-33.49288680000001
+osm,deis,Farmacia Buena Vida,,Santiago,-70.648172,-33.4457906
+osm,deis,Clínica Dental,,La Reina,-70.5516461,-33.4460936
+osm,deis,Cruz Verde,,Las Condes,-70.5931372,-33.413922799999995
+osm,deis,Cruz Verde,,La Reina,-70.5403952,-33.451864099999995
+osm,deis,Consulta Odontológica,,La Florida,-70.5863203,-33.55298849999999
+osm,deis,Consulta Dental,,La Florida,-70.5868409,-33.55002269999999
+osm,deis,Consulta Dental,,La Florida,-70.5869186,-33.5493326
+osm,deis,Valedent,,La Florida,-70.587613,-33.5464632
+osm,deis,Exámines Médicos,,La Florida,-70.5939437,-33.53405670000001
+osm,deis,Centro Dental San Javier,,La Florida,-70.5905102,-33.54019989999998
+osm,deis,Farmacias Ahumada,,San Miguel,-70.652233,-33.49332690000001
+osm,deis,Carly,,San Miguel,-70.6550423,-33.50307639999999
+osm,deis,Farmacias Vita,,La Florida,-70.5885004,-33.546195299999994
+osm,deis,,,San Miguel,-70.6570726,-33.510178499999995
+osm,deis,Farmacia Jovita,,Peñalolén,-70.5615614,-33.4718582
+osm,deis,Farmacias del Dr. Ahorro,,La Cisterna,-70.6593019,-33.518152499999985
+osm,deis,SalcoBrand,,La Cisterna,-70.6594839,-33.5188383
+osm,deis,Farmacias del Dr. Simi,,La Cisterna,-70.6595541,-33.5192077
+osm,deis,Farmacias Manríquez,,La Cisterna,-70.6616044,-33.526155200000005
+osm,deis,Farmacias La Cisterna,,La Cisterna,-70.6621951,-33.528693700000005
+osm,deis,Farmacia la Granja,,La Cisterna,-70.6625894,-33.5298515
+osm,deis,Belén Farmacias,,La Cisterna,-70.6641853,-33.53590570000001
+osm,deis,,,San Miguel,-70.6543481,-33.50252270000001
+osm,deis,Farmacias del Dr. Simi,,San Miguel,-70.656043,-33.5079374
+osm,deis,Farmàcia,,Cerro Navia,-70.7205404,-33.4303895
+osm,deis,,,La Reina,-70.5593905,-33.4520305
+osm,deis,Farmacias La Reina,,La Reina,-70.5556718,-33.4519346
+osm,deis,Cruz Verde,,La Granja,-70.6181331,-33.550680400000005
+osm,deis,Farmacias Farmasur,,La Florida,-70.6106739,-33.5608956
+osm,deis,Cruz Verde,,La Reina,-70.5548215,-33.4520065
+osm,deis,Centro Medico Dental,,Puente Alto,-70.5657947,-33.5500641
+osm,deis,SalcoBrand,,Ñuñoa,-70.5765998,-33.448340099999996
+osm,deis,Valedent,,La Florida,-70.5717131,-33.538766200000005
+osm,deis,Polisalud,,La Florida,-70.5719485,-33.5383633
+osm,deis,Cruz Verde,,La Florida,-70.597342,-33.521882000000005
+osm,deis,La Roca,,La Florida,-70.59713,-33.522298000000006
+osm,deis,Farmacia Hygea,,Quinta Normal,-70.6932136,-33.431405999999996
+osm,deis,Centro Medico y Dental,,La Granja,-70.6242606,-33.55619610000001
+osm,deis,Universal,,Peñalolén,-70.5639535,-33.4713835
+osm,deis,Consulta Dental,,Peñalolén,-70.5643132,-33.4712999
+osm,deis,Farmacia Familia,,La Granja,-70.6238308,-33.55604819999999
+osm,deis,Farmacia Comunal,,San Miguel,-70.6429375,-33.5159401
+osm,deis,La Rebaja,,Las Condes,-70.5642529,-33.4076884
+osm,deis,Farmacia M & L,,La Florida,-70.5807843,-33.522764900000006
+osm,deis,Farmacia Centro,,San Ramón,-70.6349554,-33.5334328
+osm,deis,,,San Ramón,-70.6347869,-33.5350624
+osm,deis,Cruz Verde,,San Ramón,-70.6343064,-33.54538949999999
+osm,deis,Farmacia Farmavital,,San Ramón,-70.6473,-33.5322797
+osm,deis,Farmacia Lorena,,Las Condes,-70.5634164,-33.42531539999999
+osm,deis,Laboratorio metropolitana,,Santiago,-70.650058,-33.45335719999999
+osm,deis,Cruz Verde,,Las Condes,-70.5521155,-33.42547040000001
+osm,deis,Farmacia Ebenezer,,La Florida,-70.606452,-33.54695869999999
+osm,deis,Farmacias La Botika,,Peñalolén,-70.5685552,-33.5074653
+osm,deis,Farmacia San Luis de Macul,,Peñalolén,-70.5784444,-33.506060700000006
+osm,deis,Consulta Dental,,La Cisterna,-70.6543349,-33.5354997
+osm,deis,,,Las Condes,-70.5699655,-33.4108234
+osm,deis,Consulta Médica,,La Cisterna,-70.6633341,-33.5343771
+osm,deis,,,El Bosque,-70.6590653,-33.562202
+osm,deis,Lejadesh,,El Bosque,-70.66027400000002,-33.5620509
+osm,deis,Farmacias Farmatodo,,La Cisterna,-70.6548265,-33.5446043
+osm,deis,,,El Bosque,-70.6699863,-33.5577515
+osm,deis,,,Estación Central,-70.7307857,-33.4671613
+osm,deis,Clinica Dental,,Peñalolén,-70.5772904,-33.50654289999999
+osm,deis,Spa Dental,,Las Condes,-70.5398081,-33.4056774
+osm,deis,Farmacias Gennetika,,Peñalolén,-70.5389215,-33.472356
+osm,deis,Farmacias Vita,,Lo Barnechea,-70.5065564,-33.35763149999999
+osm,deis,Clínica Peñalolén,,Peñalolén,-70.5416307,-33.47115190000001
+osm,deis,Clínica del Colon Columbia Vertebral,,Las Condes,-70.550756,-33.39675040000001
+osm,deis,Farmacias La Botika,,Lo Barnechea,-70.5057691,-33.3604932
+osm,deis,Ortodonicia,,Las Condes,-70.5359605,-33.390075599999996
+osm,deis,Farmacias Ahumada,,La Florida,-70.5554715,-33.53534210000001
+osm,deis,SalcoBrand,,Peñalolén,-70.5590236,-33.487328500000004
+osm,deis,Norden Clinicas Odontológicas,,Peñalolén,-70.5593334,-33.48701129999999
+osm,deis,Ortopedia Suiza,,Peñalolén,-70.5592613,-33.4870664
+osm,deis,Farmacia Asyty,,Peñalolén,-70.5724993,-33.4625713
+osm,deis,,,Las Condes,-70.5548053,-33.407877899999995
+osm,deis,Ahorro Farma,,El Bosque,-70.6743463,-33.5529238
+osm,deis,Clínica Dental El Bosque,,El Bosque,-70.6734107,-33.5515832
+osm,deis,Cruz Verde,,Vitacura,-70.5711756,-33.37684879999999
+osm,deis,Dental Olid,,La Cisterna,-70.6643791,-33.53407159999999
+osm,deis,,,Macul,-70.600361,-33.50215399999999
+osm,deis,,,Puente Alto,-70.5667918,-33.591159800000014
+osm,deis,Clínica Dental Trinidad,,La Florida,-70.5882606,-33.547227799999995
+osm,deis,Kinefagleon,,La Granja,-70.6231223,-33.556571
+osm,deis,SalcoBrand,,Colina,-70.6461504,-33.32188570000001
+osm,deis,Farmacia La Botica Italia,,Providencia,-70.6272659,-33.4468184
+osm,deis,Farmacia Doctor Simi,,Peñalolén,-70.5416719,-33.471558300000005
+osm,deis,Inside Tattoo,,Providencia,-70.6162721,-33.4316533
+osm,deis,Farmacias del Dr. Ahorro,,Santiago,-70.6527337,-33.43622189999999
+osm,deis,Farmacia Latorre,,Calera de Tango,-70.7643039,-33.62953209999999
+osm,deis,Farmacias del Dr. Simi,,Santiago,-70.66840230000001,-33.4390493
+osm,deis,Cruz Verde,,La Cisterna,-70.6650411,-33.53915139999999
+osm,deis,,,Puente Alto,-70.6088534,-33.57641859999999
+osm,deis,Hergofar,,Las Condes,-70.5868196,-33.416141700000004
+osm,deis,Farmacia Dr. Simi,,Colina,-70.6752522,-33.2049009
+osm,deis,San Martín Salud,,Huechuraba,-70.6903256,-33.359731499999995
+osm,deis,Cruz Verde,,Las Condes,-70.5738113,-33.40505790000001
+osm,deis,SalcoBrand,,Las Condes,-70.498335,-33.39014240000001
+osm,deis,SalcoBrand,,Las Condes,-70.5062549,-33.39561110000001
+osm,deis,Espacio Salcobrand,,Las Condes,-70.5939473,-33.415986600000004
+osm,deis,Centro Oftalmológico Municipal,,La Cisterna,-70.6672467,-33.533961000000005
+osm,deis,Bioequilibrio,,Santiago,-70.66313200000002,-33.453834199999996
+osm,deis,Valle de vida,,Santiago,-70.6455544,-33.4585165
+osm,deis,Alquimia,,Santiago,-70.6490454,-33.4460499
+osm,deis,,,Santiago,-70.6573232,-33.454395
+osm,deis,Farmacia Ochoa,,Santiago,-70.667199,-33.447340999999994
+osm,deis,Cruz Verde,,Providencia,-70.6158847,-33.43910079999999
+osm,deis,Instituto Nacional de Acupuntura y medicina china,,Santiago,-70.63501340000002,-33.44882439999999
+osm,deis,ACHS Melipilla,,Melipilla,-71.2168508,-33.684683800000016
+osm,deis,Farmacia Galenica,,Vitacura,-70.5647747,-33.3879918
+osm,deis,CECOSF La Islita,,Isla de Maipo,-70.8659114,-33.746948499999995
+osm,deis,Clínica CELA Las Condes,,Las Condes,-70.5319353,-33.3828786
+osm,deis,Cruz Verde,,Maipú,-70.7842463,-33.5594569
+osm,deis,Clínica Carmona,,Providencia,-70.6033784,-33.4268963
+osm,deis,Paris,,Santiago,-70.64697540000002,-33.4456116
+osm,deis,Everest,,Las Condes,-70.5704336,-33.4073041
+osm,deis,Farmacia El Principal,,Pirque,-70.5642558,-33.7030357
+osm,deis,Cruz Verde,,Calera de Tango,-70.7569948,-33.63160179999999
+osm,deis,Clínica Calera de Tango,,Calera de Tango,-70.7568231,-33.631614199999994
+osm,deis,Flodial,,La Florida,-70.6048682,-33.5151545
+osm,deis,Mutual de Seguridad,,La Florida,-70.6055732,-33.51404939999998
+osm,deis,Farmacias SalcoBrand,,Maipú,-70.771238,-33.54155730000001
+osm,deis,,,Maipú,-70.7690826,-33.54496429999999
+osm,deis,Cruz Verde,,El Bosque,-70.6754374,-33.55387840000001
+osm,deis,Clínica del Sol,,Padre Hurtado,-70.8278654,-33.5612508
+osm,deis,Clínica CELA Manquehue,,Las Condes,-70.5664566,-33.412216599999994
+osm,deis,Clínica CELA Mall Plaza Tobalaba,,Puente Alto,-70.5567287,-33.570101900000004
+osm,deis,Clínica CELA,,La Florida,-70.5993874,-33.5162394
+osm,deis,Farmacia Belén,,Quilicura,-70.7164338,-33.36755480000001
+osm,deis,MEDS Piedra Roja,,Colina,-70.62834860000001,-33.27916390000001
+osm,deis,Cruz Verde,,Las Condes,-70.5775639,-33.425816
+osm,deis,Farmacias del Dr. Simi,,Santiago,-70.6499792,-33.44527449999999
+osm,deis,Santa Gemita,,Ñuñoa,-70.5997178,-33.4545193
+osm,deis,,,Ñuñoa,-70.5999339,-33.4548546
+osm,deis,Belén,,Quilicura,-70.7392065,-33.3509691
+osm,deis,Farmacias del Dr. Simi,,San Joaquín,-70.6256012,-33.48608009999999
+osm,deis,FarmaTout,,Quilicura,-70.7295303,-33.3593616
+osm,deis,Farmacias Ahumada,,Buin,-70.73297960000001,-33.7329954
+osm,deis,Farmacia Espoz,,Quinta Normal,-70.6915712,-33.4382158
+osm,deis,Convatec Medical Care,,Providencia,-70.6091191,-33.419184900000005
+osm,deis,Clínica Somno,,Providencia,-70.6090589,-33.4187713
+osm,deis,Alpes Dental,,Quilicura,-70.728721,-33.3573763
+osm,deis,Cruz Verde,,Providencia,-70.5987973,-33.4289274
+osm,deis,,,María Pinto,-71.1083344,-33.470918600000005
+osm,deis,Cruz Verde,,San Bernardo,-70.7087514,-33.6342233
+osm,deis,Farmaceus,,Maipú,-70.7541874,-33.49010549999999
+osm,deis,Farmacias Ahumada,,El Bosque,-70.6676658,-33.54608220000001
+osm,deis,Farmacia Mazel Tov,,El Bosque,-70.6751643,-33.578251699999996
+osm,deis,Cruz Verde,,Pedro Aguirre Cerda,-70.6679288,-33.5013638
+osm,deis,Dental One,,Santiago,-70.6473025,-33.45152359999999
+osm,deis,Clinica ISBO,,Santiago,-70.6671222,-33.4482603
+osm,deis,Su Salud,,Santiago,-70.6631714,-33.452592299999985
+osm,deis,Primeros Auxilios,,Providencia,-70.633549,-33.4303832
+osm,deis,Apsa Salud,,Quilicura,-70.74703130000002,-33.35883199999999
+osm,deis,Doctora Teresa Chomali,,Vitacura,-70.5635889,-33.39470940000001
+osm,deis,Farmacias del Dr. Simi,,Quilicura,-70.7286429,-33.3574088
+osm,deis,Farmacias Ahumada,,Quilicura,-70.7467553,-33.35928979999999
+osm,deis,Cruz Verde,,Quilicura,-70.7129469,-33.3344333
+osm,deis,Farmaxal,,Quilicura,-70.7329172,-33.3580489
+osm,deis,Farmacias Ahumada,,El Bosque,-70.6768378,-33.55345200000001
+osm,deis,Farmacias del Dr. Simi,,El Bosque,-70.6766686,-33.55327199999999
+osm,deis,Liga Chilena contra la Epilepsia,,Las Condes,-70.532039,-33.38262869999999
+osm,deis,Farmacias 24,,Peñalolén,-70.5854595,-33.5007401
+osm,deis,,,Peñalolén,-70.5826583,-33.5057496
+osm,deis,Farmacias Ahumada,,San Bernardo,-70.7085837,-33.6338189
+osm,deis,Farmacias del Dr. Simi,,Quilicura,-70.7469636,-33.358943399999994
+osm,deis,Maiposalud,,La Florida,-70.5961941,-33.5213782
+osm,deis,Farmacias Galénica,,La Florida,-70.5966101,-33.5214747
+osm,deis,Farmacia Solufar,,Cerrillos,-70.7070501,-33.50920270000001
+osm,deis,SalcoBrand,,Quilicura,-70.7299768,-33.35745159999999
+osm,deis,Cruz Verde,,Pudahuel,-70.79263340000001,-33.40009010000001
+osm,deis,Clínica Dental Aeropuerto,,Pudahuel,-70.7913645,-33.3967489
+osm,deis,Farmacias Belén,,El Bosque,-70.6768922,-33.5822025
+osm,deis,Vacunatorio Covid,,Puente Alto,-70.6276515,-33.62561949999999
+osm,deis,Mival,,El Bosque,-70.6779167,-33.558143
+osm,deis,Lestrange,,San Bernardo,-70.7092903,-33.59040579999999
+osm,deis,Farmacia Belén,,Tiltil,-70.9291989,-33.08474809999999
+osm,deis,Policlínico IST,,Pudahuel,-70.7941312,-33.40011379999999
+osm,deis,Farmacias EsSalud,,Quilicura,-70.7301545,-33.36475550000001
+osm,deis,Cruz Verde,,Puente Alto,-70.5415272,-33.5910469
+osm,deis,Cruz Verde,,Quilicura,-70.7188847,-33.3744753
+osm,deis,,,Providencia,-70.6161096,-33.43793029999999
+osm,deis,Más Ahorro,,Providencia,-70.6160935,-33.43801
+osm,deis,SalcoBrand,,Lo Barnechea,-70.539542,-33.3556241
+osm,deis,Farmacias Human Pharma,,La Reina,-70.5706304,-33.44550869999999
+osm,deis,Farmacias Ahumada,,Huechuraba,-70.6201371,-33.3902146
+osm,deis,Farmaetika,,Ñuñoa,-70.573103,-33.44122190000001
+osm,deis,Farmacias Farma+Plus,,San Miguel,-70.64888540000001,-33.48236600000001
+osm,deis,Farmacias Ahumada,,Vitacura,-70.5690003,-33.37655649999999
+osm,deis,,,Las Condes,-70.6028435,-33.41237890000001
+osm,deis,EcoFarmacias,,Providencia,-70.6118543,-33.4229054
+osm,deis,Farmacias La Rebaja,,Providencia,-70.622632,-33.4298542
+osm,deis,Farmacias de Barrio,,Cerro Navia,-70.7399408,-33.4230403
+osm,deis,Farmacia del Valle,,Colina,-70.6733975,-33.215859099999996
+osm,deis,Cruz Verde,,Ñuñoa,-70.5893268,-33.4509612
+osm,deis,Farmacia Meddica,,La Pintana,-70.6279839,-33.585383199999995
+osm,deis,Farmacias del Dr. Simi,,Estación Central,-70.6791767,-33.45039899999999
+osm,deis,Vida Farma,,El Bosque,-70.6826146,-33.56418909999999
+osm,deis,Farmacia Comunitaria Vida Buena,,La Granja,-70.6320227,-33.54382369999999
+osm,deis,Farmacias Bicentenario,,Quilicura,-70.7136016,-33.36659850000001
+osm,deis,SalcoBrand,,San Bernardo,-70.70831900000002,-33.632677900000004
+osm,deis,OdontoRed,,Quilicura,-70.7213502,-33.358510800000005
+osm,deis,Farmacia DMedical,,Quilicura,-70.721318,-33.358377799999985
+osm,deis,Farmacias del Dr. Simi,,Estación Central,-70.679599,-33.45156690000001
+osm,deis,Farmacias del Dr. Simi,,San Bernardo,-70.707873,-33.6329091
+osm,deis,Cruz Verde,,Estación Central,-70.68685590000001,-33.45352150000001
+osm,deis,Cruz Verde,,Vitacura,-70.5988275,-33.398643400000005
+osm,deis,Farma Oferta,,Ñuñoa,-70.62821960000001,-33.452166600000005
+osm,deis,Cruz Verde,,Huechuraba,-70.6784811,-33.35418390000001
+osm,deis,Farmacias Mena Penrroz,,Providencia,-70.615253,-33.43514809999999
+osm,deis,Farmacias del Dr. Simi,,La Reina,-70.5404598,-33.4521185
+osm,deis,Farmacias del Dr. Simi,,Las Condes,-70.5794869,-33.423911000000004
+osm,deis,Cruz Verde,,Santiago,-70.6543729,-33.4441405
+osm,deis,Farmacias Ahumada,,La Florida,-70.5912709,-33.5112594
+osm,deis,Cruz Verde,,Quilicura,-70.7306919,-33.3650576
+osm,deis,Farmacia Chicureo,,Colina,-70.7316384,-33.21821150000001
+osm,deis,Farmacias Ahumada,,San Bernardo,-70.7089391,-33.632946699999984
+osm,deis,Farmacias La Rebaja,,Santiago,-70.6482898,-33.451596399999985
+osm,deis,Farmacias del Dr. Simi,,San Bernardo,-70.6976544,-33.594323100000004
+osm,deis,Farmacias del Dr. Simi,,Curacaví,-71.1363208,-33.40557179999999
+osm,deis,Farmacia El Sol,,Curacaví,-71.1353271,-33.4047792
+osm,deis,CESFAM Padre Orellana,,Santiago,-70.6297342,-33.466365299999985
+osm,deis,Farmacia Municipal,,La Cisterna,-70.6646955,-33.534606199999985
+osm,deis,SAPU Peñaflor,,Peñaflor,-70.8954421,-33.6108508
+osm,deis,Cruz Verde,,Las Condes,-70.5752623,-33.40183319999999
+osm,deis,SalcoBrand,,Las Condes,-70.5755596,-33.4016447
+osm,deis,CECOSF Doctor Raúl Brañes,,San Bernardo,-70.6773152,-33.600085500000006
+osm,deis,COSAM Maipú,,Maipú,-70.7626949,-33.51047789999999
+osm,deis,Farmacia Real,,Quilicura,-70.7205789,-33.366839799999994
+osm,deis,Farmacias Ahumada,,Ñuñoa,-70.6214016,-33.450011399999994
+osm,deis,CECOSF Lo Herrera,,San Bernardo,-70.745701,-33.668209499999996
+osm,deis,Farmacia CDLV,,Pudahuel,-70.8440798,-33.44845350000001
+osm,deis,COSAM Puente Alto,,Puente Alto,-70.5770348,-33.6089538
+osm,deis,Farmacias Díaz,,Lo Prado,-70.7234309,-33.4437526
+osm,deis,FarmaTout,,Quilicura,-70.721394,-33.3651947
+osm,deis,CECOSF Curacaví,,Curacaví,-71.1255605,-33.3932963
+osm,deis,SAPU Santa Rosa de Chena,,Peñaflor,-70.9016336,-33.613918399999996
+osm,deis,Hospital Clínico Metropolitano El Carmen Doctor Luis Valentín Ferrada,,Maipú,-70.775111,-33.517917499999996
+osm,deis,Farmacias Mevic,,Quinta Normal,-70.7155636,-33.428694899999996
+osm,deis,BlueFarma,,Quilicura,-70.7301092,-33.3642179
+osm,deis,Farmacias Higia,,Quilicura,-70.7173894,-33.3568076
+osm,deis,Farmacias Antonio,,Quilicura,-70.7207984,-33.36194879999999
+osm,deis,Integramédica,,Las Condes,-70.5397757,-33.4157724
+osm,deis,SalcoBrand,,Las Condes,-70.53983200000002,-33.4160724
+osm,deis,Cruz Verde,,Las Condes,-70.5408298,-33.41575000000001
+osm,deis,Farmacia Mediahorro,,Quilicura,-70.7342124,-33.364194399999995
+osm,deis,Farmacia Genérica,,Quilicura,-70.7209009,-33.3704719
+osm,deis,Posta de salud rural la capilla de caleu,,Tiltil,-70.9283233,-33.08321219999999
+osm,deis,Posta de salud rural san antonio de naltagua,,Isla de Maipo,-71.0105299,-33.72130589999998
+osm,deis,Posta de salud rural aliro cárcarmo,,Isla de Maipo,-70.8549487,-33.7133008
+osm,deis,Posta de Salud Rural Pahuilmo,,Melipilla,-71.0975609,-33.5716394
+osm,deis,Posta de salud rural el prado,,San Pedro,-71.4872417,-33.9258509
+osm,deis,Posta de Salud Rural Santa Rita,,Pirque,-70.5341251,-33.6465456
+osm,deis,Posta de salud rural lo arcaya,,Pirque,-70.5780571,-33.6910398
+osm,deis,Posta de salud rural san gabriel,,San José de Maipo,-70.2334053,-33.78377509999999
+osm,deis,La Farma,,Providencia,-70.5997191,-33.44261980000001
+osm,deis,Knop,,La Florida,-70.5997113,-33.5204059
+osm,deis,Farmacias del Dr. Simi,,Santiago,-70.6492495,-33.4764806
+osm,deis,Farmacia Ciudadana La Florida,,La Florida,-70.5860445,-33.5587034
+osm,deis,Farmacia Ekonoplus,,Ñuñoa,-70.6178332,-33.451634
+osm,deis,Farmacia El Químico,,Providencia,-70.612949,-33.44244140000001
+osm,deis,GoSmile,,Colina,-70.6233219,-33.27106569999999
+osm,deis,Cruz Verde,,Colina,-70.6234874,-33.271077000000005
+osm,deis,Clínica Gaudí,,Las Condes,-70.5624792,-33.41661179999999
+osm,deis,SalcoBrand,,Lo Barnechea,-70.5384599,-33.32406099999999
+osm,deis,Luz Dent,,Quilicura,-70.7362453,-33.3576046
+osm,deis,Farmacias del Dr. Simi,,Las Condes,-70.5184615,-33.3736198
+osm,deis,DeltaPharma,,Cerrillos,-70.7008734,-33.500860800000005
+osm,deis,Clínica Odontologica San Sebastían,,Lo Barnechea,-70.5225118,-33.35135979999999
+osm,deis,Cosam Recoleta,,Recoleta,-70.6462356,-33.40467209999999
+osm,deis,Cosam Til Til,,Tiltil,-70.9214585,-33.08768329999999
+osm,deis,COSAM Lo Barnechea,,Lo Barnechea,-70.50699360000002,-33.3602114
+osm,deis,Cruz Verde,,Lo Prado,-70.7058715,-33.4570075
+osm,deis,SalcoBrand,,Lo Prado,-70.7062183,-33.45701229999999
+osm,deis,Centro Médico Antroposófico,,La Reina,-70.5591201,-33.456011199999985
+osm,deis,Farmacia del Dr. Simi,,Lo Barnechea,-70.5104527,-33.35347530000001
+osm,deis,Hospital de Campaña Sótero del Río,,Puente Alto,-70.577462,-33.57872559999999
+osm,deis,CESFAM Dr. José Manuel Balmaceda,,Pirque,-70.5754244,-33.6367791
+osm,deis,Posta de Salud Rural Santa María,,Alhué,-71.201225,-34.07358430000001
+osm,deis,Farmacia Montes,,Providencia,-70.6286841,-33.4470293
+osm,deis,Posta de Salud Rural Juan Pablo II de Lampa,,Lampa,-70.7559453,-33.2809858
+osm,deis,SalcoBrand,,La Florida,-70.6058767,-33.5113504
+osm,deis,SalcoBrand,,Peñalolén,-70.5232729,-33.4688278
+osm,deis,Farmacias Ahumada,,Peñalolén,-70.5572002,-33.488664400000005
+osm,deis,Farmacia Popular Pudahuel Sur,,Pudahuel,-70.7466865,-33.4616856
+osm,deis,Centro Dental San Gregorio,,Quilicura,-70.7421587,-33.361967699999994
+osm,deis,Farmacia Dayra,,Quilicura,-70.7421281,-33.34991579999999
+osm,deis,Farma Express,,Santiago,-70.6743919,-33.4276947
+osm,deis,Farmacias Ahumada,,San Bernardo,-70.7012511,-33.572237900000005
+osm,deis,Farmacias del Dr. Simi,,Las Condes,-70.5119747,-33.41214169999999
+osm,deis,Cruz Verde,,Las Condes,-70.51239410000001,-33.41224919999999
+osm,deis,Clini,,Las Condes,-70.507407,-33.3989549
+osm,deis,Cruz Verde,,Recoleta,-70.64706060000002,-33.3804818
+osm,deis,Farmacias del Dr. Simi,,Recoleta,-70.6466952,-33.380616999999994
+osm,deis,Cruz Verde,,Peñalolén,-70.5570741,-33.487712300000005
+osm,deis,Farmacias del Dr. Simi,,Lo Barnechea,-70.50627590000002,-33.362048
+osm,deis,Farmacia Más Médica,,Renca,-70.7441045,-33.400583999999995
+osm,deis,SalcoBrand,,Huechuraba,-70.6191542,-33.3896835
+osm,deis,Farmacias del Dr. Simi,,La Florida,-70.6000577,-33.518208599999994
+osm,deis,Integramédica Dental,,La Florida,-70.5995911,-33.51635000000001
+osm,deis,Redfarma,,Talagante,-70.9121422,-33.65701529999999
+osm,deis,Go Farma,,Isla de Maipo,-70.9123923,-33.7364757
+osm,deis,Cruz Verde,,La Florida,-70.5861521,-33.5594386
+osm,deis,Cruz Verde,,La Florida,-70.5961062,-33.5266958
+osm,deis,Cruz Verde,,Ñuñoa,-70.6088332,-33.4540372
+osm,deis,Farmacia Medicar,,Providencia,-70.619523,-33.43396680000001
+osm,deis,SalcoBrand,,Colina,-70.6278505,-33.27856249999999
+osm,deis,Cruz Verde,,Recoleta,-70.643396,-33.40263499999999
+osm,deis,Prosonrisas,,Recoleta,-70.6436857,-33.4026328
+osm,deis,Farmacia Dra. Inés,,El Bosque,-70.6852625,-33.5673875
+osm,deis,SalcoBrand,,Las Condes,-70.5685653,-33.40450810000001
+osm,deis,Farmacia Comunitaria La Reina,,La Reina,-70.5429207,-33.4507136
+osm,deis,SalcoBrand,,Ñuñoa,-70.613839,-33.4565341
+osm,deis,Cruz Verde,,La Reina,-70.5560292,-33.4397814
+osm,deis,Cruz Verde,,La Florida,-70.599703,-33.519048699999985
+osm,deis,,,Ñuñoa,-70.6057888,-33.46105399999999
+osm,deis,SalcoBrand,,Vitacura,-70.5694848,-33.376293800000006
+osm,deis,Everest,,Vitacura,-70.56717,-33.37639169999999
+osm,deis,Farmacias del Dr. Simi,,Las Condes,-70.5433448,-33.39188490000001
+osm,deis,Farmacias La Botika,,Ñuñoa,-70.5882414,-33.450373100000014
+osm,deis,Farmacias del Dr. Simi,,Ñuñoa,-70.6132701,-33.453382399999995
+osm,deis,Farmacias Sanafarm,,Lampa,-70.766838,-33.3265676
+osm,deis,Cruz Verde,,Ñuñoa,-70.5747965,-33.463529400000006
+osm,deis,Cruz Verde,,Colina,-70.6856753,-33.2179893
+osm,deis,Cruz Verde,,Colina,-70.6643849,-33.3061137
+osm,deis,Cruz Verde,,Colina,-70.6285638,-33.2772011
+osm,deis,Farmacias del Dr. Simi,,Maipú,-70.7339461,-33.52374360000001
+osm,deis,Farmacias Ahumada,,Maipú,-70.7330934,-33.5219574
+osm,deis,Consulta Médica Pintué,,Paine,-70.879707,-33.87402879999999
+osm,deis,Farmacia San Enrique,,San Pedro,-71.4543121,-33.8969693
+osm,deis,Cruz Verde,,Las Condes,-70.572576,-33.4105029
+osm,deis,Todofarma,,Vitacura,-70.5902906,-33.40325769999999
+osm,deis,Farmacias del Dr. Simi,,La Pintana,-70.6283448,-33.58364799999999
+osm,deis,Farmacia Comunitaria,,Renca,-70.7036877,-33.40534470000001
+osm,deis,Cruz Verde,,Renca,-70.7008142,-33.4068432
+osm,deis,Go Farma,,Talagante,-70.915789,-33.6848127
+osm,deis,Cruz Verde,,Puente Alto,-70.5180347,-33.59861600000001
+osm,deis,Cruz Verde,,Puente Alto,-70.5692536,-33.5803633
+osm,deis,Farma Cuida,,Lampa,-70.806443,-33.23581070000001
+osm,deis,Clinica MEDS La Dehesa - Torre Nucleo Los Trapenses,,Lo Barnechea,-70.5397904,-33.35540350000001
+osm,deis,Farmacias Ahumada,,Peñalolén,-70.5788114,-33.48826220000001
+osm,deis,Redfarma,,Santiago,-70.6608684,-33.4458291
+osm,deis,Sanasalud,,Santiago,-70.6505996,-33.43520010000001
+osm,deis,SalcoBrand,,Santiago,-70.6508724,-33.4350885
+osm,deis,Cruz Verde,,Santiago,-70.6507069,-33.43532099999999
+osm,deis,Farmacias Ahumada,,Quinta Normal,-70.680986,-33.43274379999999
+osm,deis,Farmacia Amaya,,San Joaquín,-70.622217,-33.479192899999994
+osm,deis,Centro Médico Higueras,,Pedro Aguirre Cerda,-70.6869632,-33.4955519
+osm,deis,Farmacia Dr. Simi,,Pedro Aguirre Cerda,-70.68813,-33.49867439999999
+osm,deis,Farmacias la Botika,,Pedro Aguirre Cerda,-70.6905426,-33.50355689999999
+osm,deis,Shalom,,Puente Alto,-70.60801,-33.57788359999999
+osm,deis,Farmacia Nos,,San Bernardo,-70.7081757,-33.63738099999999
+osm,deis,,,El Bosque,-70.6755707,-33.5521359
+osm,deis,Maicao,,La Cisterna,-70.65874170000001,-33.5164671
+osm,deis,Farmacias La Botika,,Maipú,-70.7801546,-33.504628
+osm,deis,,,Ñuñoa,-70.6110536,-33.45364769999999
+osm,deis,Farmacias del Dr. Simi,,La Florida,-70.5997003,-33.51922580000001
+osm,deis,SalcoBrand,,La Florida,-70.59940140000002,-33.5188221
+osm,deis,SalcoBrand,,La Florida,-70.599157,-33.51868850000001
+osm,deis,Farmacia Comunitaria Jaime Cruz,,Calera de Tango,-70.761901,-33.630578
+osm,deis,SalcoBrand,,Las Condes,-70.5719142,-33.4189675
+osm,deis,Farmacia Cumbres,,Colina,-70.6777277,-33.18464749999999
+osm,deis,Nefres,,Lo Espejo,-70.6929721,-33.513835199999995
+osm,deis,Clínica Elissful,,Talagante,-70.9230683,-33.6780955
+osm,deis,Mr. Dent,,Talagante,-70.9231552,-33.6781576
+osm,deis,Fast Clinic,,San Bernardo,-70.6764434,-33.5830072
+osm,deis,Farmacias Farmalym,,Ñuñoa,-70.5844251,-33.4618324
+osm,deis,Centro Clínico Lambert,,Curacaví,-71.1403021,-33.4072876
+osm,deis,Farmacias Ahumada,,Quilicura,-70.7203722,-33.3662246
+osm,deis,Cruz Verde,,Lampa,-70.7463826,-33.323380900000004
+osm,deis,Farmacias Mirophar,,San Bernardo,-70.6829396,-33.60418820000001
+osm,deis,SalcoBrand,,San Bernardo,-70.6836011,-33.6155197
+osm,deis,Farmacias Ahumada,,Ñuñoa,-70.5975947,-33.465005
+osm,deis,Farmacias Ahumada,,Recoleta,-70.6416149,-33.39319629999999
+osm,deis,Cruz Verde,,La Florida,-70.5902048,-33.5229066
+osm,deis,SalcoBrand,,Pirque,-70.5770258,-33.6377519
+osm,deis,Centro Médico Pirque,,Pirque,-70.5777085,-33.6380334
+osm,deis,Cruz Verde,,Pirque,-70.5751403,-33.636561199999996
+osm,deis,Punto Farma,,Huechuraba,-70.6783731,-33.354794999999996
+osm,deis,Cruz Verde,,Huechuraba,-70.6698325,-33.3523448
+osm,deis,SalcoBrand,,Huechuraba,-70.6698555,-33.34836800000001
+osm,deis,Farmacias Ahumada,,Huechuraba,-70.6781954,-33.36783590000001
+osm,deis,Farmacias Ahumada,,Huechuraba,-70.6783661,-33.36462099999999
+osm,deis,Cruz Verde,,Huechuraba,-70.6797635,-33.3644939
+osm,deis,Mora Pavic,,Huechuraba,-70.6802251,-33.3649222
+osm,deis,Farmacias del Dr. Simi,,El Bosque,-70.6670246,-33.54690550000001
+osm,deis,SalcoBrand,,La Reina,-70.5319529,-33.440525599999994
+osm,deis,Farmacias del Dr. Simi,,La Reina,-70.5334649,-33.44074439999999
+osm,deis,Farmacia Bollenar,,Melipilla,-71.1905324,-33.5708668
+osm,deis,Farmacia puntoSalud,,Isla de Maipo,-70.902749,-33.7531099
+osm,deis,Farmacias Ahumada,,Puente Alto,-70.5827483,-33.5703957
+osm,deis,Cruz Verde,,Puente Alto,-70.582431,-33.5703558
+osm,deis,SalcoBrand,,Puente Alto,-70.5831115,-33.5704356
+osm,deis,Farmacias del Dr. Simi,,Puente Alto,-70.5820522,-33.570712099999994
+osm,deis,Farmacias del Dr. Simi,,Las Condes,-70.544735,-33.4080355
+osm,deis,Farmacias del Dr. Simi,,Cerrillos,-70.6942507,-33.4850872
+osm,deis,Farmacias del Dr. Simi,,Melipilla,-71.2140275,-33.6848135
+osm,deis,My Pharma,,San Miguel,-70.6521522,-33.49239909999999
+osm,deis,Centro Médico Melipilla,,Melipilla,-71.21313340000002,-33.683828
+osm,deis,Orthodent Clínica Dental,,Melipilla,-71.2177201,-33.68514890000001
+osm,deis,Cruz Verde,,Las Condes,-70.5401832,-33.42791299999999
+osm,deis,Farmacias Ahumada,,Peñalolén,-70.5399042,-33.49119979999999
+osm,deis,Farmacia Gundian,,Peñalolén,-70.5399253,-33.491496
+osm,deis,SalcoBrand,,Peñalolén,-70.5527469,-33.49974989999999
+osm,deis,Cruz Verde,,Peñalolén,-70.5540361,-33.499006
+osm,deis,Medical Store,,Pudahuel,-70.7394577,-33.455214700000006
+osm,deis,,,Pedro Aguirre Cerda,-70.670656,-33.49561789999999
+osm,deis,Farmacia Profarma,,Quilicura,-70.7205505,-33.3661977
+osm,deis,Farmacias Ahumada,,Renca,-70.7583722,-33.39980599999999
+osm,deis,SalcoBrand,,La Florida,-70.5952205,-33.5231523
+osm,deis,Farmacias Ahumada,,Las Condes,-70.5411706,-33.41611379999999
+osm,deis,Farmacias del Dr. Simi,,Las Condes,-70.5407505,-33.414946400000005
+osm,deis,Clínica Dental Adonay,,Peñalolén,-70.540189,-33.49116559999999
+osm,deis,Cruz Verde,,Peñalolén,-70.5405484,-33.492264899999995
+osm,deis,SalcoBrand,,Las Condes,-70.5701718,-33.40926909999999
+osm,deis,Farmacias del Dr. Simi,,Pirque,-70.5751735,-33.63681919999999
+osm,deis,Farmacias del Dr. Simi,,Santiago,-70.6430692,-33.45781639999999
+osm,deis,Farmacias del Dr. Simi,,Ñuñoa,-70.6088749,-33.454814
+osm,deis,San Nicolás,,Santiago,-70.644107,-33.458287500000004
+osm,deis,Clínica Dental Mora Pavic,,Las Condes,-70.5747384,-33.411341199999995
+osm,deis,Farmacia Belgochilena,,Estación Central,-70.6887723,-33.453770999999996
+osm,deis,,,Lo Prado,-70.7064346,-33.4558165
+osm,deis,Cruz Verde,,Estación Central,-70.7052506,-33.4564144
+osm,deis,Farmacias Ahumada,,Estación Central,-70.7053248,-33.456333
+osm,deis,Maytal,,Lo Prado,-70.7078722,-33.456750899999996
+osm,deis,,,Lo Prado,-70.7083025,-33.456992799999995
+osm,deis,Farmacia Chilena,,Lo Prado,-70.7118094,-33.457587
+osm,deis,Cruz Verde,,Lo Barnechea,-70.5447028,-33.36136729999999
+osm,deis,Farmacia Henalva,,Melipilla,-71.21543360000001,-33.6691073
+osm,deis,Farmacia Rincón Salud,,El Bosque,-70.6907498,-33.574733
+osm,deis,Farmacias Nueva,,El Bosque,-70.6904542,-33.574331799999996
+osm,deis,Farmacias del Dr. Simi,,El Bosque,-70.690292,-33.5733496
+osm,deis,Farmacia Segal,,El Bosque,-70.6655383,-33.57310979999999
+osm,deis,Farmacias Ahumada,,Estación Central,-70.6870172,-33.45349019999999
+osm,deis,Farmacias del Dr. Simi,,Las Condes,-70.5691378,-33.4096529
+osm,deis,Ecofarmacias,,Las Condes,-70.5679862,-33.4093849
+osm,deis,,,Santiago,-70.6352652,-33.4473813
+osm,deis,,,Santiago,-70.6356561,-33.4465471
+osm,deis,Clínica MEDS,,Lo Barnechea,-70.53678221793122,-33.35586718635581
+osm,deis,Complejo Hospitalario Sótero del Río,,Puente Alto,-70.5793199804935,-33.57660282282382
+osm,deis,Centro Médico y Profesional Las Lilas,,Providencia,-70.60828250665973,-33.431444099972
+osm,deis,SalcoBrand,,La Reina,-70.55723967578537,-33.439126549702245
+osm,deis,Clínica Alemana La Dehesa,,Lo Barnechea,-70.52562760742285,-33.35492983498996
+osm,deis,Hospital San José de Melipilla,,Melipilla,-71.18697058097622,-33.6798109105684
+osm,deis,Centro de Salud Integral Las Praderas,,Peñaflor,-70.86402862275207,-33.60414609668991
+osm,deis,Salud Alternativa,,Paine,-70.73899962481723,-33.80786876797621
+osm,deis,Instituto de Salud Pública de Chile (ISP),,Ñuñoa,-70.61639667137985,-33.46339502895164
+osm,deis,Farmacias Unidas,,Buin,-70.73879785030526,-33.73276388410751
+osm,deis,Farmacias Ahumada,,La Reina,-70.56124779666739,-33.45270109946581
+osm,deis,SalcoBrand,,Ñuñoa,-70.57442983701746,-33.46196820020247
+osm,deis,SalcoBrand,,Providencia,-70.61553605873087,-33.438431735589894
+osm,deis,Farmacias Ahumada,,Providencia,-70.59918446683623,-33.43683669983647
+osm,deis,Hospital Psiquiatrico El Peral,,Puente Alto,-70.54968579113039,-33.575886036298385
+osm,deis,Cruz Verde,,Ñuñoa,-70.58045564177162,-33.44851275013724
+osm,deis,Clínica Universidad de los Andes,,Las Condes,-70.50377785764579,-33.40701110011847
+osm,deis,Cruz Verde,,Vitacura,-70.59703230878327,-33.40429429992405
+osm,deis,,,Maipú,-70.76677507650366,-33.52847396606817
+osm,deis,Cruz Verde,,Lo Prado,-70.72381397119452,-33.44472796283121
+osm,deis,Farmacia Espoz,,Pudahuel,-70.75349270614691,-33.443889191489674
+osm,deis,Cruz Verde,,Providencia,-70.60406830000933,-33.43789850005956
+osm,deis,Clínica El Bosque,,Providencia,-70.5954830459145,-33.4282106468236
+osm,deis,Farmacias Ahumada,,La Reina,-70.55491655000421,-33.430810150022246
+osm,deis,Cruz Verde,,Las Condes,-70.54549095000688,-33.40843690004383
+osm,deis,Cruz Roja San Miguel,,San Miguel,-70.65258560108838,-33.49202109148438
+osm,deis,Farmacias Ahumada,,Providencia,-70.59825476717423,-33.421669755686736
+osm,deis,SalcoBrand,,Las Condes,-70.54472099209485,-33.401091928292395
+osm,deis,SalcoBrand,,Providencia,-70.60350762007366,-33.43785860009164
+osm,deis,Instituto Milton H. Erickson,,Providencia,-70.61214922376043,-33.42954894154819
+osm,deis,Sociedad Española,,Santiago,-70.66087188332665,-33.4490692498642
+osm,deis,Clínica Psicológica UDP,,Santiago,-70.66038188457433,-33.45046741030476
+osm,deis,Cruz Verde,,Ñuñoa,-70.59831979790019,-33.45816735006687
+osm,deis,CESFAM Santiago Occidente,,Estación Central,-70.72837720224115,-33.46551543461257
+osm,deis,,,Puente Alto,-70.55922003073493,-33.593307041370856
+osm,deis,Farmacias Ahumada,,Ñuñoa,-70.58553759999782,-33.4556828500745
+osm,deis,Farmacias Ahumada,,Ñuñoa,-70.591048395568,-33.44818833970851
+osm,deis,SalcoBrand,,Ñuñoa,-70.59753651716171,-33.44938724980194
+osm,deis,Farmacias Ahumada,,Ñuñoa,-70.60643962417325,-33.445728685606035
+osm,deis,Cruz Verde,,Ñuñoa,-70.60576790582755,-33.44560835052934
+osm,deis,CESFAM Lo Valledor Norte,,Pedro Aguirre Cerda,-70.6864074632522,-33.48813302854897
+osm,deis,Saint Germain,,Estación Central,-70.70536292568785,-33.464451706076346
+osm,deis,Farmacias Ahumada,,Vitacura,-70.59506707528067,-33.403304400208526
+osm,deis,SalcoBrand,,Ñuñoa,-70.61082783455439,-33.44658080022806
+osm,deis,Cruz Verde,,Ñuñoa,-70.6020428116146,-33.450117707393254
+osm,deis,SalcoBrand,,Ñuñoa,-70.60098610401894,-33.44840914803169
+osm,deis,Cruz Verde,,Vitacura,-70.56847399492888,-33.38868878119533
+osm,deis,SalcoBrand,,Vitacura,-70.59141592433245,-33.39977184110794
+osm,deis,Centro Dental,,Estación Central,-70.70322695003034,-33.456350400029315
+osm,deis,Farmacias Ochoa,,Recoleta,-70.63067149999023,-33.402405250028195
+osm,deis,Cruz Verde,,Las Condes,-70.55426147262006,-33.3925647216217
+osm,deis,Quillay,,Colina,-70.69470930000594,-33.28503485007605
+osm,deis,Clínica Los Pinos,,Colina,-70.67860940613161,-33.2849100299457
+osm,deis,Clínica Dental Doctor Luis Ochoa I.,,La Florida,-70.6016920500011,-33.5138977500048
+osm,deis,Farmacias Galénica,,Recoleta,-70.64274245128662,-33.39211665002834
+osm,deis,Farmacias Bicentenario,,Recoleta,-70.63923085840561,-33.39117924992146
+osm,deis,Cruz Verde,,Recoleta,-70.64301649978809,-33.40582185001218
+osm,deis,Farmacias del Dr. Simi,,Recoleta,-70.64297804436886,-33.40554904810602
+osm,deis,Cl Dental,,Independencia,-70.67573755058193,-33.41703050002675
+osm,deis,Help,,Independencia,-70.67276094998944,-33.414719600043554
+osm,deis,Farmacias del Dr. Simi,,Estación Central,-70.69226014554353,-33.45448277483264
+osm,deis,Farmacia Formas,,Independencia,-70.66716024394846,-33.40876894917698
+osm,deis,Centro Medico Casablanca,,Providencia,-70.60881566114226,-33.438269183694466
+osm,deis,CESFAM Bellavista Transitorio,,La Florida,-70.60057660268625,-33.51270589509996
+osm,deis,Consulta Dental Nuvident,,Conchalí,-70.68827530000299,-33.37377595002218
+osm,deis,Cruz Verde,,Santiago,-70.65679542399391,-33.47031354968579
+osm,deis,Belén,,Conchalí,-70.68826236730425,-33.369097351816386
+osm,deis,Farmacias Ahumada,,Ñuñoa,-70.57324579466774,-33.44177680012106
+osm,deis,La Palmilla,,Conchalí,-70.67323829605782,-33.38004504871027
+osm,deis,Cruz Verde,,Vitacura,-70.58995045000056,-33.39978220004419
+osm,deis,SalcoBrand,,San Bernardo,-70.70676194997824,-33.5895343000258
+osm,deis,Clínica Dental,,Macul,-70.61252069296161,-33.5075768802818
+osm,deis,Centro Médico Quilicura,,Quilicura,-70.7279375991629,-33.36863275003489
+osm,deis,Médico Dental,,Puente Alto,-70.54196159077591,-33.59306565012624
+osm,deis,Dialisis Quilicura,,Quilicura,-70.73805524266372,-33.3685610741312
+osm,deis,Farmacias del Dr. Simi,,Conchalí,-70.6720075000021,-33.395825400022204
+osm,deis,Belen Farmacias,,Conchalí,-70.67093701487384,-33.3969681331595
+osm,deis,Centro Dental Santa Rosa,,Quilicura,-70.73023662107893,-33.364915599732086
+osm,deis,Centro Dental Integral,,Quilicura,-70.72959039999948,-33.3636060500103
+osm,deis,Centro de Trastornos del Movimiento,,Independencia,-70.65422983514456,-33.41220650249742
+osm,deis,Farmacias Espacio Salcobrand,,Vitacura,-70.55588380633111,-33.385658799998225
+osm,deis,Centro Medico y Dental,,Quilicura,-70.7231722766367,-33.36615145033451
+osm,deis,Eben Ezer Dent,,Quilicura,-70.72738968562857,-33.36529985021207
+osm,deis,Cruz Verde,,Vitacura,-70.55428593414564,-33.38525635024188
+osm,deis,Farma Oferta,,San Bernardo,-70.70987050129985,-33.59905029999017
+osm,deis,Centralklinic,,Vitacura,-70.58578687784794,-33.40165410032013
+osm,deis,Consulta Dental Los Cántaros,,Quilicura,-70.72501428466497,-33.35942870022192
+osm,deis,,,Recoleta,-70.6259227076728,-33.39673124992001
+osm,deis,Diaverum,,Puente Alto,-70.57883047418932,-33.59263217141815
+osm,deis,,,Puente Alto,-70.57905082132338,-33.59147334974549
+osm,deis,Centro de Ortodonica,,Puente Alto,-70.55834246341146,-33.55901604986187
+osm,deis,Farmacia Fenix Puente Alto,,Puente Alto,-70.58454354604083,-33.62342705008561
+osm,deis,Farmacia Cruz del Sur,,Recoleta,-70.64240405000066,-33.39563855001505
+osm,deis,Clínica Astra,,Independencia,-70.66132950193422,-33.4072696682681
+osm,deis,SalcoBrand,,Ñuñoa,-70.6088413971765,-33.45549145006565
+osm,deis,Clínica Nefrológica y de Diálisis,,Macul,-70.59630894999995,-33.481004150023146
+osm,deis,BYO Clinicas Odontologicas,,La Florida,-70.57809455711818,-33.525117149923176
+osm,deis,Galeno,,Recoleta,-70.64287746288184,-33.39372470045216
+osm,deis,Farmacias Ahumada,,Vitacura,-70.56267689856921,-33.391742801687975
+osm,deis,Farmacias Mariquez,,La Florida,-70.56476693213445,-33.55230175396622
+osm,deis,Farmacias Ahumada,,Renca,-70.70467985676476,-33.405391599960275
+osm,deis,Consulta Médica Doctora Carro,,Renca,-70.7062471712058,-33.40383830507378
+osm,deis,Cruz Verde,,Vitacura,-70.57011369986033,-33.38568065002519
+osm,deis,Farmacias Ahumada,,La Cisterna,-70.66009635000094,-33.52385495013675
+osm,deis,Cruz Verde,,La Cisterna,-70.65987609999124,-33.52302730002562
+osm,deis,San Pedro,,Renca,-70.71570675000002,-33.403674650006984
+osm,deis,Diálisis CID,,Ñuñoa,-70.60013094829186,-33.457995450071145
+osm,deis,Farmacias del Dr. Simi,,Vitacura,-70.54967181085301,-33.38747819987876
+osm,deis,Ortopedicos Theoduloz,,Santiago,-70.64322395001089,-33.44457125006397
+osm,deis,SalcoBrand,,Vitacura,-70.58103923756458,-33.39339158386012
+osm,deis,Cruz Verde,,Ñuñoa,-70.62894218467946,-33.45385665218959
+osm,deis,SalcoBrand,,Vitacura,-70.56306385038847,-33.39195760002968
+osm,deis,Cruz Verde,,Vitacura,-70.59274620829068,-33.39298799995392
+osm,deis,Farmarecet,,Ñuñoa,-70.61753817530037,-33.45287035033966
+osm,deis,,,Renca,-70.72760240166157,-33.406229955171256
+osm,deis,Consultorio Dental,,Ñuñoa,-70.60671745000097,-33.47172585001053
+osm,deis,Centro Médico y Dental S.A.H.,,Ñuñoa,-70.6198196013556,-33.46111745002629
+osm,deis,ADA Dental,,Vitacura,-70.57882033756782,-33.394945372776554
+osm,deis,Cruz Verde,,Vitacura,-70.57066829997441,-33.38099945004414
+osm,deis,NeoVida,,Macul,-70.59951530000104,-33.49301230002411
+osm,deis,Clínica Dental Macul,,Macul,-70.59913829592236,-33.49465785013936
+osm,deis,,,San Bernardo,-70.70077746993411,-33.59096204975087
+osm,deis,Farmacia Minay,,Recoleta,-70.65046516973044,-33.43132189404794
+osm,deis,Farmacia Santiago,,Santiago,-70.64791069315322,-33.45674380197939
+osm,deis,Farmacia Espoz,,Estación Central,-70.70733403581737,-33.45810474400987
+osm,deis,Centro de Salud Las Rejas,,Estación Central,-70.70633856037539,-33.45787069993113
+osm,deis,Centro de Rehabilitación Infantil del Ejército,,Providencia,-70.61349645895547,-33.438559752991466
+osm,deis,Farmacia Sierra Bella,,Santiago,-70.6353304213302,-33.4640212470926
+osm,deis,Doctora Yaisy Picrin D.,,Las Condes,-70.59157875750955,-33.424142799943
+osm,deis,Clínica Odontología,,Las Condes,-70.58690222509516,-33.423030806031335
+osm,deis,Lifante,,Santiago,-70.63322763439459,-33.457359400225826
+osm,deis,Farmacias Ahumada,,Maipú,-70.78054150515382,-33.56082769387124
+osm,deis,SalcoBrand,,Las Condes,-70.58021931623179,-33.423940890903545
+osm,deis,Centro Salud Libertad,,Talagante,-70.93287205753496,-33.66574691770113
+osm,deis,Farmarod,,Pudahuel,-70.75831233971597,-33.45874994092807
+osm,deis,Maipo Salud,,Talagante,-70.9288412169941,-33.666047417735605
+osm,deis,Clínica Dental República,,Santiago,-70.66458614776695,-33.450114892063645
+osm,deis,Consulta Oriental,,Padre Hurtado,-70.8027390935914,-33.56429245012259
+osm,deis,Cruz Verde,,Santiago,-70.64892730509186,-33.45987630815739
+osm,deis,Fonasa,,La Florida,-70.61106439996492,-33.51135590010412
+osm,deis,Farmacias Saint Germain,,Maipú,-70.74834352662785,-33.47022760033758
+osm,deis,Consulta Dental Dent Chile,,Maipú,-70.7477883986185,-33.46969130004153
+osm,deis,Farmacia Las Torres,,Cerro Navia,-70.73091322904978,-33.4288757371074
+osm,deis,Centro Dental y Estetica Talagante,,Talagante,-70.93305375000776,-33.66581020002098
+osm,deis,Centro Medico y Dental,,Talagante,-70.93260323538492,-33.6662076046426
+osm,deis,Centro Dental,,Pudahuel,-70.74791819999355,-33.45630115002333
+osm,deis,Farmacia Unidas,,Pudahuel,-70.76126948789161,-33.461473300192864
+osm,deis,ProVida,,Talagante,-70.92408335003643,-33.662294950063256
+osm,deis,Odontogénesis,,Talagante,-70.9249920593453,-33.66214989598278
+osm,deis,Cruz Verde,,Las Condes,-70.58434432883995,-33.42440376208799
+osm,deis,Centro Médico Dental,,Lo Prado,-70.72321229999983,-33.44149480001103
+osm,deis,Podología,,Maipú,-70.77077569341306,-33.5293401001268
+osm,deis,Módulo,,Maipú,-70.7705888121853,-33.52927834986006
+osm,deis,Farmacia Los Ediles,,Lo Prado,-70.70977045000274,-33.44974320000868
+osm,deis,Farmacias Barroso,,Quinta Normal,-70.71780875869212,-33.421609099890944
+osm,deis,Centro Medico Doctor Orellana,,Pudahuel,-70.75501439999746,-33.44379480001936
+osm,deis,Centro Clínico,,Maipú,-70.76306525270965,-33.51363427706277
+osm,deis,Farmacia Navy,,Maipú,-70.76019152419171,-33.49662084966735
+osm,deis,Consulta Dental,,Lo Prado,-70.70846481043685,-33.44166352538628
+osm,deis,Farmacia Macarena,,Quinta Normal,-70.7132629906923,-33.422377462784894
+osm,deis,Farmacia Mendoza,,Quinta Normal,-70.69264119253866,-33.423264292617944
+osm,deis,Antares,,Pudahuel,-70.75395458646746,-33.44443405093588
+osm,deis,Kine Treat,,Providencia,-70.61939056853511,-33.43419474846418
+osm,deis,SalcoBrand,,La Reina,-70.561933468628,-33.45278134979366
+osm,deis,Dialisis La Reina,,La Reina,-70.55984680000346,-33.452032300008376
+osm,deis,Ortodoncia,,Maipú,-70.74087766111299,-33.47803656055268
+osm,deis,Centro Médico y Dental,,Estación Central,-70.70491277768947,-33.46193210033758
+osm,deis,Imperial,,Estación Central,-70.68881789544871,-33.460977006663285
+osm,deis,Clínica Dental,,Estación Central,-70.71089293895905,-33.466909096284965
+osm,deis,Centro Medico SEM,,Quinta Normal,-70.6939242403423,-33.43106535016039
+osm,deis,Farmacias Ahumada,,La Reina,-70.55699519999423,-33.43848330003042
+osm,deis,Centro Odontológico Padre Mariano,,Las Condes,-70.58935965988852,-33.41814110451736
+osm,deis,Clínical Service,,Las Condes,-70.58023383791702,-33.429041600181314
+osm,deis,Farmacias Ahumada,,La Florida,-70.58969541815071,-33.543803734174304
+osm,deis,Clínica Sur Este,,La Florida,-70.58847883015335,-33.54636675030677
+osm,deis,Farmacia San Luis,,San Joaquín,-70.6331970671944,-33.50349963440692
+osm,deis,Comed,,La Florida,-70.59447170000114,-33.53095555002036
+osm,deis,Cruz Verde,,La Florida,-70.58841358613796,-33.54659415022202
+osm,deis,Farmacia Los Paltos,,La Granja,-70.62550695000208,-33.54962360002278
+osm,deis,Centro Kero La Reina,,La Reina,-70.56856412444648,-33.4384147496982
+osm,deis,Cruz Verde,,Ñuñoa,-70.57295202866419,-33.44274229001604
+osm,deis,Farmacias del Dr. Simi,,La Reina,-70.56202894999876,-33.43848100001529
+osm,deis,Consultorio Especialidades Universidad Finis Terrae,,La Cisterna,-70.66711854057068,-33.533755473140666
+osm,deis,Farmacia Blanco,,Ñuñoa,-70.57708718461859,-33.44460750720625
+osm,deis,Centro Cienfuegos,,Puente Alto,-70.56431380002749,-33.55175790003526
+osm,deis,Centro Médico Panay,,La Florida,-70.57276531326711,-33.5363411998734
+osm,deis,SalcoBrand,,Las Condes,-70.55421209999606,-33.417303400022725
+osm,deis,Cruz Verde,,Las Condes,-70.56049915002059,-33.40121310003563
+osm,deis,Clínica Terapia Oriental,,Las Condes,-70.56623125001859,-33.4043162000348
+osm,deis,Terré,,Las Condes,-70.56266289925713,-33.402856852822566
+osm,deis,Belen Farmacias,,La Florida,-70.57466654757104,-33.52261177225603
+osm,deis,Farmacias Salud,,San Ramón,-70.63374027544991,-33.54684960033979
+osm,deis,Odonto Stetic,,La Cisterna,-70.65889504999713,-33.52704545001223
+osm,deis,Odontología Clínica,,Las Condes,-70.55312991033404,-33.42185671272648
+osm,deis,Odontologia Estetica,,Las Condes,-70.55397432545905,-33.42759995034484
+osm,deis,Cruz Verde,,Las Condes,-70.5657326500073,-33.41503165006494
+osm,deis,Cruz Verde,,Las Condes,-70.57057374834133,-33.426091269906195
+osm,deis,Servicios Dentals,,La Florida,-70.59897172544653,-33.53944029968897
+osm,deis,Centro Medico y Dental Medicina Cubana,,La Florida,-70.60395230000033,-33.54563575001307
+osm,deis,Centro de Medicina,,La Florida,-70.5927279002801,-33.550119750010765
+osm,deis,Centro Medico Goycolea,,San Ramón,-70.64628515229427,-33.543850438712084
+osm,deis,Espacio de Salud,,La Cisterna,-70.65842458078468,-33.541702163793246
+osm,deis,,,El Bosque,-70.67103866102724,-33.5612684998831
+osm,deis,Farmacia Más,,El Bosque,-70.67085109999763,-33.560692550016306
+osm,deis,Instituto de Seguridad del Trabajo,,Las Condes,-70.59049329499636,-33.42577445627331
+osm,deis,Farmacia El Valle,,Peñalolén,-70.57353018144983,-33.47591459961439
+osm,deis,Urgencias Dentales,,El Bosque,-70.67049214999946,-33.548072750030684
+osm,deis,Podología,,Puente Alto,-70.56936735917301,-33.591614947351836
+osm,deis,Vitasalud,,Vitacura,-70.55283492386219,-33.38400616222226
+osm,deis,Clínica MEDS Calera de Tango,,San Bernardo,-70.74002649621708,-33.6327391558367
+osm,deis,Centro Odontológico Padre Mariano,,Las Condes,-70.58742517396759,-33.41828019975148
+osm,deis,Clínica Oftalmológica 20/20,,Las Condes,-70.58493020004904,-33.41767755011576
+osm,deis,Farmacias Sozafar,,San Ramón,-70.64595493302235,-33.54815380023775
+osm,deis,Farmacia Farmatodo,,San Ramón,-70.64353470359502,-33.547131349983204
+osm,deis,Centro Oftalmológico LASER,,Las Condes,-70.58487464937089,-33.41795959010052
+osm,deis,Clínica Neurológica Fundación San Pedro,,Calera de Tango,-70.8171386753749,-33.614259738184934
+osm,deis,Clinica Odontologica San Sebastian,,Las Condes,-70.5997109999934,-33.413723100121985
+osm,deis,Farmacia Municipal El Bosque,,El Bosque,-70.67582249688566,-33.552184537845626
+osm,deis,SUM DGAC,,Pudahuel,-70.7907036392161,-33.39231216083327
+osm,deis,SEMDA Juan Gómez Millas,,Ñuñoa,-70.59585993386042,-33.46530917833018
+osm,deis,Centro Médico Pajaritos,,Maipú,-70.75681782529783,-33.51796763299156
+osm,deis,Centro Medico Mediccare,,Paine,-70.76806854904625,-33.85625964645455
+osm,deis,CESFAM Vista Hermosa,,Puente Alto,-70.5245143819815,-33.61038633418413
+osm,deis,,,Paine,-70.64451262969561,-33.82651575230081
+osm,deis,Instituto Nacional de Ortodoncia,,Ñuñoa,-70.5763354756878,-33.437104597472796
+osm,deis,,,Santiago,-70.63072867272257,-33.4534079911605
+osm,deis,Cesfam Lo Franco,,Quinta Normal,-70.69666521341836,-33.415975609455955
+osm,deis,Clínica La Parva,,Las Condes,-70.50900148939836,-33.370891847477395
+osm,deis,Edificio Institucional SML,,Pedro Aguirre Cerda,-70.65848145270047,-33.47683356817498
+osm,deis,,,San Bernardo,-70.70035809998406,-33.59012455002358
+osm,deis,Alemana Sport,,Lo Barnechea,-70.52498600080938,-33.35532605053349
+osm,deis,Estación Médica San Emilio,,Santiago,-70.66474533521864,-33.45447394886234
+osm,deis,Denti LUCMU,,Conchalí,-70.67109707941607,-33.397044650302924
+osm,deis,Centro de Referencia Sociosanitario,,Santiago,-70.66122746260992,-33.43856643107314
+osm,deis,Instituto Nacional del Cáncer Sede Sur,,San Miguel,-70.64174503629566,-33.48442525355934
+osm,deis,Diaverum,,Melipilla,-71.2146745533228,-33.69000893431984
+osm,deis,Nueva Real,,Quilicura,-70.72940217777823,-33.356367150399684
+osm,deis,Centro del Niño Clínica Alemana,,Lo Barnechea,-70.52513234971482,-33.356046034237835
+osm,deis,Vacunatorio Municipal Plaza Cívica,,Pedro Aguirre Cerda,-70.66574739374968,-33.48988428881295
+osm,deis,Farmacia Nueva Bogotá,,Santiago,-70.63326609855123,-33.46762690007542
+osm,deis,Centro Traumatológico y Especialidades Médicas,,Quilicura,-70.72821609909536,-33.368898300033834
+osm,deis,Sonrident,,Quilicura,-70.7297241211662,-33.364628449723675
+osm,deis,Daricam,,Quilicura,-70.72967299043586,-33.36442970015168
+osm,deis,CESFAM Juan Pablo II de Padre Hurtado,,Padre Hurtado,-70.80028664119531,-33.57554570013994
+osm,deis,Centro de Diálisis Municipal de La Granja,,La Granja,-70.63172156747184,-33.55082331992468
+osm,deis,Liga Chilena contra la Epilepsia,,Santiago,-70.66658086371065,-33.445178145795374
+osm,deis,Enfermería Parque Trapiche,,Peñaflor,-70.89447154542003,-33.59764735008545
+osm,deis,Centro de Medicina Biológica Los Alerces,,La Florida,-70.55918286175779,-33.51786843889263
+osm,deis,Centro Médico Sinaí,,Quilicura,-70.7249317539023,-33.365866748537286
+osm,deis,Policlínica Santa Teresa de Los Andes,,Estación Central,-70.69077948096219,-33.476715252413236
+osm,deis,Farmacia Popular La Pincoya,,Huechuraba,-70.67044519819692,-33.3453165000599
+osm,deis,Centro Médico Los Galenos,,San Joaquín,-70.62502969448761,-33.50064552968105
+osm,deis,Sala Primeros Auxilios,,La Reina,-70.5177522999953,-33.45613855000677
+osm,deis,Unidad de Atención Primaria Oftalmológica,,Quilicura,-70.71701523254664,-33.370919550258286
+osm,deis,Farmacia Rosario,,Independencia,-70.65871895000109,-33.4112376500026
+osm,deis,LaraMed,,Lampa,-70.86851360001678,-33.294200150052376
+osm,deis,Farmacias del Dr. Simi,,Providencia,-70.62874500000406,-33.44675900000907
+osm,deis,TodoFarma,,Santiago,-70.63357890279327,-33.450387004605375
+osm,deis,Farmalu,,Quilicura,-70.73711585473501,-33.36399614994376
+osm,deis,Club de Leones de Maipú,,Maipú,-70.76010217176986,-33.51289394317848
+osm,deis,SEMDA Campus Sur,,La Pintana,-70.63071394259822,-33.57146230882111
+osm,deis,Cruz Verde,,Maipú,-70.79547609774475,-33.554801850080715
+osm,deis,Farmacias Real,,Ñuñoa,-70.59173282536022,-33.448656450323256
+osm,deis,SAR Quilicura,,Quilicura,-70.75502467615875,-33.36034523534598
+osm,deis,Centro Médico Liray,,Colina,-70.68511659331648,-33.217881803562875
+osm,deis,Farmacia Comunitaria Renca,,Renca,-70.72191507720407,-33.40056550032372
+osm,deis,Centro Médico Dental San Mateo,,Quilicura,-70.71570226728768,-33.36743874977218
+osm,deis,CESFAM Félix de Amesti,,Macul,-70.59708967423492,-33.50390942171681
+osm,deis,Alemana,,Ñuñoa,-70.6130059,-33.4479232
+osm,deis,Laboratorio Bionet,,Las Condes,-70.5799171,-33.403846699999995
+osm,deis,Laboratorio Clínico UC Christus,,Las Condes,-70.5444929,-33.4093498
+osm,deis,Veterinaria Totoro,,La Florida,-70.6055267,-33.51662460000001
+osm,deis,Clínica Santa Maria,,Providencia,-70.62579752097943,-33.429839950044524
+osm,deis,Laboratorio Clinico Diagmed,,San Ramón,-70.63449691485005,-33.54086356360248
+osm,deis,Instituto de la Sordera,,San Joaquín,-70.62042354004606,-33.49161029338698

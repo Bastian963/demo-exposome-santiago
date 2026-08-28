@@ -1,0 +1,65 @@
+{
+  "created_utc": "2026-06-27T10:12:01.700444+00:00",
+  "city": "santiago",
+  "source": "OpenStreetMap via osmnx",
+  "network_type": "all",
+  "crs_metric": "EPSG:32719",
+  "method": "Street network fetched per commune via osmnx (network_type='all'). network_type='all' used instead of 'walk' because OSM footway tagging is incomplete for Santiago — all streets are de facto walkable. Basic network stats computed on projected graph (EPSG:32719). walk_index = z-scored composite of intersection_density (+), street_density (+), streets_per_node (+), circuity (–), avg_street_length (–); rescaled 0–100.",
+  "evidence": "Physical inactivity is the #1 modifiable dementia risk factor (Livingston et al., Lancet 2024). Walkable street networks are the strongest built-environment predictor of walking behaviour (Saelens & Handy, Med Sci Sports Exerc 2008).",
+  "n_communes": 52,
+  "n_communes_with_data": 52,
+  "top5_most_walkable": [
+    [
+      "La Granja",
+      100.0
+    ],
+    [
+      "Ñuñoa",
+      96.2
+    ],
+    [
+      "Providencia",
+      94.8
+    ],
+    [
+      "San Joaquín",
+      91.2
+    ],
+    [
+      "San Ramón",
+      89.7
+    ]
+  ],
+  "bot5_least_walkable": [
+    [
+      "San José de Maipo",
+      0.0
+    ],
+    [
+      "San Pedro",
+      15.9
+    ],
+    [
+      "Alhué",
+      16.0
+    ],
+    [
+      "Tiltil",
+      19.3
+    ],
+    [
+      "Curacaví",
+      22.9
+    ]
+  ],
+  "columns": [
+    "name",
+    "walk_intersection_density",
+    "walk_street_density_km_km2",
+    "walk_avg_street_length_m",
+    "walk_streets_per_node",
+    "walk_circuity",
+    "walk_n_nodes",
+    "walk_index"
+  ]
+}

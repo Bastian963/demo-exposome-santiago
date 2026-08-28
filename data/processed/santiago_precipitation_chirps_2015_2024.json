@@ -1,0 +1,66 @@
+{
+  "created_utc": "2026-06-28T00:37:35.767531+00:00",
+  "city": "santiago",
+  "years": [
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "latest_year": 2024,
+  "method": "CHIRPS daily precipitation, commune area means via Google Earth Engine, summarized into chronic rainfall, heavy-rain, dry-spell, seasonal, and latest-year anomaly metrics.",
+  "interpretation": "Exploratory exposome monitoring layer for later linkage with brain-health, cognitive, biomarker, or neuroimaging outcomes; not a causal brain-outcome model.",
+  "thresholds_mm": {
+    "wet_day": 1.0,
+    "heavy_day": 10.0,
+    "very_heavy_day": 20.0
+  },
+  "sources": {
+    "chirps": {
+      "provider": "UCSB Climate Hazards Center",
+      "collection": "UCSB-CHG/CHIRPS/DAILY",
+      "band": "precipitation",
+      "scale_meters": 5566,
+      "earth_engine_catalog": "https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY"
+    },
+    "brain_health_context": {
+      "weather_woes": "https://www.mdpi.com/1660-4601/17/23/9011"
+    }
+  },
+  "columns": [
+    "name",
+    "area_km2",
+    "precip_annual_mean_mm",
+    "precip_annual_sd_mm",
+    "precip_annual_cv",
+    "precip_wet_days",
+    "precip_wet_day_pct",
+    "precip_heavy_days_10mm",
+    "precip_very_heavy_days_20mm",
+    "precip_rx1day_mm",
+    "precip_rx5day_mm",
+    "precip_cdd_days",
+    "precip_cwd_days",
+    "precip_intensity_wet_day_mm",
+    "precip_winter_mean_mm",
+    "precip_summer_mean_mm",
+    "precip_latest_year_mm",
+    "precip_latest_anomaly_mm",
+    "precip_latest_anomaly_pct",
+    "precip_extremes_index",
+    "precip_n_years",
+    "precip_n_days"
+  ],
+  "outputs": [
+    "santiago_precipitation_chirps_2015_2024.csv",
+    "santiago_precipitation_chirps_2015_2024.geojson",
+    "santiago_precipitation_chirps_2015_2024.json",
+    "santiago_precipitation_chirps_daily_2015_2024.csv"
+  ]
+}

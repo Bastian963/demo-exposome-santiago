@@ -1,8 +1,8 @@
-name: demo-exposome
+name: exposome
 channels:
   - conda-forge
 dependencies:
-  - python=3.11
+  - python=3.12
   - pandas
   - numpy
   - geopandas
@@ -13,11 +13,23 @@ dependencies:
   - matplotlib
   - requests
   - scipy
+  - scikit-image
+  - opencv
   - openpyxl
   - jupyterlab
   - ipykernel
   - nbformat
   - nbconvert
+  - pyyaml
+  - typer
+  - rasterio
+  - rioxarray
+  - xarray-spatial
+  - rasterstats
   - pip
   - pip:
       - earthengine-api
+      - geemap
+      - openaq
+      - segment-geospatial
+      - rarfile

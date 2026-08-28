@@ -18,6 +18,14 @@ output/
 *.partial
 *.partial.csv
 
+# Large local raw datasets. Keep documentation, placeholders and tiny fixtures.
+data/raw/deis/**
+!data/raw/deis/
+!data/raw/deis/**/
+!data/raw/deis/**/*.md
+!data/raw/deis/**/.gitkeep
+!data/raw/deis/**/sample_*.csv
+
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/

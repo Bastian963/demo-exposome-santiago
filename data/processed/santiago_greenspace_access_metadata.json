@@ -1,0 +1,17 @@
+{
+  "created_utc": "2026-06-27T00:04:18.194272+00:00",
+  "city": "santiago",
+  "n_communes": 52,
+  "n_green_polygons": 6835,
+  "buffers_m": [
+    300,
+    500,
+    1000
+  ],
+  "buffer_area_method": "whole_polygon_by_repr_point",
+  "source": "OpenStreetMap",
+  "outputs": [
+    "santiago_greenspace_access.csv",
+    "santiago_greenspace_access.geojson"
+  ]
+}

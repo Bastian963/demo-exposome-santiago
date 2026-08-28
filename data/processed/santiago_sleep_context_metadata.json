@@ -1,0 +1,57 @@
+{
+  "created_utc": "2026-06-26T21:50:03.372072+00:00",
+  "city": "santiago",
+  "n_rows": 52,
+  "warning": "This is an environmental sleep-circadian context index, not a direct measurement of sleep duration, sleep quality, insomnia, or any clinical sleep disorder.",
+  "method": {
+    "sleep_alan_log": "log1p(alan_radiance_pop_weighted)",
+    "sleep_tropical_nights_20c": "om_tropical_nights_20c",
+    "sleep_summer_tmin_c": "om_tmin_mean_summer_c",
+    "sleep_exposure_index": "Mean of 0-100 percentile ranks for log ALAN, tropical nights, and summer mean daily minimum temperature.",
+    "sleep_vulnerability_index": "Mean of 0-100 percentile ranks for household overcrowding, older-population share, and lower socioeconomic position (-nse_index).",
+    "sleep_context_index": "0.70 * sleep_exposure_index + 0.30 * sleep_vulnerability_index"
+  },
+  "weights": {
+    "exposure_index": {
+      "sleep_alan_log": 0.3333333333333333,
+      "sleep_tropical_nights_20c": 0.3333333333333333,
+      "sleep_summer_tmin_c": 0.3333333333333333
+    },
+    "vulnerability_index": {
+      "hacinamiento_phh": 0.3333333333333333,
+      "demo_pct_pop_65_plus": 0.3333333333333333,
+      "negative_nse_index": 0.3333333333333333
+    },
+    "sleep_context_index": {
+      "sleep_exposure_index": 0.7,
+      "sleep_vulnerability_index": 0.3
+    }
+  },
+  "sources": {
+    "direct_sleep_reference_sources": {
+      "ens_minsal": "https://epi.minsal.cl/bases-de-datos/",
+      "enut_ine": "https://www.ine.gob.cl/estadisticas/sociales/genero/uso-del-tiempo/enut",
+      "enut_2023_report": "https://www.ine.gob.cl/docs/default-source/uso-del-tiempo-tiempo-libre/publicaciones-y-anuarios/ii-enut/informe-de-principales-resultados-ii-enut-2023.pdf",
+      "ens_sleep_rm_substudy": "https://www.scielo.cl/scielo.php?pid=S0034-98872020000700895&script=sci_arttext"
+    },
+    "commune_exposure_inputs": {
+      "alan": "santiago_alan_viirs_2024.csv",
+      "climate": "santiago_climate_metrics_annual.csv",
+      "socioeconomic_demography": "santiago_exposome_master.csv"
+    }
+  },
+  "columns": [
+    "name",
+    "area_km2",
+    "sleep_alan_log",
+    "sleep_tropical_nights_20c",
+    "sleep_summer_tmin_c",
+    "sleep_exposure_index",
+    "sleep_vulnerability_index",
+    "sleep_context_index"
+  ],
+  "outputs": [
+    "santiago_sleep_context.csv",
+    "santiago_sleep_context.geojson"
+  ]
+}

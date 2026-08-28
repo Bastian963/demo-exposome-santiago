@@ -1,0 +1,83 @@
+{
+  "created_utc": "2026-06-28T12:43:03.470628+00:00",
+  "city": "santiago",
+  "source": "OpenStreetMap via osmnx",
+  "classification_cdc_mrfei": {
+    "healthy": "shop=supermarket, shop=greengrocer, amenity=marketplace",
+    "unhealthy": "amenity=fast_food, shop=convenience"
+  },
+  "deduplication_radius_m": 25,
+  "grid_spacing_m": 1000,
+  "crs_metric": "EPSG:32719",
+  "method": "Food outlets downloaded per category for the RM via osmnx features_from_polygon (cached). Deduplicated at 25 m. mRFEI = healthy / (healthy + unhealthy) × 100 per commune. food_swamp_ratio = unhealthy / max(healthy, 1). food_index = z-scored composite of mrfei (+), healthy_density (+), mean_dist_supermarket (–); 0–100.",
+  "evidence": "Food environment shapes diet → obesity/diabetes/hypertension, three of the 14 modifiable dementia risk factors (Livingston et al., Lancet 2024). Neighborhood food resources predict cognitive health behaviours (Finlay et al., Soc Sci Med 2026, 'Cognability').",
+  "known_limitation": "Ferias libres (street markets) are under-mapped in OSM (~160 vs ~400+ real in the RM; they are mobile/temporary). This BIASES food_mrfei DOWNWARD in popular communes with strong feria traditions. The fixed categories (supermarkets, fast food, convenience) dominate and are well mapped, so the index remains valid; food_n_marketplace is reported separately for transparency.",
+  "n_communes": 52,
+  "totals": {
+    "supermarket": 596,
+    "greengrocer": 0,
+    "marketplace": 0,
+    "fast_food": 0,
+    "convenience": 0
+  },
+  "top5_healthiest": [
+    [
+      "Santiago",
+      100.0
+    ],
+    [
+      "Providencia",
+      93.3
+    ],
+    [
+      "Independencia",
+      85.1
+    ],
+    [
+      "Lo Prado",
+      85.1
+    ],
+    [
+      "Ñuñoa",
+      84.0
+    ]
+  ],
+  "bot5_worst": [
+    [
+      "Alhué",
+      0.0
+    ],
+    [
+      "San José de Maipo",
+      24.0
+    ],
+    [
+      "Lo Barnechea",
+      48.0
+    ],
+    [
+      "Colina",
+      51.6
+    ],
+    [
+      "Pirque",
+      54.1
+    ]
+  ],
+  "columns": [
+    "name",
+    "food_n_supermarket",
+    "food_n_greengrocer",
+    "food_n_marketplace",
+    "food_n_fastfood",
+    "food_n_convenience",
+    "food_n_healthy",
+    "food_n_unhealthy",
+    "food_healthy_density",
+    "food_unhealthy_density",
+    "food_mrfei",
+    "food_swamp_ratio",
+    "food_mean_dist_supermarket_m",
+    "food_index"
+  ]
+}
